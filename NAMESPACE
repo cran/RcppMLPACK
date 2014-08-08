@@ -1,0 +1,3 @@
+useDynLib(RcppMLPACK)
+export(RcppMLPACK.package.skeleton, mlKmeans)
+importFrom(Rcpp, evalCpp)
