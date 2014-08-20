@@ -40,7 +40,7 @@ class LRSDPFunction
    * constraints.  Set the A, B, and C matrices for each constraint using the
    * A(), B(), and C() functions.
    */
-  LRSDPFunction(const size_t numConstraints,
+  LRSDPFunction(const long numConstraints,
                 const arma::mat& initialPoint);
 
   /**
@@ -58,18 +58,18 @@ class LRSDPFunction
   /**
    * Evaluate a particular constraint of the LRSDP at the given coordinates.
    */
-  double EvaluateConstraint(const size_t index,
+  double EvaluateConstraint(const long index,
                             const arma::mat& coordinates) const;
   /**
    * Evaluate the gradient of a particular constraint of the LRSDP at the given
    * coordinates.
    */
-  void GradientConstraint(const size_t index,
+  void GradientConstraint(const long index,
                           const arma::mat& coordinates,
                           arma::mat& gradient) const;
 
   //! Get the number of constraints in the LRSDP.
-  size_t NumConstraints() const { return b.n_elem; }
+  long NumConstraints() const { return b.n_elem; }
 
   //! Get the initial point of the LRSDP.
   const arma::mat& GetInitialPoint() const { return initialPoint; }

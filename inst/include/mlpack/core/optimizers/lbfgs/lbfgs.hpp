@@ -65,12 +65,12 @@ class L_BFGS
    * @param maxStep The maximum step of the line search.
    */
   L_BFGS(FunctionType& function,
-         const size_t numBasis = 5, /* entirely arbitrary */
-         const size_t maxIterations = 0, /* run forever */
+         const long numBasis = 5, /* entirely arbitrary */
+         const long maxIterations = 0, /* run forever */
          const double armijoConstant = 1e-4,
          const double wolfe = 0.9,
          const double minGradientNorm = 1e-10,
-         const size_t maxLineSearchTrials = 50,
+         const long maxLineSearchTrials = 50,
          const double minStep = 1e-20,
          const double maxStep = 1e20);
 
@@ -107,7 +107,7 @@ class L_BFGS
    * @param maxIterations Maximum number of iterations (0 specifies no limit).
    * @return Objective value of the final point.
    */
-  double Optimize(arma::mat& iterate, const size_t maxIterations);
+  double Optimize(arma::mat& iterate, const long maxIterations);
 
   //! Return the function that is being optimized.
   const FunctionType& Function() const { return function; }
@@ -115,14 +115,14 @@ class L_BFGS
   FunctionType& Function() { return function; }
 
   //! Get the memory size.
-  size_t NumBasis() const { return numBasis; }
+  long NumBasis() const { return numBasis; }
   //! Modify the memory size.
-  size_t& NumBasis() { return numBasis; }
+  long& NumBasis() { return numBasis; }
 
   //! Get the maximum number of iterations.
-  size_t MaxIterations() const { return maxIterations; }
+  long MaxIterations() const { return maxIterations; }
   //! Modify the maximum number of iterations.
-  size_t& MaxIterations() { return maxIterations; }
+  long& MaxIterations() { return maxIterations; }
 
   //! Get the Armijo condition constant.
   double ArmijoConstant() const { return armijoConstant; }
@@ -140,9 +140,9 @@ class L_BFGS
   double& MinGradientNorm() { return minGradientNorm; }
 
   //! Get the maximum number of line search trials.
-  size_t MaxLineSearchTrials() const { return maxLineSearchTrials; }
+  long MaxLineSearchTrials() const { return maxLineSearchTrials; }
   //! Modify the maximum number of line search trials.
-  size_t& MaxLineSearchTrials() { return maxLineSearchTrials; }
+  long& MaxLineSearchTrials() { return maxLineSearchTrials; }
 
   //! Return the minimum line search step size.
   double MinStep() const { return minStep; }
@@ -169,9 +169,9 @@ class L_BFGS
   arma::cube y;
 
   //! Size of memory for this L-BFGS optimizer.
-  size_t numBasis;
+  long numBasis;
   //! Maximum number of iterations.
-  size_t maxIterations;
+  long maxIterations;
   //! Parameter for determining the Armijo condition.
   double armijoConstant;
   //! Parameter for detecting the Wolfe condition.
@@ -179,7 +179,7 @@ class L_BFGS
   //! Minimum gradient norm required to continue the optimization.
   double minGradientNorm;
   //! Maximum number of trials for the line search.
-  size_t maxLineSearchTrials;
+  long maxLineSearchTrials;
   //! Minimum step of the line search.
   double minStep;
   //! Maximum step of the line search.
@@ -203,7 +203,7 @@ class L_BFGS
    *
    * @return The calculated scaling factor.
    */
-  double ChooseScalingFactor(const size_t iterationNum,
+  double ChooseScalingFactor(const long iterationNum,
                              const arma::mat& gradient);
 
   /**
@@ -241,7 +241,7 @@ class L_BFGS
    * @param search_direction Vector to store search direction in
    */
   void SearchDirection(const arma::mat& gradient,
-                       const size_t iterationNum,
+                       const long iterationNum,
                        const double scalingFactor,
                        arma::mat& searchDirection);
 
@@ -256,7 +256,7 @@ class L_BFGS
    * @param gradient Gradient at current point (iterate)
    * @param oldGradient Gradient at last iteration point (oldIterate)
    */
-  void UpdateBasisSet(const size_t iterationNum,
+  void UpdateBasisSet(const long iterationNum,
                       const arma::mat& iterate,
                       const arma::mat& oldIterate,
                       const arma::mat& gradient,

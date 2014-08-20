@@ -39,7 +39,7 @@ bool Save(const std::string& filename,
 
 
     // First we will try to discriminate by file extension.
-    size_t ext = filename.rfind('.');
+    long ext = filename.rfind('.');
     if (ext == std::string::npos)
     {
 

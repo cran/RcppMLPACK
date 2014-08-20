@@ -39,9 +39,9 @@ class EdgePair
 {
  private:
   //! Lesser index.
-  size_t lesser;
+  long lesser;
   //! Greater index.
-  size_t greater;
+  long greater;
   //! Distance between two indices.
   double distance;
 
@@ -52,21 +52,21 @@ class EdgePair
    * Init.  However, this is not necessary for functionality; it is just a way
    * to keep the edge list organized in other code.
    */
-  EdgePair(const size_t lesser, const size_t greater, const double dist) :
+  EdgePair(const long lesser, const long greater, const double dist) :
       lesser(lesser), greater(greater), distance(dist)
   {
 
   }
 
   //! Get the lesser index.
-  size_t Lesser() const { return lesser; }
+  long Lesser() const { return lesser; }
   //! Modify the lesser index.
-  size_t& Lesser() { return lesser; }
+  long& Lesser() { return lesser; }
 
   //! Get the greater index.
-  size_t Greater() const { return greater; }
+  long Greater() const { return greater; }
   //! Modify the greater index.
-  size_t& Greater() { return greater; }
+  long& Greater() { return greater; }
 
   //! Get the distance.
   double Distance() const { return distance; }

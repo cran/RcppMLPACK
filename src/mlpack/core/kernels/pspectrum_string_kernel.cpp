@@ -38,7 +38,7 @@ using namespace mlpack::kernel;
  */
 mlpack::kernel::PSpectrumStringKernel::PSpectrumStringKernel(
     const std::vector<std::vector<std::string> >& datasets,
-    const size_t p) :
+    const long p) :
     datasets(datasets),
     p(p)
 {
@@ -50,7 +50,7 @@ mlpack::kernel::PSpectrumStringKernel::PSpectrumStringKernel(
   // Resize for number of datasets.
   counts.resize(datasets.size());
 
-  for (size_t dataset = 0; dataset < datasets.size(); ++dataset)
+  for (long dataset = 0; dataset < datasets.size(); ++dataset)
   {
     const std::vector<std::string>& set = datasets[dataset];
 
@@ -58,20 +58,20 @@ mlpack::kernel::PSpectrumStringKernel::PSpectrumStringKernel(
     counts[dataset].resize(set.size());
 
     // Inspect each string in the dataset.
-    for (size_t index = 0; index < set.size(); ++index)
+    for (long index = 0; index < set.size(); ++index)
     {
       // Convenience references.
       const std::string& str = set[index];
       std::map<std::string, int>& mapping = counts[dataset][index];
 
-      size_t start = 0;
+      long start = 0;
       while ((start + p) <= str.length())
       {
         string sub = str.substr(start, p);
 
         // Convert all characters to lowercase.
         bool invalid = false;
-        for (size_t j = 0; j < p; ++j)
+        for (long j = 0; j < p; ++j)
         {
           if (!isalnum(sub[j]))
           {

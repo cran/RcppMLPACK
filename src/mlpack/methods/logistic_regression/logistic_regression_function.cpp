@@ -82,7 +82,7 @@ double LogisticRegressionFunction::Evaluate(const arma::mat& parameters)
   // doesn't actually affect the optimization result, so we'll just ignore those
   // terms for computational efficiency.
   double result = 0.0;
-  for (size_t i = 0; i < responses.n_elem; ++i)
+  for (long i = 0; i < responses.n_elem; ++i)
   {
     if (responses[i] == 1)
       result += log(sigmoid[i]);
@@ -100,7 +100,7 @@ double LogisticRegressionFunction::Evaluate(const arma::mat& parameters)
  * as SGD.
  */
 double LogisticRegressionFunction::Evaluate(const arma::mat& parameters,
-                                            const size_t i) const
+                                            const long i) const
 {
   // Calculate the regularization term.  We must divide by the number of points,
   // so that sum(Evaluate(parameters, [1:points])) == Evaluate(parameters).
@@ -142,7 +142,7 @@ void LogisticRegressionFunction::Gradient(const arma::mat& parameters,
  * that use a separable objective function, such as SGD.
  */
 void LogisticRegressionFunction::Gradient(const arma::mat& parameters,
-                                          const size_t i,
+                                          const long i,
                                           arma::mat& gradient) const
 {
   // Calculate the regularization term.

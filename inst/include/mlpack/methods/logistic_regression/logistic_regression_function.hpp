@@ -88,7 +88,7 @@ class LogisticRegressionFunction
    * @param parameters Vector of logistic regression parameters.
    * @param i Index of point to use for objective function evaluation.
    */
-  double Evaluate(const arma::mat& parameters, const size_t i) const;
+  double Evaluate(const arma::mat& parameters, const long i) const;
 
   /**
    * Evaluate the gradient of the logistic regression log-likelihood function
@@ -110,14 +110,14 @@ class LogisticRegressionFunction
    * @param gradient Vector to output gradient into.
    */
   void Gradient(const arma::mat& parameters,
-                const size_t i,
+                const long i,
                 arma::mat& gradient) const;
 
   //! Return the initial point for the optimization.
   const arma::mat& GetInitialPoint() const { return initialPoint; }
 
   //! Return the number of separable functions (the number of predictor points).
-  size_t NumFunctions() const { return predictors.n_cols; }
+  long NumFunctions() const { return predictors.n_cols; }
 
  private:
   //! The initial point, from which to start the optimization.

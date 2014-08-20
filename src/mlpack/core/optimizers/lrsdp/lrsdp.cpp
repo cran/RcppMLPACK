@@ -26,7 +26,7 @@ using namespace mlpack;
 using namespace mlpack::optimization;
 using namespace std;
 
-LRSDP::LRSDP(const size_t numConstraints,
+LRSDP::LRSDP(const long numConstraints,
              const arma::mat& initialPoint) :
     function(numConstraints, initialPoint),
     augLag(function)

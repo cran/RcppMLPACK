@@ -88,7 +88,7 @@ void Orthogonalize(arma::mat& x);
  * @param output Matrix to copy non-removed rows into.
  */
 void RemoveRows(const arma::mat& input,
-                const std::vector<size_t>& rowsToRemove,
+                const std::vector<long>& rowsToRemove,
                 arma::mat& output);
 
 }; // namespace math

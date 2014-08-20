@@ -75,7 +75,7 @@ class KernelPCA
              arma::mat& transformedData,
              arma::vec& eigval,
              arma::mat& eigvec,
-             const size_t newDimension);
+             const long newDimension);
 
   /**
    * Apply Kernel Principal Components Analysis to the provided data set.
@@ -114,7 +114,7 @@ class KernelPCA
    * @param data Data matrix.
    * @param newDimension New dimension for the dataset.
    */
-  void Apply(arma::mat& data, const size_t newDimension);
+  void Apply(arma::mat& data, const long newDimension);
 
   //! Get the kernel.
   const KernelType& Kernel() const { return kernel; }

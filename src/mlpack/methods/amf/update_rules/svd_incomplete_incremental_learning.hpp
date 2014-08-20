@@ -15,7 +15,7 @@ class SVDIncompleteIncrementalLearning
     {}
 
   template<typename MatType>
-  void Initialize(const MatType& dataset, const size_t rank)
+  void Initialize(const MatType& dataset, const long rank)
   {
     (void)rank;
   
@@ -56,7 +56,7 @@ class SVDIncompleteIncrementalLearning
   {
     arma::mat deltaW(n, W.n_cols);
     deltaW.zeros();
-    for(size_t i = 0;i < n;i++)
+    for(long i = 0;i < n;i++)
     {
       double val;
       if((val = V(i, currentUserIndex)) != 0)
@@ -85,7 +85,7 @@ class SVDIncompleteIncrementalLearning
     arma::mat deltaH(H.n_rows, 1);
     deltaH.zeros();
 
-    for(size_t i = 0;i < n;i++)
+    for(long i = 0;i < n;i++)
     {
       double val;
       if((val = V(i, currentUserIndex)) != 0)
@@ -103,10 +103,10 @@ class SVDIncompleteIncrementalLearning
   double kw;
   double kh;
 
-  size_t n;
-  size_t m;
+  long n;
+  long m;
 
-  size_t currentUserIndex;
+  long currentUserIndex;
 };
 
 template<>
@@ -121,7 +121,7 @@ inline void SVDIncompleteIncrementalLearning::
                                       it != V.end_col(currentUserIndex);it++)
   {
     double val = *it;
-    size_t i = it.row();
+    long i = it.row();
     deltaW.row(i) += (val - arma::dot(W.row(i), H.col(currentUserIndex))) *
                                          arma::trans(H.col(currentUserIndex));
     if(kw != 0) deltaW.row(i) -= kw * W.row(i);
@@ -143,7 +143,7 @@ inline void SVDIncompleteIncrementalLearning::
                                         it != V.end_col(currentUserIndex);it++)
   {
     double val = *it;
-    size_t i = it.row();
+    long i = it.row();
     if((val = V(i, currentUserIndex)) != 0)
       deltaH += (val - arma::dot(W.row(i), H.col(currentUserIndex))) *
                                                     arma::trans(W.row(i));

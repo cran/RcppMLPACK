@@ -67,7 +67,7 @@ double AugLagrangianFunction<LagrangianFunction>::Evaluate(
   double objective = function.Evaluate(coordinates);
 
   // Now loop for each constraint.
-  for (size_t i = 0; i < function.NumConstraints(); ++i)
+  for (long i = 0; i < function.NumConstraints(); ++i)
   {
     double constraint = function.EvaluateConstraint(i, coordinates);
 
@@ -90,7 +90,7 @@ void AugLagrangianFunction<LagrangianFunction>::Gradient(
   function.Gradient(coordinates, gradient);
 
   arma::mat constraintGradient; // Temporary for constraint gradients.
-  for (size_t i = 0; i < function.NumConstraints(); i++)
+  for (long i = 0; i < function.NumConstraints(); i++)
   {
     function.GradientConstraint(i, coordinates, constraintGradient);
 

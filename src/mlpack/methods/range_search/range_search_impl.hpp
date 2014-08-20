@@ -34,7 +34,7 @@ namespace range {
 template<typename TreeType>
 TreeType* BuildTree(
     typename TreeType::Mat& dataset,
-    std::vector<size_t>& oldFromNew,
+    std::vector<long>& oldFromNew,
     typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == true, TreeType*
     >::type = 0)
@@ -46,7 +46,7 @@ TreeType* BuildTree(
 template<typename TreeType>
 TreeType* BuildTree(
     const typename TreeType::Mat& dataset,
-    const std::vector<size_t>& /* oldFromNew */,
+    const std::vector<long>& /* oldFromNew */,
     const typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == false, TreeType*
     >::type = 0)
@@ -200,7 +200,7 @@ RangeSearch<MetricType, TreeType>::~RangeSearch()
 template<typename MetricType, typename TreeType>
 void RangeSearch<MetricType, TreeType>::Search(
     const math::Range& range,
-    std::vector<std::vector<size_t> >& neighbors,
+    std::vector<std::vector<long> >& neighbors,
     std::vector<std::vector<double> >& distances)
 {
 
@@ -211,7 +211,7 @@ void RangeSearch<MetricType, TreeType>::Search(
   // indices back to their original indices when this computation is finished.
   // To avoid extra copies, we will store the unmapped neighbors and distances
   // in a separate object.
-  std::vector<std::vector<size_t> >* neighborPtr = &neighbors;
+  std::vector<std::vector<long> >* neighborPtr = &neighbors;
   std::vector<std::vector<double> >* distancePtr = &distances;
 
   // Mapping is only necessary if the tree rearranges points.
@@ -221,7 +221,7 @@ void RangeSearch<MetricType, TreeType>::Search(
       distancePtr = new std::vector<std::vector<double> >; // Query indices need to be mapped.
 
     if (treeOwner)
-      neighborPtr = new std::vector<std::vector<size_t> >; // All indices need mapping.
+      neighborPtr = new std::vector<std::vector<long> >; // All indices need mapping.
   }
 
   // Resize each vector.
@@ -238,8 +238,8 @@ void RangeSearch<MetricType, TreeType>::Search(
   if (naive)
   {
     // The naive brute-force solution.
-    for (size_t i = 0; i < querySet.n_cols; ++i)
-      for (size_t j = 0; j < referenceSet.n_cols; ++j)
+    for (long i = 0; i < querySet.n_cols; ++i)
+      for (long j = 0; j < referenceSet.n_cols; ++j)
         rules.BaseCase(i, j);
   }
   else if (singleMode)
@@ -248,7 +248,7 @@ void RangeSearch<MetricType, TreeType>::Search(
     typename TreeType::template SingleTreeTraverser<RuleType> traverser(rules);
 
     // Now have it traverse for each point.
-    for (size_t i = 0; i < querySet.n_cols; ++i)
+    for (long i = 0; i < querySet.n_cols; ++i)
       traverser.Traverse(i, *referenceTree);
 
     numPrunes = traverser.NumPrunes();
@@ -281,15 +281,15 @@ void RangeSearch<MetricType, TreeType>::Search(
     distances.clear();
     distances.resize(querySet.n_cols);
 
-    for (size_t i = 0; i < distances.size(); i++)
+    for (long i = 0; i < distances.size(); i++)
     {
       // Map distances (copy a column).
-      size_t queryMapping = oldFromNewQueries[i];
+      long queryMapping = oldFromNewQueries[i];
       distances[queryMapping] = (*distancePtr)[i];
 
       // Copy each neighbor individually, because we need to map it.
       neighbors[queryMapping].resize(distances[queryMapping].size());
-      for (size_t j = 0; j < distances[queryMapping].size(); j++)
+      for (long j = 0; j < distances[queryMapping].size(); j++)
       {
         neighbors[queryMapping][j] = oldFromNewReferences[(*neighborPtr)[i][j]];
       }
@@ -306,15 +306,15 @@ void RangeSearch<MetricType, TreeType>::Search(
     distances.clear();
     distances.resize(querySet.n_cols);
 
-    for (size_t i = 0; i < distances.size(); i++)
+    for (long i = 0; i < distances.size(); i++)
     {
       // Map distances (copy a column).
-      size_t refMapping = oldFromNewReferences[i];
+      long refMapping = oldFromNewReferences[i];
       distances[refMapping] = (*distancePtr)[i];
 
       // Copy each neighbor individually, because we need to map it.
       neighbors[refMapping].resize(distances[refMapping].size());
-      for (size_t j = 0; j < distances[refMapping].size(); j++)
+      for (long j = 0; j < distances[refMapping].size(); j++)
       {
         neighbors[refMapping][j] = oldFromNewReferences[(*neighborPtr)[i][j]];
       }
@@ -330,10 +330,10 @@ void RangeSearch<MetricType, TreeType>::Search(
     neighbors.resize(querySet.n_cols);
 
     // Map indices of neighbors.
-    for (size_t i = 0; i < neighbors.size(); i++)
+    for (long i = 0; i < neighbors.size(); i++)
     {
       neighbors[i].resize((*neighborPtr)[i].size());
-      for (size_t j = 0; j < neighbors[i].size(); j++)
+      for (long j = 0; j < neighbors[i].size(); j++)
       {
         neighbors[i][j] = oldFromNewReferences[(*neighborPtr)[i][j]];
       }
@@ -358,7 +358,7 @@ std::string RangeSearch<MetricType, TreeType>::ToString() const
   return convert.str();
 }
 
-}; // namespace range
-}; // namespace mlpack
+} // namespace range
+} // namespace mlpack
 
 #endif

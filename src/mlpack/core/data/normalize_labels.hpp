@@ -43,7 +43,7 @@ namespace data
  */
 template<typename eT>
 void NormalizeLabels(const arma::Col<eT>& labelsIn,
-                     arma::Col<size_t>& labels,
+                     arma::Col<long>& labels,
                      arma::Col<eT>& mapping);
 
 /**
@@ -55,7 +55,7 @@ void NormalizeLabels(const arma::Col<eT>& labelsIn,
  * @param labelsOut Vector to store new labels in.
  */
 template<typename eT>
-void RevertLabels(const arma::Col<size_t>& labels,
+void RevertLabels(const arma::Col<long>& labels,
                   const arma::Col<eT>& mapping,
                   arma::Col<eT>& labelsOut);
 

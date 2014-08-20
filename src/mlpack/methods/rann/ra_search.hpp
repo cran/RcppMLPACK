@@ -235,14 +235,14 @@ public:
      * @param singleSampleLimit The limit on the largest node that can be
      *     approximated by sampling. This defaults to 20.
      */
-    void Search(const size_t k,
-                arma::Mat<size_t>& resultingNeighbors,
+    void Search(const long k,
+                arma::Mat<long>& resultingNeighbors,
                 arma::mat& distances,
                 const double tau = 5,
                 const double alpha = 0.95,
                 const bool sampleAtLeaves = false,
                 const bool firstLeafExact = false,
-                const size_t singleSampleLimit = 20);
+                const long singleSampleLimit = 20);
 
     /**
      * This function recursively resets the RAQueryStat of the queryTree to set
@@ -287,12 +287,12 @@ private:
     MetricType metric;
 
     //! Permutations of reference points during tree building.
-    std::vector<size_t> oldFromNewReferences;
+    std::vector<long> oldFromNewReferences;
     //! Permutations of query points during tree building.
-    std::vector<size_t> oldFromNewQueries;
+    std::vector<long> oldFromNewQueries;
 
     //! Total number of pruned nodes during the neighbor search.
-    size_t numberOfPrunes;
+    long numberOfPrunes;
 
     /**
      * @param treeNode The node of the tree whose RAQueryStat is reset

@@ -47,22 +47,22 @@ class CoverTree<MetricType, RootPointPolicy, StatisticType>::DualTreeTraverser
   void Traverse(CoverTree& queryNode, CoverTree& referenceNode);
 
   //! Get the number of pruned nodes.
-  size_t NumPrunes() const { return numPrunes; }
+  long NumPrunes() const { return numPrunes; }
   //! Modify the number of pruned nodes.
-  size_t& NumPrunes() { return numPrunes; }
+  long& NumPrunes() { return numPrunes; }
 
   ///// These are all fake because this is a patch for kd-trees only and I still
   ///// want it to compile!
-  size_t NumVisited() const { return 0; }
-  size_t NumScores() const { return 0; }
-  size_t NumBaseCases() const { return 0; }
+  long NumVisited() const { return 0; }
+  long NumScores() const { return 0; }
+  long NumBaseCases() const { return 0; }
 
  private:
   //! The instantiated rule set for pruning branches.
   RuleType& rule;
 
   //! The number of pruned nodes.
-  size_t numPrunes;
+  long numPrunes;
 
   //! Struct used for traversal.
   struct DualCoverTreeMapEntry

@@ -28,12 +28,12 @@ using namespace std;
 
 //! A utility function that replaces all all newlines with a number of spaces
 //! depending on the indentation level.
-string mlpack::util::Indent(string input, const size_t howManyTabs)
+string mlpack::util::Indent(string input, const long howManyTabs)
 {
   // For each declared...
   string standardTab = "  ";
   string bigTab = "";
-  for (size_t ind = 0; ind < howManyTabs; ind++)
+  for (long ind = 0; ind < howManyTabs; ind++)
   {
     // Increase amount tabbed on later lines.
     bigTab += standardTab;
@@ -47,7 +47,7 @@ string mlpack::util::Indent(string input, const size_t howManyTabs)
   std::string tabbedNewline("\n" + bigTab);
 
   // Replace all newline characters with the precomputed character sequence.
-  size_t startPos = 0;
+  long startPos = 0;
   while ((startPos = input.find("\n", startPos)) != string::npos)
   {
     // Don't replace the last newline.

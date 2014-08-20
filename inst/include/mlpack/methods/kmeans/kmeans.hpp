@@ -47,7 +47,7 @@ namespace kmeans /** K-Means clustering. */ {
  *
  * @code
  * extern arma::mat data; // Dataset we want to run K-Means on.
- * arma::Col<size_t> assignments; // Cluster assignments.
+ * arma::Col<long> assignments; // Cluster assignments.
  *
  * KMeans<> k; // Default options.
  * k.Cluster(data, 3, assignments); // 3 clusters.
@@ -61,11 +61,11 @@ namespace kmeans /** K-Means clustering. */ {
  * @tparam MetricType The distance metric to use for this KMeans; see
  *     metric::LMetric for an example.
  * @tparam InitialPartitionPolicy Initial partitioning policy; must implement a
- *     default constructor and 'void Cluster(const arma::mat&, const size_t,
- *     arma::Col<size_t>&)'.
+ *     default constructor and 'void Cluster(const arma::mat&, const long,
+ *     arma::Col<long>&)'.
  * @tparam EmptyClusterPolicy Policy for what to do on an empty cluster; must
  *     implement a default constructor and 'void EmptyCluster(const arma::mat&,
- *     arma::Col<size_t&)'.
+ *     arma::Col<long&)'.
  *
  * @see RandomPartition, RefinedStart, AllowEmptyClusters, MaxVarianceNewCluster
  */
@@ -97,7 +97,7 @@ class KMeans
    * @param emptyClusterAction Optional EmptyClusterPolicy object; for when a
    *     specially initialized empty cluster policy is required.
    */
-  KMeans(const size_t maxIterations = 1000,
+  KMeans(const long maxIterations = 1000,
          const double overclusteringFactor = 1.0,
          const MetricType metric = MetricType(),
          const InitialPartitionPolicy partitioner = InitialPartitionPolicy(),
@@ -119,8 +119,8 @@ class KMeans
    */
   template<typename MatType>
   void Cluster(const MatType& data,
-               const size_t clusters,
-               arma::Col<size_t>& assignments,
+               const long clusters,
+               arma::Col<long>& assignments,
                const bool initialGuess = false) const;
 
   /**
@@ -151,8 +151,8 @@ class KMeans
    */
   template<typename MatType>
   void Cluster(const MatType& data,
-               const size_t clusters,
-               arma::Col<size_t>& assignments,
+               const long clusters,
+               arma::Col<long>& assignments,
                MatType& centroids,
                const bool initialAssignmentGuess = false,
                const bool initialCentroidGuess = false) const;
@@ -163,9 +163,9 @@ class KMeans
   double& OverclusteringFactor() { return overclusteringFactor; }
 
   //! Get the maximum number of iterations.
-  size_t MaxIterations() const { return maxIterations; }
+  long MaxIterations() const { return maxIterations; }
   //! Set the maximum number of iterations.
-  size_t& MaxIterations() { return maxIterations; }
+  long& MaxIterations() { return maxIterations; }
 
   //! Get the distance metric.
   const MetricType& Metric() const { return metric; }
@@ -190,7 +190,7 @@ class KMeans
   //! Factor controlling how many clusters are actually found.
   double overclusteringFactor;
   //! Maximum number of iterations before giving up.
-  size_t maxIterations;
+  long maxIterations;
   //! Instantiated distance metric.
   MetricType metric;
   //! Instantiated initial partitioning policy.

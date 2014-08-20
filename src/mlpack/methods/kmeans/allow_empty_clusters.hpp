@@ -52,11 +52,11 @@ class AllowEmptyClusters
    * @return Number of points changed (0).
    */
   template<typename MatType>
-  static size_t EmptyCluster(const MatType& /* data */,
-                             const size_t /* emptyCluster */,
+  static long EmptyCluster(const MatType& /* data */,
+                             const long /* emptyCluster */,
                              const MatType& /* centroids */,
-                             arma::Col<size_t>& /* clusterCounts */,
-                             arma::Col<size_t>& /* assignments */)
+                             arma::Col<long>& /* clusterCounts */,
+                             arma::Col<long>& /* assignments */)
   {
     // Empty clusters are okay!  Do nothing.
     return 0;

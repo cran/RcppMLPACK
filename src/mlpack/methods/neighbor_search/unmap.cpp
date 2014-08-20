@@ -25,11 +25,11 @@ namespace mlpack {
 namespace neighbor {
 
 // Useful in the dual-tree setting.
-void Unmap(const arma::Mat<size_t>& neighbors,
+void Unmap(const arma::Mat<long>& neighbors,
            const arma::mat& distances,
-           const std::vector<size_t>& referenceMap,
-           const std::vector<size_t>& queryMap,
-           arma::Mat<size_t>& neighborsOut,
+           const std::vector<long>& referenceMap,
+           const std::vector<long>& queryMap,
+           arma::Mat<long>& neighborsOut,
            arma::mat& distancesOut,
            const bool squareRoot)
 {
@@ -38,7 +38,7 @@ void Unmap(const arma::Mat<size_t>& neighbors,
   distancesOut.set_size(distances.n_rows, distances.n_cols);
 
   // Unmap distances.
-  for (size_t i = 0; i < distances.n_cols; ++i)
+  for (long i = 0; i < distances.n_cols; ++i)
   {
     // Map columns to the correct place.  The ternary operator does not work
     // here...
@@ -48,16 +48,16 @@ void Unmap(const arma::Mat<size_t>& neighbors,
       distancesOut.col(queryMap[i]) = distances.col(i);
 
     // Map indices of neighbors.
-    for (size_t j = 0; j < distances.n_rows; ++j)
+    for (long j = 0; j < distances.n_rows; ++j)
       neighborsOut(j, queryMap[i]) = referenceMap[neighbors(j, i)];
   }
 }
 
 // Useful in the single-tree setting.
-void Unmap(const arma::Mat<size_t>& neighbors,
+void Unmap(const arma::Mat<long>& neighbors,
            const arma::mat& distances,
-           const std::vector<size_t>& referenceMap,
-           arma::Mat<size_t>& neighborsOut,
+           const std::vector<long>& referenceMap,
+           arma::Mat<long>& neighborsOut,
            arma::mat& distancesOut,
            const bool squareRoot)
 {
@@ -71,7 +71,7 @@ void Unmap(const arma::Mat<size_t>& neighbors,
     distancesOut = distances;
 
   // Map neighbors back to original locations.
-  for (size_t j = 0; j < neighbors.n_elem; ++j)
+  for (long j = 0; j < neighbors.n_elem; ++j)
     neighborsOut[j] = referenceMap[neighbors[j]];
 }
 

@@ -152,7 +152,7 @@ class LARS
                const bool transposeData = true);
 
   //! Access the set of active dimensions.
-  const std::vector<size_t>& ActiveSet() const { return activeSet; }
+  const std::vector<long>& ActiveSet() const { return activeSet; }
 
   //! Access the set of coefficients after each iteration; the solution is the
   //! last element.
@@ -201,7 +201,7 @@ class LARS
   std::vector<double> lambdaPath;
 
   //! Active set of dimensions.
-  std::vector<size_t> activeSet;
+  std::vector<long> activeSet;
 
   //! Active set membership indicator (for each dimension).
   std::vector<bool> isActive;
@@ -209,7 +209,7 @@ class LARS
   // Set of variables that are ignored (if any).
 
   //! Set of ignored variables (for dimensions in span{active set dimensions}).
-  std::vector<size_t> ignoreSet;
+  std::vector<long> ignoreSet;
 
   //! Membership indicator for set of ignored variables.
   std::vector<bool> isIgnored;
@@ -219,21 +219,21 @@ class LARS
    *
    * @param activeVarInd Index of element to remove from active set.
    */
-  void Deactivate(const size_t activeVarInd);
+  void Deactivate(const long activeVarInd);
 
   /**
    * Add dimension varInd to active set.
    *
    * @param varInd Dimension to add to active set.
    */
-  void Activate(const size_t varInd);
+  void Activate(const long varInd);
 
   /**
    * Add dimension varInd to ignores set (never removed).
    *
    * @param varInd Dimension to add to ignores set.
    */
-  void Ignore(const size_t varInd);
+  void Ignore(const long varInd);
 
   // compute "equiangular" direction in output space
   void ComputeYHatDirection(const arma::mat& matX,
@@ -251,7 +251,7 @@ class LARS
                     arma::vec::fixed<2>& rotatedX,
                     arma::mat& G);
 
-  void CholeskyDelete(const size_t colToKill);
+  void CholeskyDelete(const long colToKill);
 };
 
 }; // namespace regression

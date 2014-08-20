@@ -45,19 +45,19 @@ class RandomInitializer
    * @param dictionary Dictionary to initialize.
    */
   static void Initialize(const arma::mat& data,
-                         const size_t atoms,
+                         const long atoms,
                          arma::mat& dictionary)
   {
     // Create random dictionary.
     dictionary.randn(data.n_rows, atoms);
 
     // Normalize each atom.
-    for (size_t j = 0; j < atoms; ++j)
+    for (long j = 0; j < atoms; ++j)
       dictionary.col(j) /= norm(dictionary.col(j), 2);
   }
 };
 
-}; // namespace sparse_coding
-}; // namespace mlpack
+} // namespace sparse_coding
+} // namespace mlpack
 
 #endif

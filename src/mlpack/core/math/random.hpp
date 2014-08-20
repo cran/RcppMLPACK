@@ -56,11 +56,11 @@ namespace math /** Miscellaneous math routines. */ {
 /**
  * Set the random seed used by the random functions (Random() and RandInt()).
  * The seed is casted to a 32-bit integer before being given to the random
- * number generator, but a size_t is taken as a parameter for API consistency.
+ * number generator, but a long is taken as a parameter for API consistency.
  *
  * @param seed Seed for the random number generator.
  */
-inline void RandomSeed(const size_t seed)
+inline void RandomSeed(const long seed)
 {
   randGen.seed((uint32_t) seed);
   srand((unsigned int) seed);

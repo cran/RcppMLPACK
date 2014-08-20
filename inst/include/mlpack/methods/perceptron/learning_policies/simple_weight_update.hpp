@@ -54,9 +54,9 @@ class SimpleWeightUpdate
    */
   void UpdateWeights(const arma::mat& trainData,
                      arma::mat& weightVectors,
-                     const size_t labelIndex,
-                     const size_t vectorIndex,
-                     const size_t rowIndex,
+                     const long labelIndex,
+                     const long vectorIndex,
+                     const long rowIndex,
                      const arma::rowvec& D)
   {
     weightVectors.row(rowIndex) = weightVectors.row(rowIndex) - 
@@ -67,7 +67,7 @@ class SimpleWeightUpdate
   }
 };
 
-}; // namespace perceptron
-}; // namespace mlpack
+} // namespace perceptron
+} // namespace mlpack
 
 #endif

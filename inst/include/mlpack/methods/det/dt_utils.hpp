@@ -42,8 +42,8 @@ namespace det {
  */
 void PrintLeafMembership(DTree* dtree,
                          const arma::mat& data,
-                         const arma::Mat<size_t>& labels,
-                         const size_t numClasses,
+                         const arma::Mat<long>& labels,
+                         const long numClasses,
                          const std::string leafClassMembershipFile = "");
 
 /**
@@ -70,10 +70,10 @@ void PrintVariableImportance(const DTree* dtree,
  * @param unprunedTreeOutput Filename to print unpruned tree to (optional).
  */
 DTree* Trainer(arma::mat& dataset,
-               const size_t folds,
+               const long folds,
                const bool useVolumeReg = false,
-               const size_t maxLeafSize = 10,
-               const size_t minLeafSize = 5,
+               const long maxLeafSize = 10,
+               const long minLeafSize = 5,
                const std::string unprunedTreeOutput = "");
 
 }; // namespace det

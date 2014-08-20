@@ -33,25 +33,25 @@ class ValidationRMSETermination
 {
  public:
   ValidationRMSETermination(MatType& V,
-                            size_t num_test_points,
+                            long num_test_points,
                             double tolerance = 1e-5,
-                            size_t maxIterations = 10000,
-                            size_t reverseStepTolerance = 3)
+                            long maxIterations = 10000,
+                            long reverseStepTolerance = 3)
         : tolerance(tolerance),
           maxIterations(maxIterations),
           num_test_points(num_test_points),
           reverseStepTolerance(reverseStepTolerance)
   {
-    size_t n = V.n_rows;
-    size_t m = V.n_cols;
+    long n = V.n_rows;
+    long m = V.n_cols;
 
     test_points.zeros(num_test_points, 3);
 
-    for(size_t i = 0; i < num_test_points; i++)
+    for(long i = 0; i < num_test_points; i++)
     {
       double t_val;
-      size_t t_row;
-      size_t t_col;
+      long t_row;
+      long t_col;
       do
       {
         t_row = rand() % n;
@@ -90,10 +90,10 @@ class ValidationRMSETermination
     {
       rmseOld = rmse;
       rmse = 0;
-      for(size_t i = 0; i < num_test_points; i++)
+      for(long i = 0; i < num_test_points; i++)
       {
-        size_t t_row = test_points(i, 0);
-        size_t t_col = test_points(i, 1);
+        long t_row = test_points(i, 0);
+        long t_col = test_points(i, 1);
         double t_val = test_points(i, 2);
         double temp = (t_val - WH(t_row, t_col));
         temp *= temp;
@@ -141,23 +141,23 @@ class ValidationRMSETermination
   
   const double& Index() { return rmse; }
 
-  const size_t& Iteration() { return iteration; }
+  const long& Iteration() { return iteration; }
   
-  const size_t& MaxIterations() { return maxIterations; }
+  const long& MaxIterations() { return maxIterations; }
 
  private:
   double tolerance;
-  size_t maxIterations;
-  size_t num_test_points;
-  size_t iteration;
+  long maxIterations;
+  long num_test_points;
+  long iteration;
 
   arma::Mat<double> test_points;
 
   double rmseOld;
   double rmse;
 
-  size_t reverseStepTolerance;
-  size_t reverseStepCount;
+  long reverseStepTolerance;
+  long reverseStepCount;
   
   bool isCopy;
   arma::mat W;

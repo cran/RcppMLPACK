@@ -73,7 +73,7 @@ class MahalanobisDistance
    *
    * @param dimensionality Dimesnsionality of the covariance matrix.
    */
-  MahalanobisDistance(const size_t dimensionality) :
+  MahalanobisDistance(const long dimensionality) :
       covariance(arma::eye<arma::mat>(dimensionality, dimensionality)) { }
 
   /**

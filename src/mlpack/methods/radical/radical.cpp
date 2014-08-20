@@ -29,10 +29,10 @@ using namespace mlpack::radical;
 
 // Set the parameters to RADICAL.
 Radical::Radical(const double noiseStdDev,
-                 const size_t replicates,
-                 const size_t angles,
-                 const size_t sweeps,
-                 const size_t m) :
+                 const long replicates,
+                 const long angles,
+                 const long sweeps,
+                 const long m) :
     noiseStdDev(noiseStdDev),
     replicates(replicates),
     angles(angles),
@@ -82,7 +82,7 @@ double Radical::DoRadical2D(const mat& matX)
 
   vec values(angles);
 
-  for (size_t i = 0; i < angles; i++)
+  for (long i = 0; i < angles; i++)
   {
     const double theta = (i / (double) angles) * M_PI / 2.0;
     const double cosTheta = cos(theta);
@@ -121,8 +121,8 @@ void Radical::DoRadical(const mat& matXT, mat& matY, mat& matW)
   if (m < 1)
     m = floor(sqrt((double) matX.n_rows));
 
-  const size_t nDims = matX.n_cols;
-  const size_t nPoints = matX.n_rows;
+  const long nDims = matX.n_cols;
+  const long nPoints = matX.n_rows;
 
 
   mat matXWhitened;
@@ -144,13 +144,13 @@ void Radical::DoRadical(const mat& matXT, mat& matY, mat& matW)
 
   mat matJ = eye(nDims, nDims);
 
-  for (size_t sweepNum = 0; sweepNum < sweeps; sweepNum++)
+  for (long sweepNum = 0; sweepNum < sweeps; sweepNum++)
   {
     Rcpp::Rcout << "RADICAL: sweep " << sweepNum << "." << std::endl;
 
-    for (size_t i = 0; i < nDims - 1; i++)
+    for (long i = 0; i < nDims - 1; i++)
     {
-      for (size_t j = i + 1; j < nDims; j++)
+      for (long j = i + 1; j < nDims; j++)
       {
         Rcpp::Rcout << "RADICAL 2D on dimensions " << i << " and " << j << "."
             << std::endl;

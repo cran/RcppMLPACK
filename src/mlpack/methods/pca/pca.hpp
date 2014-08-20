@@ -83,12 +83,12 @@ class PCA
    * @param newDimension New dimension of the data.
    * @return Amount of the variance of the data retained (between 0 and 1).
    */
-  double Apply(arma::mat& data, const size_t newDimension) const;
+  double Apply(arma::mat& data, const long newDimension) const;
 
-  //! This overload is here to make sure int gets casted right to size_t.
+  //! This overload is here to make sure int gets casted right to long.
   inline double Apply(arma::mat& data, const int newDimension) const
   {
-    return Apply(data, size_t(newDimension));
+    return Apply(data, long(newDimension));
   }
 
   /**
@@ -125,7 +125,7 @@ class PCA
 
 }; // class PCA
 
-}; // namespace pca
-}; // namespace mlpack
+} // namespace pca
+} // namespace mlpack
 
 #endif

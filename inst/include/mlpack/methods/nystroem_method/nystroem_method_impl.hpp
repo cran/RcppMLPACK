@@ -33,7 +33,7 @@ template<typename KernelType, typename PointSelectionPolicy>
 NystroemMethod<KernelType, PointSelectionPolicy>::NystroemMethod(
     const arma::mat& data,
     KernelType& kernel,
-    const size_t rank) :
+    const long rank) :
     data(data),
     kernel(kernel),
     rank(rank)
@@ -46,15 +46,15 @@ void NystroemMethod<KernelType, PointSelectionPolicy>::GetKernelMatrix(
     arma::mat& semiKernel)
 {
   // Assemble mini-kernel matrix.
-  for (size_t i = 0; i < rank; ++i)
-    for (size_t j = 0; j < rank; ++j)
+  for (long i = 0; i < rank; ++i)
+    for (long j = 0; j < rank; ++j)
       miniKernel(i, j) = kernel.Evaluate(selectedData->col(i),
                                          selectedData->col(j));
 
   // Construct semi-kernel matrix with interactions between selected data and
   // all points.
-  for (size_t i = 0; i < data.n_cols; ++i)
-    for (size_t j = 0; j < rank; ++j)
+  for (long i = 0; i < data.n_cols; ++i)
+    for (long j = 0; j < rank; ++j)
       semiKernel(i, j) = kernel.Evaluate(data.col(i), 
                                          selectedData->col(j));
   // Clean the memory.
@@ -63,20 +63,20 @@ void NystroemMethod<KernelType, PointSelectionPolicy>::GetKernelMatrix(
 
 template<typename KernelType, typename PointSelectionPolicy>
 void NystroemMethod<KernelType, PointSelectionPolicy>::GetKernelMatrix(
-    const arma::Col<size_t>& selectedPoints,
+    const arma::Col<long>& selectedPoints,
     arma::mat& miniKernel,
     arma::mat& semiKernel)
 {
   // Assemble mini-kernel matrix.
-  for (size_t i = 0; i < rank; ++i)
-    for (size_t j = 0; j < rank; ++j)
+  for (long i = 0; i < rank; ++i)
+    for (long j = 0; j < rank; ++j)
       miniKernel(i, j) = kernel.Evaluate(data.col(selectedPoints(i)),
                                          data.col(selectedPoints(j)));
 
   // Construct semi-kernel matrix with interactions between selected points and
   // all points.
-  for (size_t i = 0; i < data.n_cols; ++i)
-    for (size_t j = 0; j < rank; ++j)
+  for (long i = 0; i < data.n_cols; ++i)
+    for (long j = 0; j < rank; ++j)
       semiKernel(i, j) = kernel.Evaluate(data.col(i),
                                          data.col(selectedPoints(j)));
 }
@@ -100,7 +100,7 @@ void NystroemMethod<KernelType, PointSelectionPolicy>::Apply(arma::mat& output)
   output = semiKernel * U * normalization * V;
 }
 
-}; // namespace kernel
-}; // namespace mlpack
+} // namespace kernel
+} // namespace mlpack
 
 #endif

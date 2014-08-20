@@ -19,7 +19,7 @@
 
     namespace junk
       {
-      struct arma_64_elem_size_test
+      struct arma_64_elem_longest
         {
         arma_static_check( (sizeof(u64) != 8), ERROR___TYPE_U64_HAS_UNSUPPORTED_SIZE );
         arma_static_check( (sizeof(s64) != 8), ERROR___TYPE_S64_HAS_UNSUPPORTED_SIZE );

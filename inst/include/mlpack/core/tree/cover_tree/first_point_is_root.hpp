@@ -43,7 +43,7 @@ class FirstPointIsRoot
    * Return the point to be used as the root point of the cover tree.  This just
    * returns 0.
    */
-  static size_t ChooseRoot(const arma::mat& /* dataset */) { return 0; }
+  static long ChooseRoot(const arma::mat& /* dataset */) { return 0; }
 };
 
 }; // namespace tree

@@ -45,7 +45,7 @@ template<
 >
 Perceptron<LearnPolicy, WeightInitializationPolicy, MatType>::Perceptron(
     const MatType& data,
-    const arma::Row<size_t>& labels,
+    const arma::Row<long>& labels,
     int iterations)
 {
   WeightInitializationPolicy WIP;
@@ -79,12 +79,12 @@ Perceptron<LearnPolicy, WeightInitializationPolicy, MatType>::Perceptron(
 template <typename LearnPolicy, typename WeightInitializationPolicy, typename MatType>
 void Perceptron<LearnPolicy, WeightInitializationPolicy, MatType>::Classify(
     const MatType& test,
-    arma::Row<size_t>& predictedLabels)
+    arma::Row<long>& predictedLabels)
 {
   arma::mat tempLabelMat;
   arma::uword maxIndexRow, maxIndexCol;
 
-  for (size_t i = 0; i < test.n_cols; i++)
+  for (long i = 0; i < test.n_cols; i++)
   {
     tempLabelMat = weightVectors.submat(0, 1, weightVectors.n_rows - 1,
                                         weightVectors.n_cols - 1) * 
@@ -107,7 +107,7 @@ void Perceptron<LearnPolicy, WeightInitializationPolicy, MatType>::Classify(
  */
 template <typename LearnPolicy, typename WeightInitializationPolicy, typename MatType>
 Perceptron<LearnPolicy, WeightInitializationPolicy, MatType>::Perceptron(
-  const Perceptron<>& other, MatType& data, const arma::rowvec& D, const arma::Row<size_t>& labels)
+  const Perceptron<>& other, MatType& data, const arma::rowvec& D, const arma::Row<long>& labels)
 {
   
   classLabels = labels;
@@ -138,9 +138,9 @@ template<
 void Perceptron<LearnPolicy, WeightInitializationPolicy, MatType>::Train(
      const arma::rowvec& D)
 {
-  size_t j, i = 0;
+  long j, i = 0;
   bool converged = false;
-  size_t tempLabel;
+  long tempLabel;
   arma::uword maxIndexRow, maxIndexCol;
   arma::mat tempLabelMat;
 
@@ -177,7 +177,7 @@ void Perceptron<LearnPolicy, WeightInitializationPolicy, MatType>::Train(
   }
 }
 
-}; // namespace perceptron
-}; // namespace mlpack
+} // namespace perceptron
+} // namespace mlpack
 
 #endif

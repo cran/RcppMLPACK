@@ -40,14 +40,14 @@ namespace emst {
 class UnionFind
 {
  private:
-  arma::Col<size_t> parent;
+  arma::Col<long> parent;
   arma::ivec rank;
 
  public:
   //! Construct the object with the given size.
-  UnionFind(const size_t size) : parent(size), rank(size)
+  UnionFind(const long size) : parent(size), rank(size)
   {
-    for (size_t i = 0; i < size; ++i)
+    for (long i = 0; i < size; ++i)
     {
       parent[i] = i;
       rank[i] = 0;
@@ -63,7 +63,7 @@ class UnionFind
    * @param x the component to be found
    * @return The index of the component containing x
    */
-  size_t Find(const size_t x)
+  long Find(const long x)
   {
     if (parent[x] == x)
     {
@@ -83,10 +83,10 @@ class UnionFind
    * @param x one component
    * @param y the other component
    */
-  void Union(const size_t x, const size_t y)
+  void Union(const long x, const long y)
   {
-    const size_t xRoot = Find(x);
-    const size_t yRoot = Find(y);
+    const long xRoot = Find(x);
+    const long yRoot = Find(y);
 
     if (xRoot == yRoot)
     {

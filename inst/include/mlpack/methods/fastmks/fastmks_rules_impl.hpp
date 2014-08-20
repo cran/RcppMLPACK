@@ -33,7 +33,7 @@ namespace fastmks
 template<typename KernelType, typename TreeType>
 FastMKSRules<KernelType, TreeType>::FastMKSRules(const arma::mat& referenceSet,
         const arma::mat& querySet,
-        arma::Mat<size_t>& indices,
+        arma::Mat<long>& indices,
         arma::mat& products,
         KernelType& kernel) :
     referenceSet(referenceSet),
@@ -49,12 +49,12 @@ FastMKSRules<KernelType, TreeType>::FastMKSRules(const arma::mat& referenceSet,
 {
     // Precompute each self-kernel.
     queryKernels.set_size(querySet.n_cols);
-    for (size_t i = 0; i < querySet.n_cols; ++i)
+    for (long i = 0; i < querySet.n_cols; ++i)
         queryKernels[i] = sqrt(kernel.Evaluate(querySet.unsafe_col(i),
                                                querySet.unsafe_col(i)));
 
     referenceKernels.set_size(referenceSet.n_cols);
-    for (size_t i = 0; i < referenceSet.n_cols; ++i)
+    for (long i = 0; i < referenceSet.n_cols; ++i)
         referenceKernels[i] = sqrt(kernel.Evaluate(referenceSet.unsafe_col(i),
                                    referenceSet.unsafe_col(i)));
 
@@ -67,8 +67,8 @@ FastMKSRules<KernelType, TreeType>::FastMKSRules(const arma::mat& referenceSet,
 template<typename KernelType, typename TreeType>
 inline force_inline
 double FastMKSRules<KernelType, TreeType>::BaseCase(
-    const size_t queryIndex,
-    const size_t referenceIndex)
+    const long queryIndex,
+    const long referenceIndex)
 {
     // Score() always happens before BaseCase() for a given node combination.  For
     // cover trees, the kernel evaluation between the two centroid points already
@@ -103,7 +103,7 @@ double FastMKSRules<KernelType, TreeType>::BaseCase(
     if (kernelEval < products(products.n_rows - 1, queryIndex))
         return kernelEval;
 
-    size_t insertPosition = 0;
+    long insertPosition = 0;
     for ( ; insertPosition < products.n_rows; ++insertPosition)
         if (kernelEval >= products(insertPosition, queryIndex))
             break;
@@ -114,7 +114,7 @@ double FastMKSRules<KernelType, TreeType>::BaseCase(
 }
 
 template<typename KernelType, typename TreeType>
-double FastMKSRules<KernelType, TreeType>::Score(const size_t queryIndex,
+double FastMKSRules<KernelType, TreeType>::Score(const long queryIndex,
         TreeType& referenceNode)
 {
     // Compare with the current best.
@@ -398,7 +398,7 @@ double FastMKSRules<KernelType, TreeType>::Score(TreeType& queryNode,
 }
 
 template<typename KernelType, typename TreeType>
-double FastMKSRules<KernelType, TreeType>::Rescore(const size_t queryIndex,
+double FastMKSRules<KernelType, TreeType>::Rescore(const long queryIndex,
         TreeType& /*referenceNode*/,
         const double oldScore) const
 {
@@ -444,9 +444,9 @@ const
     const double queryDescendantDistance = queryNode.FurthestDescendantDistance();
 
     // Loop over all points in this node to find the best and worst.
-    for (size_t i = 0; i < queryNode.NumPoints(); ++i)
+    for (long i = 0; i < queryNode.NumPoints(); ++i)
     {
-        const size_t point = queryNode.Point(i);
+        const long point = queryNode.Point(i);
         if (products(products.n_rows - 1, point) < worstPointKernel)
             worstPointKernel = products(products.n_rows - 1, point);
 
@@ -466,7 +466,7 @@ const
     // Loop over all the children in the node.
     double worstChildKernel = DBL_MAX;
 
-    for (size_t i = 0; i < queryNode.NumChildren(); ++i)
+    for (long i = 0; i < queryNode.NumChildren(); ++i)
     {
         if (queryNode.Child(i).Stat().Bound() < worstChildKernel)
             worstChildKernel = queryNode.Child(i).Stat().Bound();
@@ -498,9 +498,9 @@ const
  * @param distance Distance from query point to reference point.
  */
 template<typename KernelType, typename TreeType>
-void FastMKSRules<KernelType, TreeType>::InsertNeighbor(const size_t queryIndex,
-        const size_t pos,
-        const size_t neighbor,
+void FastMKSRules<KernelType, TreeType>::InsertNeighbor(const long queryIndex,
+        const long pos,
+        const long neighbor,
         const double distance)
 {
     // We only memmove() if there is actually a need to shift something.
@@ -512,7 +512,7 @@ void FastMKSRules<KernelType, TreeType>::InsertNeighbor(const size_t queryIndex,
                 sizeof(double) * len);
         memmove(indices.colptr(queryIndex) + (pos + 1),
                 indices.colptr(queryIndex) + pos,
-                sizeof(size_t) * len);
+                sizeof(long) * len);
     }
 
     // Now put the new information in the right index.

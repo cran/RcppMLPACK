@@ -32,11 +32,11 @@ template<typename SortPolicy>
 LSHSearch<SortPolicy>::
 LSHSearch(const arma::mat& referenceSet,
           const arma::mat& querySet,
-          const size_t numProj,
-          const size_t numTables,
+          const long numProj,
+          const long numTables,
           const double hashWidthIn,
-          const size_t secondHashSize,
-          const size_t bucketSize) :
+          const long secondHashSize,
+          const long bucketSize) :
   referenceSet(referenceSet),
   querySet(querySet),
   numProj(numProj),
@@ -48,10 +48,10 @@ LSHSearch(const arma::mat& referenceSet,
   if (hashWidth == 0.0) // The user has not provided any value.
   {
     // Compute a heuristic hash width from the data.
-    for (size_t i = 0; i < 25; i++)
+    for (long i = 0; i < 25; i++)
     {
-      size_t p1 = (size_t) math::RandInt(referenceSet.n_cols);
-      size_t p2 = (size_t) math::RandInt(referenceSet.n_cols);
+      long p1 = (long) math::RandInt(referenceSet.n_cols);
+      long p2 = (long) math::RandInt(referenceSet.n_cols);
 
       hashWidth += std::sqrt(metric.Evaluate(referenceSet.unsafe_col(p1),
                                              referenceSet.unsafe_col(p2)));
@@ -68,11 +68,11 @@ LSHSearch(const arma::mat& referenceSet,
 template<typename SortPolicy>
 LSHSearch<SortPolicy>::
 LSHSearch(const arma::mat& referenceSet,
-          const size_t numProj,
-          const size_t numTables,
+          const long numProj,
+          const long numTables,
           const double hashWidthIn,
-          const size_t secondHashSize,
-          const size_t bucketSize) :
+          const long secondHashSize,
+          const long bucketSize) :
   referenceSet(referenceSet),
   querySet(referenceSet),
   numProj(numProj),
@@ -84,10 +84,10 @@ LSHSearch(const arma::mat& referenceSet,
   if (hashWidth == 0.0) // The user has not provided any value.
   {
     // Compute a heuristic hash width from the data.
-    for (size_t i = 0; i < 25; i++)
+    for (long i = 0; i < 25; i++)
     {
-      size_t p1 = (size_t) math::RandInt(referenceSet.n_cols);
-      size_t p2 = (size_t) math::RandInt(referenceSet.n_cols);
+      long p1 = (long) math::RandInt(referenceSet.n_cols);
+      long p2 = (long) math::RandInt(referenceSet.n_cols);
 
       hashWidth += std::sqrt(metric.Evaluate(referenceSet.unsafe_col(p1),
                                              referenceSet.unsafe_col(p2)));
@@ -103,9 +103,9 @@ LSHSearch(const arma::mat& referenceSet,
 
 template<typename SortPolicy>
 void LSHSearch<SortPolicy>::
-InsertNeighbor(const size_t queryIndex,
-               const size_t pos,
-               const size_t neighbor,
+InsertNeighbor(const long queryIndex,
+               const long pos,
+               const long neighbor,
                const double distance)
 {
   // We only memmove() if there is actually a need to shift something.
@@ -117,7 +117,7 @@ InsertNeighbor(const size_t queryIndex,
         sizeof(double) * len);
     memmove(neighborPtr->colptr(queryIndex) + (pos + 1),
         neighborPtr->colptr(queryIndex) + pos,
-        sizeof(size_t) * len);
+        sizeof(long) * len);
   }
 
   // Now put the new information in the right index.
@@ -128,7 +128,7 @@ InsertNeighbor(const size_t queryIndex,
 template<typename SortPolicy>
 inline force_inline
 double LSHSearch<SortPolicy>::
-BaseCase(const size_t queryIndex, const size_t referenceIndex)
+BaseCase(const long queryIndex, const long referenceIndex)
 {
   // If the datasets are the same, then this search is only using one dataset
   // and we should not return identical points.
@@ -141,12 +141,12 @@ BaseCase(const size_t queryIndex, const size_t referenceIndex)
   // If this distance is better than any of the current candidates, the
   // SortDistance() function will give us the position to insert it into.
   arma::vec queryDist = distancePtr->unsafe_col(queryIndex);
-  arma::Col<size_t> queryIndices = neighborPtr->unsafe_col(queryIndex);
-  size_t insertPosition = SortPolicy::SortDistance(queryDist, queryIndices,
+  arma::Col<long> queryIndices = neighborPtr->unsafe_col(queryIndex);
+  long insertPosition = SortPolicy::SortDistance(queryDist, queryIndices,
       distance);
 
-  // SortDistance() returns (size_t() - 1) if we shouldn't add it.
-  if (insertPosition != (size_t() - 1))
+  // SortDistance() returns (long() - 1) if we shouldn't add it.
+  if (insertPosition != (long() - 1))
     InsertNeighbor(queryIndex, insertPosition, referenceIndex, distance);
 
   return distance;
@@ -154,9 +154,9 @@ BaseCase(const size_t queryIndex, const size_t referenceIndex)
 
 template<typename SortPolicy>
 void LSHSearch<SortPolicy>::
-ReturnIndicesFromTable(const size_t queryIndex,
+ReturnIndicesFromTable(const long queryIndex,
                        arma::uvec& referenceIndices,
-                       size_t numTablesToSearch)
+                       long numTablesToSearch)
 {
   // Decide on the number of tables to look into.
   if (numTablesToSearch == 0) // If no user input is given, search all.
@@ -174,7 +174,7 @@ ReturnIndicesFromTable(const size_t queryIndex,
 
   // Compute the projection of the query in each table.
   arma::mat allProjInTables(numProj, numTablesToSearch);
-  for (size_t i = 0; i < numTablesToSearch; i++)
+  for (long i = 0; i < numTablesToSearch; i++)
   {
     allProjInTables.unsafe_col(i) = projections[i].t() *
         querySet.unsafe_col(queryIndex);
@@ -186,27 +186,27 @@ ReturnIndicesFromTable(const size_t queryIndex,
   // 'secondHashTable' using the 'secondHashWeights'.
   arma::rowvec hashVec = secondHashWeights.t() * arma::floor(allProjInTables);
 
-  for (size_t i = 0; i < hashVec.n_elem; i++)
-    hashVec[i] = (double) ((size_t) hashVec[i] % secondHashSize);
+  for (long i = 0; i < hashVec.n_elem; i++)
+    hashVec[i] = (double) ((long) hashVec[i] % secondHashSize);
 
 
 
   // For all the buckets that the query is hashed into, sequentially
   // collect the indices in those buckets.
-  arma::Col<size_t> refPointsConsidered;
+  arma::Col<long> refPointsConsidered;
   refPointsConsidered.zeros(referenceSet.n_cols);
 
-  for (size_t i = 0; i < hashVec.n_elem; i++) // For all tables.
+  for (long i = 0; i < hashVec.n_elem; i++) // For all tables.
   {
-    size_t hashInd = (size_t) hashVec[i];
+    long hashInd = (long) hashVec[i];
 
     if (bucketContentSize[hashInd] > 0)
     {
       // Pick the indices in the bucket corresponding to 'hashInd'.
-      size_t tableRow = bucketRowInHashTable[hashInd];
+      long tableRow = bucketRowInHashTable[hashInd];
 
 
-      for (size_t j = 0; j < bucketContentSize[hashInd]; j++)
+      for (long j = 0; j < bucketContentSize[hashInd]; j++)
         refPointsConsidered[secondHashTable(tableRow, j)]++;
     }
   }
@@ -217,10 +217,10 @@ ReturnIndicesFromTable(const size_t queryIndex,
 
 template<typename SortPolicy>
 void LSHSearch<SortPolicy>::
-Search(const size_t k,
-       arma::Mat<size_t>& resultingNeighbors,
+Search(const long k,
+       arma::Mat<long>& resultingNeighbors,
        arma::mat& distances,
-       const size_t numTablesToSearch)
+       const long numTablesToSearch)
 {
   neighborPtr = &resultingNeighbors;
   distancePtr = &distances;
@@ -231,11 +231,11 @@ Search(const size_t k,
   distancePtr->fill(SortPolicy::WorstDistance());
   neighborPtr->fill(referenceSet.n_cols);
 
-  size_t avgIndicesReturned = 0;
+  long avgIndicesReturned = 0;
 
 
   // Go through every query point sequentially.
-  for (size_t i = 0; i < querySet.n_cols; i++)
+  for (long i = 0; i < querySet.n_cols; i++)
   {
     // Hash every query into every hash table and eventually into the
     // 'secondHashTable' to obtain the neighbor candidates.
@@ -248,8 +248,8 @@ Search(const size_t k,
 
     // Sequentially go through all the candidates and save the best 'k'
     // candidates.
-    for (size_t j = 0; j < refIndices.n_elem; j++)
-      BaseCase(i, (size_t) refIndices[j]);
+    for (long j = 0; j < refIndices.n_elem; j++)
+      BaseCase(i, (long) refIndices[j]);
   }
 
 
@@ -306,7 +306,7 @@ BuildHash()
   bucketRowInHashTable.fill(secondHashSize);
 
   // Keep track of number of non-empty rows in the 'secondHashTable'.
-  size_t numRowsInTable = 0;
+  long numRowsInTable = 0;
 
   // Step II: The offsets for all projections in all tables.
   // Since the 'offsets' are in [0, hashWidth], we obtain the 'offsets'
@@ -316,7 +316,7 @@ BuildHash()
 
   // Step III: Create each hash table in the first level hash one by one and
   // putting them directly into the 'secondHashTable' for memory efficiency.
-  for (size_t i = 0; i < numTables; i++)
+  for (long i = 0; i < numTables; i++)
   {
     // Step IV: Obtain the 'numProj' projections for each table.
 
@@ -351,17 +351,17 @@ BuildHash()
       * arma::floor(hashMat);
 
     // This gives us the bucket for the corresponding point ID.
-    for (size_t j = 0; j < secondHashVec.n_elem; j++)
-      secondHashVec[j] = (double)((size_t) secondHashVec[j] % secondHashSize);
+    for (long j = 0; j < secondHashVec.n_elem; j++)
+      secondHashVec[j] = (double)((long) secondHashVec[j] % secondHashSize);
 
 
 
     // Insert the point in the corresponding row to its bucket in the
     // 'secondHashTable'.
-    for (size_t j = 0; j < secondHashVec.n_elem; j++)
+    for (long j = 0; j < secondHashVec.n_elem; j++)
     {
       // This is the bucket number.
-      size_t hashInd = (size_t) secondHashVec[j];
+      long hashInd = (long) secondHashVec[j];
       // The point ID is 'j'.
 
       // If this is currently an empty bucket, start a new row keep track of
@@ -392,8 +392,8 @@ BuildHash()
   } // Loop over tables.
 
   // Step VII: Condensing the 'secondHashTable'.
-  size_t maxBucketSize = 0;
-  for (size_t i = 0; i < bucketContentSize.n_elem; i++)
+  long maxBucketSize = 0;
+  for (long i = 0; i < bucketContentSize.n_elem; i++)
     if (bucketContentSize[i] > maxBucketSize)
       maxBucketSize = bucketContentSize[i];
 

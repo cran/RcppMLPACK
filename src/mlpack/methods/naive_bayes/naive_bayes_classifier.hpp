@@ -77,7 +77,7 @@ class NaiveBayesClassifier
    * Example use:
    * @code
    * extern arma::mat training_data, testing_data;
-   * extern arma::Col<size_t> labels;
+   * extern arma::Col<long> labels;
    * NaiveBayesClassifier nbc(training_data, labels, 5);
    * @endcode
    *
@@ -89,8 +89,8 @@ class NaiveBayesClassifier
    *     cases, but will be somewhat slower to calculate.
    */
   NaiveBayesClassifier(const MatType& data,
-                       const arma::Col<size_t>& labels,
-                       const size_t classes,
+                       const arma::Col<long>& labels,
+                       const long classes,
                        const bool incrementalVariance = false);
 
   /**
@@ -99,7 +99,7 @@ class NaiveBayesClassifier
    *
    * @code
    * arma::mat test_data; // each column is a test point
-   * arma::Col<size_t> results;
+   * arma::Col<long> results;
    * ...
    * nbc.Classify(test_data, &results);
    * @endcode
@@ -107,7 +107,7 @@ class NaiveBayesClassifier
    * @param data List of data points.
    * @param results Vector that class predictions will be placed into.
    */
-  void Classify(const MatType& data, arma::Col<size_t>& results);
+  void Classify(const MatType& data, arma::Col<long>& results);
 
   //! Get the sample means for each class.
   const MatType& Means() const { return means; }

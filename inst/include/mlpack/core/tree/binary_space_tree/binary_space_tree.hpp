@@ -67,18 +67,18 @@ class BinarySpaceTree
   BinarySpaceTree* parent;
   //! The index of the first point in the dataset contained in this node (and
   //! its children).
-  size_t begin;
+  long begin;
   //! The number of points of the dataset contained in this node (and its
   //! children).
-  size_t count;
+  long count;
   //! The max leaf size.
-  size_t maxLeafSize;
+  long maxLeafSize;
   //! The bound object for this node.
   BoundType bound;
   //! Any extra data contained in the node.
   StatisticType stat;
   //! The dimension this node split on if it is a parent.
-  size_t splitDimension;
+  long splitDimension;
   //! The distance from the centroid of this node to the centroid of the parent.
   double parentDistance;
   //! The worst possible distance to the furthest descendant, cached to speed
@@ -109,7 +109,7 @@ class BinarySpaceTree
    * @param data Dataset to create tree from.  This will be modified!
    * @param maxLeafSize Size of each leaf in the tree.
    */
-  BinarySpaceTree(MatType& data, const size_t maxLeafSize = 20);
+  BinarySpaceTree(MatType& data, const long maxLeafSize = 20);
 
   /**
    * Construct this as the root node of a binary space tree using the given
@@ -122,8 +122,8 @@ class BinarySpaceTree
    * @param maxLeafSize Size of each leaf in the tree.
    */
   BinarySpaceTree(MatType& data,
-                  std::vector<size_t>& oldFromNew,
-                  const size_t maxLeafSize = 20);
+                  std::vector<long>& oldFromNew,
+                  const long maxLeafSize = 20);
 
   /**
    * Construct this as the root node of a binary space tree using the given
@@ -139,9 +139,9 @@ class BinarySpaceTree
    * @param maxLeafSize Size of each leaf in the tree.
    */
   BinarySpaceTree(MatType& data,
-                  std::vector<size_t>& oldFromNew,
-                  std::vector<size_t>& newFromOld,
-                  const size_t maxLeafSize = 20);
+                  std::vector<long>& oldFromNew,
+                  std::vector<long>& newFromOld,
+                  const long maxLeafSize = 20);
 
   /**
    * Construct this node on a subset of the given matrix, starting at column
@@ -155,10 +155,10 @@ class BinarySpaceTree
    * @param maxLeafSize Size of each leaf in the tree.
    */
   BinarySpaceTree(MatType& data,
-                  const size_t begin,
-                  const size_t count,
+                  const long begin,
+                  const long count,
                   BinarySpaceTree* parent = NULL,
-                  const size_t maxLeafSize = 20);
+                  const long maxLeafSize = 20);
 
   /**
    * Construct this node on a subset of the given matrix, starting at column
@@ -179,11 +179,11 @@ class BinarySpaceTree
    * @param maxLeafSize Size of each leaf in the tree.
    */
   BinarySpaceTree(MatType& data,
-                  const size_t begin,
-                  const size_t count,
-                  std::vector<size_t>& oldFromNew,
+                  const long begin,
+                  const long count,
+                  std::vector<long>& oldFromNew,
                   BinarySpaceTree* parent = NULL,
-                  const size_t maxLeafSize = 20);
+                  const long maxLeafSize = 20);
 
   /**
    * Construct this node on a subset of the given matrix, starting at column
@@ -207,12 +207,12 @@ class BinarySpaceTree
    * @param maxLeafSize Size of each leaf in the tree.
    */
   BinarySpaceTree(MatType& data,
-                  const size_t begin,
-                  const size_t count,
-                  std::vector<size_t>& oldFromNew,
-                  std::vector<size_t>& newFromOld,
+                  const long begin,
+                  const long count,
+                  std::vector<long>& oldFromNew,
+                  std::vector<long>& newFromOld,
                   BinarySpaceTree* parent = NULL,
-                  const size_t maxLeafSize = 20);
+                  const long maxLeafSize = 20);
 
   /**
    * Create a binary space tree by copying the other tree.  Be careful!  This
@@ -240,8 +240,8 @@ class BinarySpaceTree
    * @param count The count() of the node to find.
    * @return The found node, or NULL if not found.
    */
-  const BinarySpaceTree* FindByBeginCount(size_t begin,
-                                          size_t count) const;
+  const BinarySpaceTree* FindByBeginCount(long begin,
+                                          long count) const;
 
   /**
    * Find a node in this tree by its begin and count.
@@ -254,7 +254,7 @@ class BinarySpaceTree
    * @param count The count() of the node to find.
    * @return The found node, or NULL if not found.
    */
-  BinarySpaceTree* FindByBeginCount(size_t begin, size_t count);
+  BinarySpaceTree* FindByBeginCount(long begin, long count);
 
   //! Return the bound object for this node.
   const BoundType& Bound() const { return bound; }
@@ -270,12 +270,12 @@ class BinarySpaceTree
   bool IsLeaf() const;
 
   //! Return the max leaf size.
-  size_t MaxLeafSize() const { return maxLeafSize; }
+  long MaxLeafSize() const { return maxLeafSize; }
   //! Modify the max leaf size.
-  size_t& MaxLeafSize() { return maxLeafSize; }
+  long& MaxLeafSize() { return maxLeafSize; }
 
   //! Fills the tree to the specified level.
-  size_t ExtendTree(const size_t level);
+  long ExtendTree(const long level);
 
   //! Gets the left child of this node.
   BinarySpaceTree* Left() const { return left; }
@@ -293,9 +293,9 @@ class BinarySpaceTree
   BinarySpaceTree*& Parent() { return parent; }
 
   //! Get the split dimension for this node.
-  size_t SplitDimension() const { return splitDimension; }
+  long SplitDimension() const { return splitDimension; }
   //! Modify the split dimension for this node.
-  size_t& SplitDimension() { return splitDimension; }
+  long& SplitDimension() { return splitDimension; }
 
   //! Get the dataset which the tree is built on.
   const MatType& Dataset() const { return dataset; }
@@ -309,7 +309,7 @@ class BinarySpaceTree
   void Centroid(arma::vec& centroid) { bound.Centroid(centroid); }
 
   //! Return the number of children in this node.
-  size_t NumChildren() const;
+  long NumChildren() const;
 
   /**
    * Return the furthest distance to a point held in this node.  If this is not
@@ -342,17 +342,17 @@ class BinarySpaceTree
    *
    * @param child Index of child to return.
    */
-  BinarySpaceTree& Child(const size_t child) const;
+  BinarySpaceTree& Child(const long child) const;
 
   //! Return the number of points in this node (0 if not a leaf).
-  size_t NumPoints() const;
+  long NumPoints() const;
 
   /**
    * Return the number of descendants of this node.  For a non-leaf in a binary
    * space tree, this is the number of points at the descendant leaves.  For a
    * leaf, this is the number of points in the leaf.
    */
-  size_t NumDescendants() const;
+  long NumDescendants() const;
 
   /**
    * Return the index (with reference to the dataset) of a particular descendant
@@ -361,7 +361,7 @@ class BinarySpaceTree
    *
    * @param index Index of the descendant.
    */
-  size_t Descendant(const size_t index) const;
+  long Descendant(const long index) const;
 
   /**
    * Return the index (with reference to the dataset) of a particular point in
@@ -371,7 +371,7 @@ class BinarySpaceTree
    *
    * @param index Index of point for which a dataset index is wanted.
    */
-  size_t Point(const size_t index) const;
+  long Point(const long index) const;
 
   //! Return the minimum distance to another node.
   double MinDistance(const BinarySpaceTree* other) const
@@ -421,33 +421,33 @@ class BinarySpaceTree
   /**
   * Returns the dimension this parent's children are split on.
   */
-  size_t GetSplitDimension() const;
+  long GetSplitDimension() const;
 
   /**
    * Obtains the number of nodes in the tree, starting with this.
    */
-  size_t TreeSize() const;
+  long TreeSize() const;
 
   /**
    * Obtains the number of levels below this node in the tree, starting with
    * this.
    */
-  size_t TreeDepth() const;
+  long TreeDepth() const;
 
   //! Return the index of the beginning point of this subset.
-  size_t Begin() const { return begin; }
+  long Begin() const { return begin; }
   //! Modify the index of the beginning point of this subset.
-  size_t& Begin() { return begin; }
+  long& Begin() { return begin; }
 
   /**
    * Gets the index one beyond the last index in the subset.
    */
-  size_t End() const;
+  long End() const;
 
   //! Return the number of points in this subset.
-  size_t Count() const { return count; }
+  long Count() const { return count; }
   //! Modify the number of points in this subset.
-  size_t& Count() { return count; }
+  long& Count() { return count; }
 
   //! Returns false: this tree type does not have self children.
   static bool HasSelfChildren() { return false; }
@@ -457,8 +457,8 @@ class BinarySpaceTree
    * Private copy constructor, available only to fill (pad) the tree to a
    * specified level.
    */
-  BinarySpaceTree(const size_t begin,
-                  const size_t count,
+  BinarySpaceTree(const long begin,
+                  const long count,
                   BoundType bound,
                   StatisticType stat,
                   const int maxLeafSize = 20) :
@@ -489,7 +489,7 @@ class BinarySpaceTree
    * @param data Dataset which we are using.
    * @param oldFromNew Vector holding permuted indices.
    */
-  void SplitNode(MatType& data, std::vector<size_t>& oldFromNew);
+  void SplitNode(MatType& data, std::vector<long>& oldFromNew);
 
  public:
   /**

@@ -88,7 +88,7 @@ DualTreeTraverser<RuleType>::Traverse(
     // results are separate and independent.  I don't think this is true in
     // every case, and we may have to modify this section to consider scores in
     // the future.
-    for (size_t i = 1; i < queryNode.NumChildren(); ++i)
+    for (long i = 1; i < queryNode.NumChildren(); ++i)
     {
       // We need a copy of the map for this child.
       std::map<int, std::vector<DualCoverTreeMapEntry> > childMap;
@@ -109,7 +109,7 @@ DualTreeTraverser<RuleType>::Traverse(
   std::vector<DualCoverTreeMapEntry>& pointVector =
       (*referenceMap.begin()).second;
 
-  for (size_t i = 0; i < pointVector.size(); ++i)
+  for (long i = 0; i < pointVector.size(); ++i)
   {
     // Get a reference to the frame.
     const DualCoverTreeMapEntry& frame = pointVector[i];
@@ -168,7 +168,7 @@ DualTreeTraverser<RuleType>::PruneMap(
     std::vector<DualCoverTreeMapEntry>& newScaleVector = childMap[thisScale];
 
     // Loop over each entry in the vector.
-    for (size_t j = 0; j < scaleVector.size(); ++j)
+    for (long j = 0; j < scaleVector.size(); ++j)
     {
       const DualCoverTreeMapEntry& frame = scaleVector[j];
 
@@ -222,7 +222,7 @@ DualTreeTraverser<RuleType>::PruneMap(
     std::vector<DualCoverTreeMapEntry>& newScaleVector = childMap[thisScale];
 
     // Loop over each entry in the vector.
-    for (size_t j = 0; j < scaleVector.size(); ++j)
+    for (long j = 0; j < scaleVector.size(); ++j)
     {
       const DualCoverTreeMapEntry& frame = scaleVector[j];
 
@@ -291,7 +291,7 @@ DualTreeTraverser<RuleType>::ReferenceRecursion(
     std::sort(scaleVector.begin(), scaleVector.end());
 
     // Now loop over each element.
-    for (size_t i = 0; i < scaleVector.size(); ++i)
+    for (long i = 0; i < scaleVector.size(); ++i)
     {
       // Get a reference to the current element.
       const DualCoverTreeMapEntry& frame = scaleVector.at(i);
@@ -313,7 +313,7 @@ DualTreeTraverser<RuleType>::ReferenceRecursion(
       // If it is not pruned, we must evaluate the base case.
 
       // Add the children.
-      for (size_t j = 0; j < refNode->NumChildren(); ++j)
+      for (long j = 0; j < refNode->NumChildren(); ++j)
       {
         rule.TraversalInfo() = frame.traversalInfo;
         double childScore = rule.Score(queryNode, refNode->Child(j));

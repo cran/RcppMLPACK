@@ -90,18 +90,18 @@ class ExampleTree
               MetricType& metric);
 
   //! Return the number of children of this node.
-  size_t NumChildren() const;
+  long NumChildren() const;
 
   //! Return a particular child of this node.
-  const ExampleTree& Child(const size_t i) const;
+  const ExampleTree& Child(const long i) const;
   //! Modify a particular child of this node.
-  ExampleTree& Child(const size_t i);
+  ExampleTree& Child(const long i);
 
   //! Return the parent node (NULL if this is the root of the tree).
   ExampleTree* Parent() const;
 
   //! Return the number of points held in this node.
-  size_t NumPoints() const;
+  long NumPoints() const;
 
   /**
    * Return the index of a particular point of this node.  mlpack trees do not,
@@ -113,7 +113,7 @@ class ExampleTree
    * arma::vec thirdPoint = dataset.col(treeNode.Point(2));
    * @endcode
    */
-  size_t Point(const size_t i) const;
+  long Point(const long i) const;
 
   /**
    * Get the number of descendant points.  This is the number of unique points
@@ -122,7 +122,7 @@ class ExampleTree
    * at run-time.  This may be harder to calculate for trees that may hold
    * points in multiple nodes (like cover trees and spill trees, for instance).
    */
-  size_t NumDescendants() const;
+  long NumDescendants() const;
 
   /**
    * Get the index of a particular descendant point.  The ordering of the
@@ -130,7 +130,7 @@ class ExampleTree
    * Descendant(NumDescendants() - 1) will return the indices of every
    * unique descendant point of the node.
    */
-  size_t Descendant(const size_t i) const;
+  long Descendant(const long i) const;
 
   //! Get the statistic for this node.
   const StatisticType& Stat() const;

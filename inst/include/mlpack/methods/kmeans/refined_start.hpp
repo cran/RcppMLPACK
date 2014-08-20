@@ -52,7 +52,7 @@ class RefinedStart
    * number of samplings to perform and the percentage of the dataset to use in
    * each sampling.
    */
-  RefinedStart(const size_t samplings = 100,
+  RefinedStart(const long samplings = 100,
                const double percentage = 0.02) :
       samplings(samplings), percentage(percentage) { }
 
@@ -68,13 +68,13 @@ class RefinedStart
    */
   template<typename MatType>
   void Cluster(const MatType& data,
-               const size_t clusters,
-               arma::Col<size_t>& assignments) const;
+               const long clusters,
+               arma::Col<long>& assignments) const;
 
   //! Get the number of samplings that will be performed.
-  size_t Samplings() const { return samplings; }
+  long Samplings() const { return samplings; }
   //! Modify the number of samplings that will be performed.
-  size_t& Samplings() { return samplings; }
+  long& Samplings() { return samplings; }
 
   //! Get the percentage of the data used by each subsampling.
   double Percentage() const { return percentage; }
@@ -83,7 +83,7 @@ class RefinedStart
 
  private:
   //! The number of samplings to perform.
-  size_t samplings;
+  long samplings;
   //! The percentage of the data to use for each subsampling.
   double percentage;
 };

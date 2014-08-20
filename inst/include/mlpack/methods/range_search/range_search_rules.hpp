@@ -46,7 +46,7 @@ class RangeSearchRules
   RangeSearchRules(const arma::mat& referenceSet,
                    const arma::mat& querySet,
                    const math::Range& range,
-                   std::vector<std::vector<size_t> >& neighbors,
+                   std::vector<std::vector<long> >& neighbors,
                    std::vector<std::vector<double> >& distances,
                    MetricType& metric);
 
@@ -56,7 +56,7 @@ class RangeSearchRules
    * @param queryIndex Index of query point.
    * @param referenceIndex Index of reference point.
    */
-  double BaseCase(const size_t queryIndex, const size_t referenceIndex);
+  double BaseCase(const long queryIndex, const long referenceIndex);
 
   /**
    * Get the score for recursion order.  A low score indicates priority for
@@ -66,7 +66,7 @@ class RangeSearchRules
    * @param queryIndex Index of query point.
    * @param referenceNode Candidate node to be recursed into.
    */
-  double Score(const size_t queryIndex, TreeType& referenceNode);
+  double Score(const long queryIndex, TreeType& referenceNode);
 
   /**
    * Re-evaluate the score for recursion order.  A low score indicates priority
@@ -79,7 +79,7 @@ class RangeSearchRules
    * @param referenceNode Candidate node to be recursed into.
    * @param oldScore Old score produced by Score() (or Rescore()).
    */
-  double Rescore(const size_t queryIndex,
+  double Rescore(const long queryIndex,
                  TreeType& referenceNode,
                  const double oldScore) const;
 
@@ -124,7 +124,7 @@ class RangeSearchRules
   const math::Range& range;
 
   //! The vector the resultant neighbor indices should be stored in.
-  std::vector<std::vector<size_t> >& neighbors;
+  std::vector<std::vector<long> >& neighbors;
 
   //! The vector the resultant neighbor distances should be stored in.
   std::vector<std::vector<double> >& distances;
@@ -133,21 +133,21 @@ class RangeSearchRules
   MetricType& metric;
 
   //! The last query index.
-  size_t lastQueryIndex;
+  long lastQueryIndex;
   //! The last reference index.
-  size_t lastReferenceIndex;
+  long lastReferenceIndex;
 
   //! Add all the points in the given node to the results for the given query
   //! point.  If the base case has already been calculated, we make sure to not
   //! add that to the results twice.
-  void AddResult(const size_t queryIndex,
+  void AddResult(const long queryIndex,
                  TreeType& referenceNode);
 
   TraversalInfoType traversalInfo;
 };
 
-}; // namespace range
-}; // namespace mlpack
+} // namespace range
+} // namespace mlpack
 
 // Include implementation.
 #include "range_search_rules_impl.hpp"

@@ -99,7 +99,7 @@ class LocalCoordinateCoding
    * @param lambda Regularization parameter for weighted l1-norm penalty.
    */
   LocalCoordinateCoding(const arma::mat& data,
-                        const size_t atoms,
+                        const long atoms,
                         const double lambda);
 
   /**
@@ -110,7 +110,7 @@ class LocalCoordinateCoding
    *     function changes by a value lower than this tolerance, the optimization
    *     terminates.
    */
-  void Encode(const size_t maxIterations = 0,
+  void Encode(const long maxIterations = 0,
               const double objTolerance = 0.01);
 
   /**
@@ -150,7 +150,7 @@ class LocalCoordinateCoding
 
  private:
   //! Number of atoms in dictionary.
-  size_t atoms;
+  long atoms;
 
   //! Data matrix (columns are points).
   const arma::mat& data;

@@ -85,7 +85,7 @@ class SphericalKernel
         break;
     }
   }
-  double Normalizer(size_t dimension)
+  double Normalizer(long dimension)
   {
     return pow(bandwidth, (double) dimension) * pow(M_PI, dimension / 2.0) /
         boost::math::tgamma(dimension / 2.0 + 1.0);

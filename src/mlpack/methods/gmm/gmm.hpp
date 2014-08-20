@@ -90,9 +90,9 @@ class GMM
 {
  private:
   //! The number of Gaussians in the model.
-  size_t gaussians;
+  long gaussians;
   //! The dimensionality of the model.
-  size_t dimensionality;
+  long dimensionality;
   //! Vector of means; one for each Gaussian.
   std::vector<arma::vec> means;
   //! Vector of covariances; one for each Gaussian.
@@ -124,7 +124,7 @@ class GMM
    * @param gaussians Number of Gaussians in this GMM.
    * @param dimensionality Dimensionality of each Gaussian.
    */
-  GMM(const size_t gaussians, const size_t dimensionality);
+  GMM(const long gaussians, const long dimensionality);
 
   /**
    * Create a GMM with the given number of Gaussians, each of which have the
@@ -136,8 +136,8 @@ class GMM
    * @param dimensionality Dimensionality of each Gaussian.
    * @param fitter Initialized fitting mechanism.
    */
-  GMM(const size_t gaussians,
-      const size_t dimensionality,
+  GMM(const long gaussians,
+      const long dimensionality,
       FittingType& fitter);
 
   /**
@@ -218,16 +218,16 @@ class GMM
   void Save(const std::string& filename) const;
 
   //! Return the number of gaussians in the model.
-  size_t Gaussians() const { return gaussians; }
+  long Gaussians() const { return gaussians; }
   //! Modify the number of gaussians in the model.  Careful!  You will have to
   //! resize the means, covariances, and weights yourself.
-  size_t& Gaussians() { return gaussians; }
+  long& Gaussians() { return gaussians; }
 
   //! Return the dimensionality of the model.
-  size_t Dimensionality() const { return dimensionality; }
+  long Dimensionality() const { return dimensionality; }
   //! Modify the dimensionality of the model.  Careful!  You will have to update
   //! each mean and covariance matrix yourself.
-  size_t& Dimensionality() { return dimensionality; }
+  long& Dimensionality() { return dimensionality; }
 
   //! Return a const reference to the vector of means (mu).
   const std::vector<arma::vec>& Means() const { return means; }
@@ -265,7 +265,7 @@ class GMM
    * @param component Index of the component of the GMM to be considered.
    */
   double Probability(const arma::vec& observation,
-                     const size_t component) const;
+                     const long component) const;
 
   /**
    * Return a randomly generated observation according to the probability
@@ -298,7 +298,7 @@ class GMM
    * @return The log-likelihood of the best fit.
    */
   double Estimate(const arma::mat& observations,
-                  const size_t trials = 1,
+                  const long trials = 1,
                   const bool useExistingModel = false);
 
   /**
@@ -327,7 +327,7 @@ class GMM
    */
   double Estimate(const arma::mat& observations,
                   const arma::vec& probabilities,
-                  const size_t trials = 1,
+                  const long trials = 1,
                   const bool useExistingModel = false);
 
   /**
@@ -347,7 +347,7 @@ class GMM
    * @param labels Object which will be filled with labels.
    */
   void Classify(const arma::mat& observations,
-                arma::Col<size_t>& labels) const;
+                arma::Col<long>& labels) const;
 
   /**
    * Returns a string representation of this object.

@@ -48,19 +48,19 @@ class CoverTree<MetricType, RootPointPolicy, StatisticType>::SingleTreeTraverser
    *      the query point.
    * @param referenceNode The tree node to be traversed.
    */
-  void Traverse(const size_t queryIndex, CoverTree& referenceNode);
+  void Traverse(const long queryIndex, CoverTree& referenceNode);
 
   //! Get the number of prunes so far.
-  size_t NumPrunes() const { return numPrunes; }
+  long NumPrunes() const { return numPrunes; }
   //! Set the number of prunes (good for a reset to 0).
-  size_t& NumPrunes() { return numPrunes; }
+  long& NumPrunes() { return numPrunes; }
 
  private:
   //! Reference to the rules with which the tree will be traversed.
   RuleType& rule;
 
   //! The number of nodes which have been pruned during traversal.
-  size_t numPrunes;
+  long numPrunes;
 };
 
 }; // namespace tree

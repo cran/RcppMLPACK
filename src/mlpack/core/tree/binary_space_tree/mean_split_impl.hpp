@@ -31,16 +31,16 @@ namespace tree {
 template<typename BoundType, typename MatType>
 bool MeanSplit<BoundType, MatType>::SplitNode(const BoundType& bound,
                                               MatType& data,
-                                              const size_t begin,
-                                              const size_t count,
-                                              size_t& splitDimension,
-                                              size_t& splitCol)
+                                              const long begin,
+                                              const long count,
+                                              long& splitDimension,
+                                              long& splitCol)
 {
   splitDimension = data.n_rows; // Indicate invalid.
   double maxWidth = -1;
 
   // Find the split dimension.
-  for (size_t d = 0; d < data.n_rows; d++)
+  for (long d = 0; d < data.n_rows; d++)
   {
     double width = bound[d].Width();
 
@@ -69,17 +69,17 @@ bool MeanSplit<BoundType, MatType>::SplitNode(const BoundType& bound,
 template<typename BoundType, typename MatType>
 bool MeanSplit<BoundType, MatType>::SplitNode(const BoundType& bound,
                                               MatType& data,
-                                              const size_t begin,
-                                              const size_t count,
-                                              size_t& splitDimension,
-                                              size_t& splitCol,
-                                              std::vector<size_t>& oldFromNew)
+                                              const long begin,
+                                              const long count,
+                                              long& splitDimension,
+                                              long& splitCol,
+                                              std::vector<long>& oldFromNew)
 {
   splitDimension = data.n_rows; // Indicate invalid.
   double maxWidth = -1;
 
   // Find the split dimension.
-  for (size_t d = 0; d < data.n_rows; d++)
+  for (long d = 0; d < data.n_rows; d++)
   {
     double width = bound[d].Width();
 
@@ -107,19 +107,19 @@ bool MeanSplit<BoundType, MatType>::SplitNode(const BoundType& bound,
 }
 
 template<typename BoundType, typename MatType>
-size_t MeanSplit<BoundType, MatType>::
+long MeanSplit<BoundType, MatType>::
     PerformSplit(MatType& data,
-                 const size_t begin,
-                 const size_t count,
-                 const size_t splitDimension,
+                 const long begin,
+                 const long count,
+                 const long splitDimension,
                  const double splitVal)
 {
   // This method modifies the input dataset.  We loop both from the left and
   // right sides of the points contained in this node.  The points less than
   // splitVal should be on the left side of the matrix, and the points greater
   // than splitVal should be on the right side of the matrix.
-  size_t left = begin;
-  size_t right = begin + count - 1;
+  long left = begin;
+  long right = begin + count - 1;
 
   // First half-iteration of the loop is out here because the termination
   // condition is in the middle.
@@ -151,20 +151,20 @@ size_t MeanSplit<BoundType, MatType>::
 }
 
 template<typename BoundType, typename MatType>
-size_t MeanSplit<BoundType, MatType>::
+long MeanSplit<BoundType, MatType>::
     PerformSplit(MatType& data,
-                 const size_t begin,
-                 const size_t count,
-                 const size_t splitDimension,
+                 const long begin,
+                 const long count,
+                 const long splitDimension,
                  const double splitVal,
-                 std::vector<size_t>& oldFromNew)
+                 std::vector<long>& oldFromNew)
 {
   // This method modifies the input dataset.  We loop both from the left and
   // right sides of the points contained in this node.  The points less than
   // splitVal should be on the left side of the matrix, and the points greater
   // than splitVal should be on the right side of the matrix.
-  size_t left = begin;
-  size_t right = begin + count - 1;
+  long left = begin;
+  long right = begin + count - 1;
 
   // First half-iteration of the loop is out here because the termination
   // condition is in the middle.
@@ -179,7 +179,7 @@ size_t MeanSplit<BoundType, MatType>::
     data.swap_cols(left, right);
 
     // Update the indices for what we changed.
-    size_t t = oldFromNew[left];
+    long t = oldFromNew[left];
     oldFromNew[left] = oldFromNew[right];
     oldFromNew[right] = t;  
 

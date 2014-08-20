@@ -50,7 +50,7 @@ class GaussianDistribution
    * Create a Gaussian distribution with zero mean and identity covariance with
    * the given dimensionality.
    */
-  GaussianDistribution(const size_t dimension) :
+  GaussianDistribution(const long dimension) :
       mean(arma::zeros<arma::vec>(dimension)),
       covariance(arma::eye<arma::mat>(dimension, dimension))
   { /* Nothing to do. */ }
@@ -62,7 +62,7 @@ class GaussianDistribution
       mean(mean), covariance(covariance) { /* Nothing to do. */ }
 
   //! Return the dimensionality of this distribution.
-  size_t Dimensionality() const { return mean.n_elem; }
+  long Dimensionality() const { return mean.n_elem; }
 
   /**
    * Return the probability of the given observation.

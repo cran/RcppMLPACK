@@ -32,7 +32,7 @@ namespace optimization {
 template<typename DecomposableFunctionType>
 SGD<DecomposableFunctionType>::SGD(DecomposableFunctionType& function,
                                    const double stepSize,
-                                   const size_t maxIterations,
+                                   const long maxIterations,
                                    const double tolerance,
                                    const bool shuffle) :
     function(function),
@@ -47,7 +47,7 @@ template<typename DecomposableFunctionType>
 double SGD<DecomposableFunctionType>::Optimize(arma::mat& iterate)
 {
   // Find the number of functions to use.
-  const size_t numFunctions = function.NumFunctions();
+  const long numFunctions = function.NumFunctions();
 
   // This is used only if shuffle is true.
   arma::vec visitationOrder;
@@ -56,17 +56,17 @@ double SGD<DecomposableFunctionType>::Optimize(arma::mat& iterate)
         numFunctions));
 
   // To keep track of where we are and how things are going.
-  size_t currentFunction = 0;
+  long currentFunction = 0;
   double overallObjective = 0;
   double lastObjective = DBL_MAX;
 
   // Calculate the first objective function.
-  for (size_t i = 0; i < numFunctions; ++i)
+  for (long i = 0; i < numFunctions; ++i)
     overallObjective += function.Evaluate(iterate, i);
 
   // Now iterate!
   arma::mat gradient(iterate.n_rows, iterate.n_cols);
-  for (size_t i = 1; i != maxIterations; ++i, ++currentFunction)
+  for (long i = 1; i != maxIterations; ++i, ++currentFunction)
   {
     // Is this iteration the start of a sequence?
     if ((currentFunction % numFunctions) == 0)

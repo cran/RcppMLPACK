@@ -41,7 +41,7 @@ DTree::DTree() :
 // Root node initializers
 DTree::DTree(const arma::vec& maxVals,
              const arma::vec& minVals,
-             const size_t totalPoints) :
+             const long totalPoints) :
     start(0),
     end(totalPoints),
     maxVals(maxVals),
@@ -67,9 +67,9 @@ DTree::DTree(arma::mat& data) :
   minVals = data.col(0);
 
   // Loop over data to extract maximum and minimum values in each dimension.
-  for (size_t i = 1; i < data.n_cols; ++i)
+  for (long i = 1; i < data.n_cols; ++i)
   {
-    for (size_t j = 0; j < data.n_rows; ++j)
+    for (long j = 0; j < data.n_rows; ++j)
     {
       if (data(j, i) > maxVals[j])
         maxVals[j] = data(j, i);
@@ -88,8 +88,8 @@ DTree::DTree(arma::mat& data) :
 // Non-root node initializers
 DTree::DTree(const arma::vec& maxVals,
              const arma::vec& minVals,
-             const size_t start,
-             const size_t end,
+             const long start,
+             const long end,
              const double logNegError) :
     start(start),
     end(end),
@@ -104,9 +104,9 @@ DTree::DTree(const arma::vec& maxVals,
 
 DTree::DTree(const arma::vec& maxVals,
              const arma::vec& minVals,
-             const size_t totalPoints,
-             const size_t start,
-             const size_t end) :
+             const long totalPoints,
+             const long start,
+             const long end) :
     start(start),
     end(end),
     maxVals(maxVals),
@@ -129,7 +129,7 @@ DTree::~DTree()
 
 // This function computes the log-l2-negative-error of a given node from the
 // formula R(t) = log(|t|^2 / (N^2 V_t)).
-double DTree::LogNegativeError(const size_t totalPoints) const
+double DTree::LogNegativeError(const long totalPoints) const
 {
   // log(-|t|^2 / (N^2 V_t)) = log(-1) + 2 log(|t|) - 2 log(N) - log(V_t).
   return 2 * std::log((double) (end - start)) -
@@ -141,23 +141,23 @@ double DTree::LogNegativeError(const size_t totalPoints) const
 // all possible splits.  The dataset is the full data set but the start and
 // end are used to obtain the point in this node.
 bool DTree::FindSplit(const arma::mat& data,
-                      size_t& splitDim,
+                      long& splitDim,
                       double& splitValue,
                       double& leftError,
                       double& rightError,
-                      const size_t minLeafSize) const
+                      const long minLeafSize) const
 {
   // Ensure the dimensionality of the data is the same as the dimensionality of
   // the bounding rectangle.
 
 
-  const size_t points = end - start;
+  const long points = end - start;
 
   double minError = logNegError;
   bool splitFound = false;
 
   // Loop through each dimension.
-  for (size_t dim = 0; dim < maxVals.n_elem; dim++)
+  for (long dim = 0; dim < maxVals.n_elem; dim++)
   {
     // Have to deal with REAL, INTEGER, NOMINAL data differently, so we have to
     // think of how to do that...
@@ -187,7 +187,7 @@ bool DTree::FindSplit(const arma::mat& data,
 
     // Find the best split for this dimension.  We need to figure out why
     // there are spikes if this minLeafSize is enforced here...
-    for (size_t i = minLeafSize - 1; i < dimVec.n_elem - minLeafSize; ++i)
+    for (long i = minLeafSize - 1; i < dimVec.n_elem - minLeafSize; ++i)
     {
       // This makes sense for real continuous data.  This kinda corrupts the
       // data and estimation if the data is ordinal.
@@ -246,17 +246,17 @@ bool DTree::FindSplit(const arma::mat& data,
   return splitFound;
 }
 
-size_t DTree::SplitData(arma::mat& data,
-                        const size_t splitDim,
+long DTree::SplitData(arma::mat& data,
+                        const long splitDim,
                         const double splitValue,
-                        arma::Col<size_t>& oldFromNew) const
+                        arma::Col<long>& oldFromNew) const
 {
   // Swap all columns such that any columns with value in dimension splitDim
   // less than or equal to splitValue are on the left side, and all others are
   // on the right side.  A similar sort to this is also performed in
   // BinarySpaceTree construction (its comments are more detailed).
-  size_t left = start;
-  size_t right = end - 1;
+  long left = start;
+  long right = end - 1;
   for (;;)
   {
     while (data(splitDim, left) <= splitValue)
@@ -270,7 +270,7 @@ size_t DTree::SplitData(arma::mat& data,
     data.swap_cols(left, right);
 
     // Store the mapping from old to new.
-    const size_t tmp = oldFromNew[left];
+    const long tmp = oldFromNew[left];
     oldFromNew[left] = oldFromNew[right];
     oldFromNew[right] = tmp;
   }
@@ -281,10 +281,10 @@ size_t DTree::SplitData(arma::mat& data,
 
 // Greedily expand the tree
 double DTree::Grow(arma::mat& data,
-                   arma::Col<size_t>& oldFromNew,
+                   arma::Col<long>& oldFromNew,
                    const bool useVolReg,
-                   const size_t maxLeafSize,
-                   const size_t minLeafSize)
+                   const long maxLeafSize,
+                   const long minLeafSize)
 {
 
 
@@ -295,22 +295,22 @@ double DTree::Grow(arma::mat& data,
 
   // Compute the log of the volume of the node.
   logVolume = 0;
-  for (size_t i = 0; i < maxVals.n_elem; ++i)
+  for (long i = 0; i < maxVals.n_elem; ++i)
     if (maxVals[i] - minVals[i] > 0.0)
       logVolume += std::log(maxVals[i] - minVals[i]);
 
   // Check if node is large enough to split.
-  if ((size_t) (end - start) > maxLeafSize) {
+  if ((long) (end - start) > maxLeafSize) {
 
     // Find the split.
-    size_t dim;
+    long dim;
     double splitValueTmp;
     double leftError, rightError;
     if (FindSplit(data, dim, splitValueTmp, leftError, rightError, minLeafSize))
     {
       // Move the data around for the children to have points in a node lie
       // contiguously (to increase efficiency during the training).
-      const size_t splitIndex = SplitData(data, dim, splitValueTmp, oldFromNew);
+      const long splitIndex = SplitData(data, dim, splitValueTmp, oldFromNew);
 
       // Make max and min vals for the children.
       arma::vec maxValsL(maxVals);
@@ -378,10 +378,10 @@ double DTree::Grow(arma::mat& data,
     const double leftRatio = (splitValue - minVals[splitDim]) / range;
     const double rightRatio = (maxVals[splitDim] - splitValue) / range;
 
-    const size_t leftPow = std::pow((double) (left->End() - left->Start()), 2);
-    const size_t rightPow = std::pow((double) (right->End() - right->Start()),
+    const long leftPow = std::pow((double) (left->End() - left->Start()), 2);
+    const long rightPow = std::pow((double) (right->End() - right->Start()),
         2);
-    const size_t thisPow = std::pow((double) (end - start), 2);
+    const long thisPow = std::pow((double) (end - start), 2);
 
     double tmpAlphaSum = leftPow / leftRatio + rightPow / rightRatio - thisPow;
 
@@ -427,7 +427,7 @@ double DTree::Grow(arma::mat& data,
 
 
 double DTree::PruneAndUpdate(const double oldAlpha,
-                             const size_t points,
+                             const long points,
                              const bool useVolReg)
 
 {
@@ -472,11 +472,11 @@ double DTree::PruneAndUpdate(const double oldAlpha,
       const double leftRatio = (splitValue - minVals[splitDim]) / range;
       const double rightRatio = (maxVals[splitDim] - splitValue) / range;
 
-      const size_t leftPow = std::pow((double) (left->End() - left->Start()),
+      const long leftPow = std::pow((double) (left->End() - left->Start()),
           2);
-      const size_t rightPow = std::pow((double) (right->End() - right->Start()),
+      const long rightPow = std::pow((double) (right->End() - right->Start()),
           2);
-      const size_t thisPow = std::pow((double) (end - start), 2);
+      const long thisPow = std::pow((double) (end - start), 2);
 
       double tmpAlphaSum = leftPow / leftRatio + rightPow / rightRatio -
           thisPow;
@@ -542,7 +542,7 @@ double DTree::PruneAndUpdate(const double oldAlpha,
 // epsilon depends on the density near the boundary.
 bool DTree::WithinRange(const arma::vec& query) const
 {
-  for (size_t i = 0; i < query.n_elem; ++i)
+  for (long i = 0; i < query.n_elem; ++i)
     if ((query[i] < minVals[i]) || (query[i] > maxVals[i]))
       return false;
 
@@ -582,19 +582,19 @@ double DTree::ComputeValue(const arma::vec& query) const
 }
 
 /*
-void DTree::WriteTree(FILE *fp, const size_t level) const
+void DTree::WriteTree(FILE *fp, const long level) const
 {
   if (subtreeLeaves > 1)
   {
     fprintf(fp, "\n");
-    for (size_t i = 0; i < level; ++i)
+    for (long i = 0; i < level; ++i)
       fprintf(fp, "|\t");
     fprintf(fp, "Var. %zu > %lg", splitDim, splitValue);
 
     right->WriteTree(fp, level + 1);
 
     fprintf(fp, "\n");
-    for (size_t i = 0; i < level; ++i)
+    for (long i = 0; i < level; ++i)
       fprintf(fp, "|\t");
     fprintf(fp, "Var. %zu <= %lg ", splitDim, splitValue);
 

@@ -30,8 +30,8 @@ class SimpleToleranceTermination
 {
  public:
   SimpleToleranceTermination(const double tolerance = 1e-5,
-                             const size_t maxIterations = 10000,
-                             const size_t reverseStepTolerance = 3)
+                             const long maxIterations = 10000,
+                             const long reverseStepTolerance = 3)
             : tolerance(tolerance),
               maxIterations(maxIterations),
               reverseStepTolerance(reverseStepTolerance) {}
@@ -59,13 +59,13 @@ class SimpleToleranceTermination
     WH = W * H;
 
     residueOld = residue;
-    size_t n = V->n_rows;
-    size_t m = V->n_cols;
+    long n = V->n_rows;
+    long m = V->n_cols;
     double sum = 0;
-    size_t count = 0;
-    for(size_t i = 0;i < n;i++)
+    long count = 0;
+    for(long i = 0;i < n;i++)
     {
-        for(size_t j = 0;j < m;j++)
+        for(long j = 0;j < m;j++)
         {
             double temp = 0;
             if((temp = (*V)(i,j)) != 0)
@@ -117,22 +117,22 @@ class SimpleToleranceTermination
   }
 
   const double& Index() { return residue; }
-  const size_t& Iteration() { return iteration; }
-  const size_t& MaxIterations() { return maxIterations; }
+  const long& Iteration() { return iteration; }
+  const long& MaxIterations() { return maxIterations; }
 
  private:
   double tolerance;
-  size_t maxIterations;
+  long maxIterations;
 
   const MatType* V;
 
-  size_t iteration;
+  long iteration;
   double residueOld;
   double residue;
   double normOld;
 
-  size_t reverseStepTolerance;
-  size_t reverseStepCount;
+  long reverseStepTolerance;
+  long reverseStepCount;
   
   bool isCopy;
   arma::mat W;

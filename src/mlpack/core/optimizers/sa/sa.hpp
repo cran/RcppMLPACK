@@ -93,12 +93,12 @@ class SA
    */
   SA(FunctionType& function,
      CoolingScheduleType& coolingSchedule,
-     const size_t maxIterations = 1000000,
+     const long maxIterations = 1000000,
      const double initT = 10000.,
-     const size_t initMoves = 1000,
-     const size_t moveCtrlSweep = 100,
+     const long initMoves = 1000,
+     const long moveCtrlSweep = 100,
      const double tolerance = 1e-5,
-     const size_t maxToleranceSweep = 3,
+     const long maxToleranceSweep = 3,
      const double maxMoveCoef = 20,
      const double initMoveCoef = 0.3,
      const double gain = 0.3);
@@ -124,14 +124,14 @@ class SA
   double& Temperature() { return temperature; }
 
   //! Get the initial moves.
-  size_t InitMoves() const { return initMoves; }
+  long InitMoves() const { return initMoves; }
   //! Modify the initial moves.
-  size_t& InitMoves() { return initMoves; }
+  long& InitMoves() { return initMoves; }
 
   //! Get sweeps per move control.
-  size_t MoveCtrlSweep() const { return moveCtrlSweep; }
+  long MoveCtrlSweep() const { return moveCtrlSweep; }
   //! Modify sweeps per move control.
-  size_t& MoveCtrlSweep() { return moveCtrlSweep; }
+  long& MoveCtrlSweep() { return moveCtrlSweep; }
 
   //! Get the tolerance.
   double Tolerance() const { return tolerance; }
@@ -139,9 +139,9 @@ class SA
   double& Tolerance() { return tolerance; }
 
   //! Get the maxToleranceSweep.
-  size_t MaxToleranceSweep() const { return maxToleranceSweep; }
+  long MaxToleranceSweep() const { return maxToleranceSweep; }
   //! Modify the maxToleranceSweep.
-  size_t& MaxToleranceSweep() { return maxToleranceSweep; }
+  long& MaxToleranceSweep() { return maxToleranceSweep; }
 
   //! Get the gain.
   double Gain() const { return gain; }
@@ -149,9 +149,9 @@ class SA
   double& Gain() { return gain; }
 
   //! Get the maximum number of iterations.
-  size_t MaxIterations() const { return maxIterations; }
+  long MaxIterations() const { return maxIterations; }
   //! Modify the maximum number of iterations.
-  size_t& MaxIterations() { return maxIterations; }
+  long& MaxIterations() { return maxIterations; }
 
   //! Get the maximum move size of each parameter.
   arma::mat MaxMove() const { return maxMove; }
@@ -171,17 +171,17 @@ class SA
   //! The cooling schedule being used.
   CoolingScheduleType& coolingSchedule;
   //! The maximum number of iterations.
-  size_t maxIterations;
+  long maxIterations;
   //! The current temperature.
   double temperature;
   //! The number of initial moves before reducing the temperature.
-  size_t initMoves;
+  long initMoves;
   //! The number of sweeps before a MoveControl() call.
-  size_t moveCtrlSweep;
+  long moveCtrlSweep;
   //! Tolerance for convergence.
   double tolerance;
   //! Number of sweeps in tolerance before system is considered frozen.
-  size_t maxToleranceSweep;
+  long maxToleranceSweep;
   //! Proportional control in feedback move control.
   double gain;
 
@@ -208,8 +208,8 @@ class SA
   void GenerateMove(arma::mat& iterate,
                     arma::mat& accept,
                     double& energy,
-                    size_t& idx,
-                    size_t& sweepCounter);
+                    long& idx,
+                    long& sweepCounter);
 
   /**
    * MoveControl() uses a proportional feedback control to determine the size
@@ -229,7 +229,7 @@ class SA
    * @param nMoves Number of moves since last call.
    * @param accept Matrix representing which parameters have had accepted moves.
    */
-  void MoveControl(const size_t nMoves, arma::mat& accept);
+  void MoveControl(const long nMoves, arma::mat& accept);
 };
 
 }; // namespace optimization

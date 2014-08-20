@@ -41,12 +41,12 @@ class FastMKSRules
 public:
     FastMKSRules(const arma::mat& referenceSet,
                  const arma::mat& querySet,
-                 arma::Mat<size_t>& indices,
+                 arma::Mat<long>& indices,
                  arma::mat& products,
                  KernelType& kernel);
 
     //! Compute the base case (kernel value) between two points.
-    double BaseCase(const size_t queryIndex, const size_t referenceIndex);
+    double BaseCase(const long queryIndex, const long referenceIndex);
 
     /**
      * Get the score for recursion order.  A low score indicates priority for
@@ -56,7 +56,7 @@ public:
      * @param queryIndex Index of query point.
      * @param referenceNode Candidate to be recursed into.
      */
-    double Score(const size_t queryIndex, TreeType& referenceNode);
+    double Score(const long queryIndex, TreeType& referenceNode);
 
     /**
      * Get the score for recursion order.  A low score indicates priority for
@@ -79,7 +79,7 @@ public:
      * @param referenceNode Candidate node to be recursed into.
      * @param oldScore Old score produced by Score() (or Rescore()).
      */
-    double Rescore(const size_t queryIndex,
+    double Rescore(const long queryIndex,
                    TreeType& referenceNode,
                    const double oldScore) const;
 
@@ -99,23 +99,23 @@ public:
                    const double oldScore) const;
 
     //! Get the number of times BaseCase() was called.
-    size_t BaseCases() const
+    long BaseCases() const
     {
         return baseCases;
     }
     //! Modify the number of times BaseCase() was called.
-    size_t& BaseCases()
+    long& BaseCases()
     {
         return baseCases;
     }
 
     //! Get the number of times Score() was called.
-    size_t Scores() const
+    long Scores() const
     {
         return scores;
     }
     //! Modify the number of times Score() was called.
-    size_t& Scores()
+    long& Scores()
     {
         return scores;
     }
@@ -138,7 +138,7 @@ private:
     const arma::mat& querySet;
 
     //! The indices of the maximum kernel results.
-    arma::Mat<size_t>& indices;
+    arma::Mat<long>& indices;
     //! The maximum kernels.
     arma::mat& products;
 
@@ -151,9 +151,9 @@ private:
     KernelType& kernel;
 
     //! The last query index BaseCase() was called with.
-    size_t lastQueryIndex;
+    long lastQueryIndex;
     //! The last reference index BaseCase() was called with.
-    size_t lastReferenceIndex;
+    long lastReferenceIndex;
     //! The last kernel evaluation resulting from BaseCase().
     double lastKernel;
 
@@ -161,15 +161,15 @@ private:
     double CalculateBound(TreeType& queryNode) const;
 
     //! Utility function to insert neighbor into list of results.
-    void InsertNeighbor(const size_t queryIndex,
-                        const size_t pos,
-                        const size_t neighbor,
+    void InsertNeighbor(const long queryIndex,
+                        const long pos,
+                        const long neighbor,
                         const double distance);
 
     //! For benchmarking.
-    size_t baseCases;
+    long baseCases;
     //! For benchmarking.
-    size_t scores;
+    long scores;
 
     TraversalInfoType traversalInfo;
 };

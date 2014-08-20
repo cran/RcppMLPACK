@@ -60,7 +60,7 @@ class CosineTree
    * @param parentNode Pointer to the parent cosine node.
    * @param subIndices Pointer to vector of column indices to be included.
    */
-  CosineTree(CosineTree& parentNode, const std::vector<size_t>& subIndices);
+  CosineTree(CosineTree& parentNode, const std::vector<long>& subIndices);
  
   /**
    * Construct the CosineTree and the basis for the given matrix, and passed
@@ -131,8 +131,8 @@ class CosineTree
    * probability distribution of the column vectors. The sampling is based on a
    * randomly generated values in the range [0, 1].
    */
-  void ColumnSamplesLS(std::vector<size_t>& sampledIndices, 
-                       arma::vec& probabilities, size_t numSamples);
+  void ColumnSamplesLS(std::vector<long>& sampledIndices, 
+                       arma::vec& probabilities, long numSamples);
   
   /**
    * Sample a point from the Length-Squared distribution of the cosine node. The
@@ -140,7 +140,7 @@ class CosineTree
    * distribution of the column vectors. The sampling is based on a randomly
    * generated value in the range [0, 1].
    */
-  size_t ColumnSampleLS();
+  long ColumnSampleLS();
   
   /**
    * Sample a column based on the cumulative Length-Squared distribution of the
@@ -154,8 +154,8 @@ class CosineTree
    * @param start Starting index of the distribution interval to search in.
    * @param end Ending index of the distribution interval to search in.
    */
-  size_t BinarySearch(arma::vec& cDistribution, double value, size_t start,
-                      size_t end);
+  long BinarySearch(arma::vec& cDistribution, double value, long start,
+                      long end);
   
   /**
    * Calculate cosines of the columns present in the node, with respect to the
@@ -179,7 +179,7 @@ class CosineTree
   const arma::mat& GetDataset() const { return dataset; }
   
   //! Get the indices of columns in the node.
-  std::vector<size_t>& VectorIndices() { return indices; }
+  std::vector<long>& VectorIndices() { return indices; }
   
   //! Set the Monte Carlo error.
   void L2Error(const double error) { this->l2Error = error; }
@@ -203,13 +203,13 @@ class CosineTree
   CosineTree* Right() { return right; }
   
   //! Get number of columns of input matrix in the node.
-  size_t NumColumns() const { return numColumns; }
+  long NumColumns() const { return numColumns; }
   
   //! Get the Frobenius norm squared of columns in the node.
   double FrobNormSquared() const { return frobNormSquared; }
   
   //! Get the column index of split point of the node.
-  size_t SplitPointIndex() const { return indices[splitPointIndex]; }
+  long SplitPointIndex() const { return indices[splitPointIndex]; }
   
  private:
   //! Matrix for which cosine tree is constructed.
@@ -227,7 +227,7 @@ class CosineTree
   //! Left child of the node.
   CosineTree* left;
   //! Indices of columns of input matrix in the node.
-  std::vector<size_t> indices;
+  std::vector<long> indices;
   //! L2-norm squared of columns in the node.
   arma::vec l2NormsSquared;
   //! Centroid of columns of input matrix in the node.
@@ -235,9 +235,9 @@ class CosineTree
   //! Orthonormalized basis vector of the node.
   arma::vec basisVector;
   //! Index of split point of cosine node.
-  size_t splitPointIndex;
+  long splitPointIndex;
   //! Number of columns of input matrix in the node.
-  size_t numColumns;
+  long numColumns;
   //! Monte Carlo error for this node.
   double l2Error;
   //! Frobenius norm squared of columns in the node.

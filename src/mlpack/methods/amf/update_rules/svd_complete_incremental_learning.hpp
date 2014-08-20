@@ -18,7 +18,7 @@ class SVDCompleteIncrementalLearning
             : u(u), kw(kw), kh(kh)
     {}
 
-  void Initialize(const MatType& dataset, const size_t rank)
+  void Initialize(const MatType& dataset, const long rank)
   {
     (void)rank;
     n = dataset.n_rows;
@@ -119,11 +119,11 @@ class SVDCompleteIncrementalLearning
   double kw;
   double kh;
 
-  size_t n;
-  size_t m;
+  long n;
+  long m;
 
-  size_t currentUserIndex;
-  size_t currentItemIndex;
+  long currentUserIndex;
+  long currentItemIndex;
 };
 
 template<>
@@ -141,7 +141,7 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
     delete it;
   }
 
-  void Initialize(const arma::sp_mat& dataset, const size_t rank)
+  void Initialize(const arma::sp_mat& dataset, const long rank)
   {
     (void)rank;
     n = dataset.n_rows;
@@ -173,8 +173,8 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
         it = new arma::sp_mat::const_iterator(V.begin());
     }
 
-    size_t currentUserIndex = it->col();
-    size_t currentItemIndex = it->row();
+    long currentUserIndex = it->col();
+    long currentItemIndex = it->row();
 
     arma::mat deltaW(1, W.n_cols);
     deltaW.zeros();
@@ -204,8 +204,8 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
     arma::mat deltaH(H.n_rows, 1);
     deltaH.zeros();
 
-    size_t currentUserIndex = it->col();
-    size_t currentItemIndex = it->row();
+    long currentUserIndex = it->col();
+    long currentItemIndex = it->row();
 
     deltaH += (**it - arma::dot(W.row(currentItemIndex), H.col(currentUserIndex))) 
                                         * arma::trans(W.row(currentItemIndex));
@@ -219,8 +219,8 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
   double kw;
   double kh;
 
-  size_t n;
-  size_t m;
+  long n;
+  long m;
 
   arma::sp_mat dummy;
   arma::sp_mat::const_iterator* it;

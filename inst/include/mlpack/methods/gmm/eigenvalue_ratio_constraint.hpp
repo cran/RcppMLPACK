@@ -50,7 +50,7 @@ class EigenvalueRatioConstraint
       Rcpp::Rcout << "EigenvalueRatioConstraint::EigenvalueRatioConstraint(): "
           << "first element of ratio vector is not 1.0!" << std::endl;
 
-    for (size_t i = 1; i < ratios.n_elem; ++i)
+    for (long i = 1; i < ratios.n_elem; ++i)
     {
       if (ratios[i] > 1.0)
         Rcpp::Rcout << "EigenvalueRatioConstraint::EigenvalueRatioConstraint(): "

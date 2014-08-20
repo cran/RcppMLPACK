@@ -69,7 +69,7 @@ class DTree
    */
   DTree(const arma::vec& maxVals,
         const arma::vec& minVals,
-        const size_t totalPoints);
+        const long totalPoints);
 
   /**
    * Create a density estimation tree on the given data.  Children will be
@@ -95,8 +95,8 @@ class DTree
    */
   DTree(const arma::vec& maxVals,
         const arma::vec& minVals,
-        const size_t start,
-        const size_t end,
+        const long start,
+        const long end,
         const double logNegError);
 
   /**
@@ -112,9 +112,9 @@ class DTree
    */
   DTree(const arma::vec& maxVals,
         const arma::vec& minVals,
-        const size_t totalPoints,
-        const size_t start,
-        const size_t end);
+        const long totalPoints,
+        const long start,
+        const long end);
 
   //! Clean up memory allocated by the tree.
   ~DTree();
@@ -130,10 +130,10 @@ class DTree
    * @param minLeafSize Minimum size of a leaf.
    */
   double Grow(arma::mat& data,
-              arma::Col<size_t>& oldFromNew,
+              arma::Col<long>& oldFromNew,
               const bool useVolReg = false,
-              const size_t maxLeafSize = 10,
-              const size_t minLeafSize = 5);
+              const long maxLeafSize = 10,
+              const long minLeafSize = 5);
 
   /**
    * Perform alpha pruning on a tree.  Returns the new value of alpha.
@@ -144,7 +144,7 @@ class DTree
    * @return New value of alpha.
    */
   double PruneAndUpdate(const double oldAlpha,
-                        const size_t points,
+                        const long points,
                         const bool useVolReg = false);
 
   /**
@@ -161,7 +161,7 @@ class DTree
    * @param fp File to write the tree to.
    * @param level Level of the tree (should start at 0).
    */
-  //void WriteTree(FILE *fp, const size_t level = 0) const;
+  //void WriteTree(FILE *fp, const long level = 0) const;
 
   /**
    * Index the buckets for possible usage later; this results in every leaf in
@@ -193,7 +193,7 @@ class DTree
    *
    * @param totalPoints Total number of points in the dataset.
    */
-  double LogNegativeError(const size_t totalPoints) const;
+  double LogNegativeError(const long totalPoints) const;
 
   /**
    * Return whether a query point is within the range of this node.
@@ -209,10 +209,10 @@ class DTree
 
   //! The index of the first point in the dataset contained in this node (and
   //! its children).
-  size_t start;
+  long start;
   //! The index of the last point in the dataset contained in this node (and its
   //! children).
-  size_t end;
+  long end;
 
   //! Upper half of bounding box for this node.
   arma::vec maxVals;
@@ -220,7 +220,7 @@ class DTree
   arma::vec minVals;
 
   //! The splitting dimension for this node.
-  size_t splitDim;
+  long splitDim;
 
   //! The split value on the splitting dimension for this node.
   double splitValue;
@@ -232,7 +232,7 @@ class DTree
   double subtreeLeavesLogNegError;
 
   //! Number of leaves of the subtree.
-  size_t subtreeLeaves;
+  long subtreeLeaves;
 
   //! If true, this node is the root of the tree.
   bool root;
@@ -256,11 +256,11 @@ class DTree
 
  public:
   //! Return the starting index of points contained in this node.
-  size_t Start() const { return start; }
+  long Start() const { return start; }
   //! Return the first index of a point not contained in this node.
-  size_t End() const { return end; }
+  long End() const { return end; }
   //! Return the split dimension of this node.
-  size_t SplitDim() const { return splitDim; }
+  long SplitDim() const { return splitDim; }
   //! Return the split value of this node.
   double SplitValue() const { return splitValue; }
   //! Return the log negative error of this node.
@@ -268,7 +268,7 @@ class DTree
   //! Return the log negative error of all descendants of this node.
   double SubtreeLeavesLogNegError() const { return subtreeLeavesLogNegError; }
   //! Return the number of leaves which are descendants of this node.
-  size_t SubtreeLeaves() const { return subtreeLeaves; }
+  long SubtreeLeaves() const { return subtreeLeaves; }
   //! Return the ratio of points in this node to the points in the whole
   //! dataset.
   double Ratio() const { return ratio; }
@@ -306,19 +306,19 @@ class DTree
    * Find the dimension to split on.
    */
   bool FindSplit(const arma::mat& data,
-                 size_t& splitDim,
+                 long& splitDim,
                  double& splitValue,
                  double& leftError,
                  double& rightError,
-                 const size_t minLeafSize = 5) const;
+                 const long minLeafSize = 5) const;
 
   /**
    * Split the data, returning the number of points left of the split.
    */
-  size_t SplitData(arma::mat& data,
-                   const size_t splitDim,
+  long SplitData(arma::mat& data,
+                   const long splitDim,
                    const double splitValue,
-                   arma::Col<size_t>& oldFromNew) const;
+                   arma::Col<long>& oldFromNew) const;
 
 };
 

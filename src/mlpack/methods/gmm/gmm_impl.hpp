@@ -38,7 +38,7 @@ namespace gmm {
  * @param dimensionality Dimensionality of each Gaussian.
  */
 template<typename FittingType>
-GMM<FittingType>::GMM(const size_t gaussians, const size_t dimensionality) :
+GMM<FittingType>::GMM(const long gaussians, const long dimensionality) :
     gaussians(gaussians),
     dimensionality(dimensionality),
     means(gaussians, arma::vec(dimensionality)),
@@ -50,7 +50,7 @@ GMM<FittingType>::GMM(const size_t gaussians, const size_t dimensionality) :
   // Clear the memory; set it to 0.  Technically this model is still valid, but
   // only barely.
   weights.fill(1.0 / gaussians);
-  for (size_t i = 0; i < gaussians; ++i)
+  for (long i = 0; i < gaussians; ++i)
   {
     means[i].zeros();
     covariances[i].eye();
@@ -68,8 +68,8 @@ GMM<FittingType>::GMM(const size_t gaussians, const size_t dimensionality) :
  * @param fitter Initialized fitting mechanism.
  */
 template<typename FittingType>
-GMM<FittingType>::GMM(const size_t gaussians,
-                      const size_t dimensionality,
+GMM<FittingType>::GMM(const long gaussians,
+                      const long dimensionality,
                       FittingType& fitter) :
     gaussians(gaussians),
     dimensionality(dimensionality),
@@ -81,7 +81,7 @@ GMM<FittingType>::GMM(const size_t gaussians,
   // Clear the memory; set it to 0.  Technically this model is still valid, but
   // only barely.
   weights.fill(1.0 / gaussians);
-  for (size_t i = 0; i < gaussians; ++i)
+  for (long i = 0; i < gaussians; ++i)
   {
     means[i].zeros();
     covariances[i].eye();
@@ -163,7 +163,7 @@ void GMM<FittingType>::Load(const std::string& filename)
   means.resize(gaussians);
   covariances.resize(gaussians);
 
-  for (size_t i = 0; i < gaussians; ++i)
+  for (long i = 0; i < gaussians; ++i)
   {
     std::stringstream o;
     o << i;
@@ -185,7 +185,7 @@ void GMM<FittingType>::Save(const std::string& filename) const
   save.SaveParameter(gaussians, "gaussians");
   save.SaveParameter(dimensionality, "dimensionality");
   save.SaveParameter(weights, "weights");
-  for (size_t i = 0; i < gaussians; ++i)
+  for (long i = 0; i < gaussians; ++i)
   {
     // Generate names for the XML nodes.
     std::stringstream o;
@@ -211,7 +211,7 @@ double GMM<FittingType>::Probability(const arma::vec& observation) const
   // Sum the probability for each Gaussian in our mixture (and we have to
   // multiply by the prior for each Gaussian too).
   double sum = 0;
-  for (size_t i = 0; i < gaussians; i++)
+  for (long i = 0; i < gaussians; i++)
     sum += weights[i] * phi(observation, means[i], covariances[i]);
 
   return sum;
@@ -223,7 +223,7 @@ double GMM<FittingType>::Probability(const arma::vec& observation) const
  */
 template<typename FittingType>
 double GMM<FittingType>::Probability(const arma::vec& observation,
-                                     const size_t component) const
+                                     const long component) const
 {
   // We are only considering one Gaussian component -- so we only need to call
   // phi() once.  We do consider the prior probability!
@@ -240,10 +240,10 @@ arma::vec GMM<FittingType>::Random() const
 {
   // Determine which Gaussian it will be coming from.
   double gaussRand = math::Random();
-  size_t gaussian = 0;
+  long gaussian = 0;
 
   double sumProb = 0;
-  for (size_t g = 0; g < gaussians; g++)
+  for (long g = 0; g < gaussians; g++)
   {
     sumProb += weights(g);
     if (gaussRand <= sumProb)
@@ -262,7 +262,7 @@ arma::vec GMM<FittingType>::Random() const
  */
 template<typename FittingType>
 double GMM<FittingType>::Estimate(const arma::mat& observations,
-                                  const size_t trials,
+                                  const long trials,
                                   const bool useExistingModel)
 {
   double bestLikelihood; // This will be reported later.
@@ -309,7 +309,7 @@ double GMM<FittingType>::Estimate(const arma::mat& observations,
         arma::mat(dimensionality, dimensionality));
     arma::vec weightsTrial(gaussians);
 
-    for (size_t trial = 1; trial < trials; ++trial)
+    for (long trial = 1; trial < trials; ++trial)
     {
       if (useExistingModel)
       {
@@ -353,7 +353,7 @@ double GMM<FittingType>::Estimate(const arma::mat& observations,
 template<typename FittingType>
 double GMM<FittingType>::Estimate(const arma::mat& observations,
                                   const arma::vec& probabilities,
-                                  const size_t trials,
+                                  const long trials,
                                   const bool useExistingModel)
 {
   double bestLikelihood; // This will be reported later.
@@ -400,7 +400,7 @@ double GMM<FittingType>::Estimate(const arma::mat& observations,
         arma::mat(dimensionality, dimensionality));
     arma::vec weightsTrial(gaussians);
 
-    for (size_t trial = 1; trial < trials; ++trial)
+    for (long trial = 1; trial < trials; ++trial)
     {
       if (useExistingModel)
       {
@@ -443,18 +443,18 @@ double GMM<FittingType>::Estimate(const arma::mat& observations,
  */
 template<typename FittingType>
 void GMM<FittingType>::Classify(const arma::mat& observations,
-                                arma::Col<size_t>& labels) const
+                                arma::Col<long>& labels) const
 {
   // This is not the best way to do this!
 
   // We should not have to fill this with values, because each one should be
   // overwritten.
   labels.set_size(observations.n_cols);
-  for (size_t i = 0; i < observations.n_cols; ++i)
+  for (long i = 0; i < observations.n_cols; ++i)
   {
     // Find maximum probability component.
     double probability = 0;
-    for (size_t j = 0; j < gaussians; ++j)
+    for (long j = 0; j < gaussians; ++j)
     {
       double newProb = Probability(observations.unsafe_col(i), j);
       if (newProb >= probability)
@@ -480,14 +480,14 @@ double GMM<FittingType>::LogLikelihood(
 
   arma::vec phis;
   arma::mat likelihoods(gaussians, data.n_cols);
-  for (size_t i = 0; i < gaussians; i++)
+  for (long i = 0; i < gaussians; i++)
   {
     phi(data, meansL[i], covariancesL[i], phis);
     likelihoods.row(i) = weightsL(i) * trans(phis);
   }
 
   // Now sum over every point.
-  for (size_t j = 0; j < data.n_cols; j++)
+  for (long j = 0; j < data.n_cols; j++)
     loglikelihood += log(accu(likelihoods.col(j)));
 
   return loglikelihood;
@@ -503,7 +503,7 @@ std::string GMM<FittingType>::ToString() const
   convert << "  Dimensionality: "<<dimensionality;
   convert << std::endl;
   // Secondary ostringstream so things can be indented properly.
-  for (size_t ind=0; ind < gaussians; ind++)
+  for (long ind=0; ind < gaussians; ind++)
   {
     data << "Means of Gaussian " << ind << ": " << std::endl << means[ind]; 
     data << std::endl;

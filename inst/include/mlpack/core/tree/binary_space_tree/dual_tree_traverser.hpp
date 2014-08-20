@@ -57,40 +57,40 @@ class BinarySpaceTree<BoundType, StatisticType, MatType, SplitType>::
                 BinarySpaceTree& referenceNode);
 
   //! Get the number of prunes.
-  size_t NumPrunes() const { return numPrunes; }
+  long NumPrunes() const { return numPrunes; }
   //! Modify the number of prunes.
-  size_t& NumPrunes() { return numPrunes; }
+  long& NumPrunes() { return numPrunes; }
 
   //! Get the number of visited combinations.
-  size_t NumVisited() const { return numVisited; }
+  long NumVisited() const { return numVisited; }
   //! Modify the number of visited combinations.
-  size_t& NumVisited() { return numVisited; }
+  long& NumVisited() { return numVisited; }
 
   //! Get the number of times a node combination was scored.
-  size_t NumScores() const { return numScores; }
+  long NumScores() const { return numScores; }
   //! Modify the number of times a node combination was scored.
-  size_t& NumScores() { return numScores; }
+  long& NumScores() { return numScores; }
 
   //! Get the number of times a base case was calculated.
-  size_t NumBaseCases() const { return numBaseCases; }
+  long NumBaseCases() const { return numBaseCases; }
   //! Modify the number of times a base case was calculated.
-  size_t& NumBaseCases() { return numBaseCases; }
+  long& NumBaseCases() { return numBaseCases; }
 
  private:
   //! Reference to the rules with which the trees will be traversed.
   RuleType& rule;
 
   //! The number of prunes.
-  size_t numPrunes;
+  long numPrunes;
 
   //! The number of node combinations that have been visited during traversal.
-  size_t numVisited;
+  long numVisited;
 
   //! The number of times a node combination was scored.
-  size_t numScores;
+  long numScores;
 
   //! The number of times a base case was calculated.
-  size_t numBaseCases;
+  long numBaseCases;
 
   //! Traversal information, held in the class so that it isn't continually
   //! being reallocated.

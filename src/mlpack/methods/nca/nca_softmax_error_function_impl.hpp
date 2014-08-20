@@ -32,7 +32,7 @@ namespace nca {
 template<typename MetricType>
 SoftmaxErrorFunction<MetricType>::SoftmaxErrorFunction(
     const arma::mat& dataset,
-    const arma::Col<size_t>& labels,
+    const arma::Col<long>& labels,
     MetricType metric) :
     dataset(dataset),
     labels(labels),
@@ -54,7 +54,7 @@ double SoftmaxErrorFunction<MetricType>::Evaluate(const arma::mat& coordinates)
 //! The separated objective function, which does not use Precalculate().
 template<typename MetricType>
 double SoftmaxErrorFunction<MetricType>::Evaluate(const arma::mat& coordinates,
-                                                  const size_t i)
+                                                  const long i)
 {
   // Unfortunately each evaluation will take O(N) time because it requires a
   // scan over all points in the dataset.  Our objective is to compute p_i.
@@ -64,7 +64,7 @@ double SoftmaxErrorFunction<MetricType>::Evaluate(const arma::mat& coordinates,
   // It's quicker to do this now than one point at a time later.
   stretchedDataset = coordinates * dataset;
 
-  for (size_t k = 0; k < dataset.n_cols; ++k)
+  for (long k = 0; k < dataset.n_cols; ++k)
   {
     // Don't consider the case where the points are the same.
     if (k == i)
@@ -115,9 +115,9 @@ void SoftmaxErrorFunction<MetricType>::Gradient(const arma::mat& coordinates,
   //     (p_i p_ik + p_k p_ki) x_ik x_ik^T
   arma::mat sum;
   sum.zeros(stretchedDataset.n_rows, stretchedDataset.n_rows);
-  for (size_t i = 0; i < stretchedDataset.n_cols; i++)
+  for (long i = 0; i < stretchedDataset.n_cols; i++)
   {
-    for (size_t k = (i + 1); k < stretchedDataset.n_cols; k++)
+    for (long k = (i + 1); k < stretchedDataset.n_cols; k++)
     {
       // Calculate p_ik and p_ki first.
       double eval = exp(-metric.Evaluate(stretchedDataset.unsafe_col(i),
@@ -144,7 +144,7 @@ void SoftmaxErrorFunction<MetricType>::Gradient(const arma::mat& coordinates,
 //! The separable implementation.
 template<typename MetricType>
 void SoftmaxErrorFunction<MetricType>::Gradient(const arma::mat& coordinates,
-                                                const size_t i,
+                                                const long i,
                                                 arma::mat& gradient)
 {
   // We will need to calculate p_i before this evaluation is done, so these two
@@ -163,7 +163,7 @@ void SoftmaxErrorFunction<MetricType>::Gradient(const arma::mat& coordinates,
   // Compute the stretched dataset.
   stretchedDataset = coordinates * dataset;
 
-  for (size_t k = 0; k < dataset.n_cols; ++k)
+  for (long k = 0; k < dataset.n_cols; ++k)
   {
     // Don't consider the case where the points are the same.
     if (i == k)
@@ -241,9 +241,9 @@ void SoftmaxErrorFunction<MetricType>::Precalculate(
   // order of O((n * (n + 1)) / 2), which really isn't all that great.
   p.zeros(stretchedDataset.n_cols);
   denominators.zeros(stretchedDataset.n_cols);
-  for (size_t i = 0; i < stretchedDataset.n_cols; i++)
+  for (long i = 0; i < stretchedDataset.n_cols; i++)
   {
-    for (size_t j = (i + 1); j < stretchedDataset.n_cols; j++)
+    for (long j = (i + 1); j < stretchedDataset.n_cols; j++)
     {
       // Evaluate exp(-d(x_i, x_j)).
       double eval = exp(-metric.Evaluate(stretchedDataset.unsafe_col(i),
@@ -266,7 +266,7 @@ void SoftmaxErrorFunction<MetricType>::Precalculate(
   p /= denominators;
 
   // Clean up any bad values.
-  for (size_t i = 0; i < stretchedDataset.n_cols; i++)
+  for (long i = 0; i < stretchedDataset.n_cols; i++)
   {
     if (denominators[i] == 0.0)
     {

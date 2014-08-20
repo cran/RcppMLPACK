@@ -54,10 +54,10 @@ class MeanSplit
    */
   static bool SplitNode(const BoundType& bound,
                         MatType& data,
-                        const size_t begin,
-                        const size_t count,
-                        size_t& splitDimension,
-                        size_t& splitCol);
+                        const long begin,
+                        const long count,
+                        long& splitDimension,
+                        long& splitCol);
 
   /**
    * Split the node according to the mean value in the dimension with maximum
@@ -77,11 +77,11 @@ class MeanSplit
    */
   static bool SplitNode(const BoundType& bound,
                         MatType& data,
-                        const size_t begin,
-                        const size_t count,
-                        size_t& splitDimension,
-                        size_t& splitCol,
-                        std::vector<size_t>& oldFromNew);
+                        const long begin,
+                        const long count,
+                        long& splitDimension,
+                        long& splitCol,
+                        std::vector<long>& oldFromNew);
 
  private:
   /**
@@ -96,10 +96,10 @@ class MeanSplit
    * @param splitVal The split in dimension splitDimension is based on this
    *    value.
    */
-  static size_t PerformSplit(MatType& data,
-                             const size_t begin,
-                             const size_t count,
-                             const size_t splitDimension,
+  static long PerformSplit(MatType& data,
+                             const long begin,
+                             const long count,
+                             const long splitDimension,
                              const double splitVal);
 
   /**
@@ -116,12 +116,12 @@ class MeanSplit
    * @param oldFromNew Vector which will be filled with the old positions for
    *    each new point.
    */
-  static size_t PerformSplit(MatType& data,
-                             const size_t begin,
-                             const size_t count,
-                             const size_t splitDimension,
+  static long PerformSplit(MatType& data,
+                             const long begin,
+                             const long count,
+                             const long splitDimension,
                              const double splitVal,
-                             std::vector<size_t>& oldFromNew);
+                             std::vector<long>& oldFromNew);
 };
 
 }; // namespace tree

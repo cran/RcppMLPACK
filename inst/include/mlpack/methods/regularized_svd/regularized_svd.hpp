@@ -54,8 +54,8 @@ class RegularizedSVD
   RegularizedSVD(const arma::mat& data,
                  arma::mat& u,
                  arma::mat& v,
-                 const size_t rank,
-                 const size_t iterations = 10,
+                 const long rank,
+                 const long iterations = 10,
                  const double alpha = 0.01,
                  const double lambda = 0.02);
                  
@@ -63,9 +63,9 @@ class RegularizedSVD
   //! Rating data.
   const arma::mat& data;
   //! Rank used for matrix factorization.
-  size_t rank;
+  long rank;
   //! Number of optimization iterations.
-  size_t iterations;
+  long iterations;
   //! Learning rate for the SGD optimizer.
   double alpha;
   //! Regularization parameter for the optimization.

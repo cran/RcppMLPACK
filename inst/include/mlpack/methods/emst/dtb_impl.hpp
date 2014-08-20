@@ -31,7 +31,7 @@ namespace emst {
 template<typename TreeType>
 TreeType* BuildTree(
     typename TreeType::Mat& dataset,
-    std::vector<size_t>& oldFromNew,
+    std::vector<long>& oldFromNew,
     typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == true, TreeType*
     >::type = 0)
@@ -43,7 +43,7 @@ TreeType* BuildTree(
 template<typename TreeType>
 TreeType* BuildTree(
     const typename TreeType::Mat& dataset,
-    const std::vector<size_t>& /* oldFromNew */,
+    const std::vector<long>& /* oldFromNew */,
     const typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == false, TreeType*
     >::type = 0)
@@ -136,8 +136,8 @@ void DualTreeBoruvka<MetricType, TreeType>::ComputeMST(arma::mat& results)
     if (naive)
     {
       // Full O(N^2) traversal.
-      for (size_t i = 0; i < data.n_cols; ++i)
-        for (size_t j = 0; j < data.n_cols; ++j)
+      for (long i = 0; i < data.n_cols; ++i)
+        for (long j = 0; j < data.n_cols; ++j)
           rules.BaseCase(i, j);
     }
     else
@@ -170,8 +170,8 @@ void DualTreeBoruvka<MetricType, TreeType>::ComputeMST(arma::mat& results)
  * Adds a single edge to the edge list
  */
 template<typename MetricType, typename TreeType>
-void DualTreeBoruvka<MetricType, TreeType>::AddEdge(const size_t e1,
-                                        const size_t e2,
+void DualTreeBoruvka<MetricType, TreeType>::AddEdge(const long e1,
+                                        const long e2,
                                         const double distance)
 {
 
@@ -188,11 +188,11 @@ void DualTreeBoruvka<MetricType, TreeType>::AddEdge(const size_t e1,
 template<typename MetricType, typename TreeType>
 void DualTreeBoruvka<MetricType, TreeType>::AddAllEdges()
 {
-  for (size_t i = 0; i < data.n_cols; i++)
+  for (long i = 0; i < data.n_cols; i++)
   {
-    size_t component = connections.Find(i);
-    size_t inEdge = neighborsInComponent[component];
-    size_t outEdge = neighborsOutComponent[component];
+    long component = connections.Find(i);
+    long inEdge = neighborsInComponent[component];
+    long outEdge = neighborsOutComponent[component];
     if (connections.Find(inEdge) != connections.Find(outEdge))
     {
       //totalDist = totalDist + dist;
@@ -219,12 +219,12 @@ void DualTreeBoruvka<MetricType, TreeType>::EmitResults(arma::mat& results)
   // Need to unpermute the point labels.
   if (!naive && ownTree && tree::TreeTraits<TreeType>::RearrangesDataset)
   {
-    for (size_t i = 0; i < (data.n_cols - 1); i++)
+    for (long i = 0; i < (data.n_cols - 1); i++)
     {
       // Make sure the edge list stores the smaller index first to
       // make checking correctness easier
-      size_t ind1 = oldFromNew[edges[i].Lesser()];
-      size_t ind2 = oldFromNew[edges[i].Greater()];
+      long ind1 = oldFromNew[edges[i].Lesser()];
+      long ind2 = oldFromNew[edges[i].Greater()];
 
       if (ind1 < ind2)
       {
@@ -244,7 +244,7 @@ void DualTreeBoruvka<MetricType, TreeType>::EmitResults(arma::mat& results)
   }
   else
   {
-    for (size_t i = 0; i < edges.size(); i++)
+    for (long i = 0; i < edges.size(); i++)
     {
       results(0, i) = edges[i].Lesser();
       results(1, i) = edges[i].Greater();
@@ -266,7 +266,7 @@ void DualTreeBoruvka<MetricType, TreeType>::CleanupHelper(TreeType* tree)
   tree->Stat().Bound() = DBL_MAX;
 
   // Recurse into all children.
-  for (size_t i = 0; i < tree->NumChildren(); ++i)
+  for (long i = 0; i < tree->NumChildren(); ++i)
     CleanupHelper(&tree->Child(i));
 
   // Get the component of the first child or point.  Then we will check to see
@@ -276,13 +276,13 @@ void DualTreeBoruvka<MetricType, TreeType>::CleanupHelper(TreeType* tree)
       connections.Find(tree->Point(0));
 
   // Check components of children.
-  for (size_t i = 0; i < tree->NumChildren(); ++i)
+  for (long i = 0; i < tree->NumChildren(); ++i)
     if (tree->Child(i).Stat().ComponentMembership() != component)
       return;
 
   // Check components of points.
-  for (size_t i = 0; i < tree->NumPoints(); ++i)
-    if (connections.Find(tree->Point(i)) != size_t(component))
+  for (long i = 0; i < tree->NumPoints(); ++i)
+    if (connections.Find(tree->Point(i)) != long(component))
       return;
 
   // If we made it this far, all components are the same.
@@ -295,7 +295,7 @@ void DualTreeBoruvka<MetricType, TreeType>::CleanupHelper(TreeType* tree)
 template<typename MetricType, typename TreeType>
 void DualTreeBoruvka<MetricType, TreeType>::Cleanup()
 {
-  for (size_t i = 0; i < data.n_cols; i++)
+  for (long i = 0; i < data.n_cols; i++)
     neighborsDistances[i] = DBL_MAX;
 
   if (!naive)

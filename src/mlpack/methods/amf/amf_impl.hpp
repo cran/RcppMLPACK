@@ -53,7 +53,7 @@ template<typename TerminationPolicyType,
 template<typename MatType>
 double AMF<TerminationPolicyType, InitializationRuleType, UpdateRuleType>::
 Apply(const MatType& V,
-      const size_t r,
+      const long r,
       arma::mat& W,
       arma::mat& H)
 {
@@ -73,7 +73,7 @@ Apply(const MatType& V,
   }
 
   const double residue = terminationPolicy.Index();
-  const size_t iteration = terminationPolicy.Iteration();
+  const long iteration = terminationPolicy.Iteration();
 
   Rcpp::Rcout << "AMF converged to residue of " << residue << " in "
       << iteration << " iterations." << std::endl;

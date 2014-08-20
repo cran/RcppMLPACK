@@ -67,10 +67,10 @@ class Radical
    * @param m The variable m from Vasicek's m-spacing estimator of entropy.
    */
   Radical(const double noiseStdDev = 0.175,
-          const size_t replicates = 30,
-          const size_t angles = 150,
-          const size_t sweeps = 0,
-          const size_t m = 0);
+          const long replicates = 30,
+          const long angles = 150,
+          const long sweeps = 0,
+          const long m = 0);
 
   /**
    * Run RADICAL.
@@ -107,19 +107,19 @@ class Radical
   double& NoiseStdDev() { return noiseStdDev; }
 
   //! Get the number of Gaussian-perturbed replicates used per point.
-  size_t Replicates() const { return replicates; }
+  long Replicates() const { return replicates; }
   //! Modify the number of Gaussian-perturbed replicates used per point.
-  size_t& Replicates() { return replicates; }
+  long& Replicates() { return replicates; }
 
   //! Get the number of angles considered during brute-force search.
-  size_t Angles() const { return angles; }
+  long Angles() const { return angles; }
   //! Modify the number of angles considered during brute-force search.
-  size_t& Angles() { return angles; }
+  long& Angles() { return angles; }
 
   //! Get the number of sweeps.
-  size_t Sweeps() const { return sweeps; }
+  long Sweeps() const { return sweeps; }
   //! Modify the number of sweeps.
-  size_t& Sweeps() { return sweeps; }
+  long& Sweeps() { return sweeps; }
 
   // Returns a string representation of this object. 
   std::string ToString() const;
@@ -130,17 +130,17 @@ class Radical
   double noiseStdDev;
 
   //! Number of Gaussian-perturbed replicates to use (per point) in Radical2D.
-  size_t replicates;
+  long replicates;
 
   //! Number of angles to consider in brute-force search during Radical2D.
-  size_t angles;
+  long angles;
 
   //! Number of sweeps; each sweep calls Radical2D once for each pair of
   //! dimensions.
-  size_t sweeps;
+  long sweeps;
 
   //! Value of m to use for Vasicek's m-spacing estimator of entropy.
-  size_t m;
+  long m;
 
   //! Internal matrix, held as member variable to prevent memory reallocations.
   arma::mat perturbed;
@@ -152,7 +152,7 @@ void WhitenFeatureMajorMatrix(const arma::mat& matX,
                               arma::mat& matXWhitened,
                               arma::mat& matWhitening);
 
-}; // namespace radical
-}; // namespace mlpack
+} // namespace radical
+} // namespace mlpack
 
 #endif

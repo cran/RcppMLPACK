@@ -43,7 +43,7 @@ class NMFALSUpdate
   NMFALSUpdate() { }
 
   template<typename MatType>
-  void Initialize(const MatType& dataset, const size_t rank)
+  void Initialize(const MatType& dataset, const long rank)
   {
       (void)dataset;
       (void)rank;
@@ -71,7 +71,7 @@ class NMFALSUpdate
     W = V * H.t() * pinv(H * H.t());
 
     // Set all negative numbers to machine epsilon
-    for (size_t i = 0; i < W.n_elem; i++)
+    for (long i = 0; i < W.n_elem; i++)
     {
       if (W(i) < 0.0)
       {
@@ -100,7 +100,7 @@ class NMFALSUpdate
     H = pinv(W.t() * W) * W.t() * V;
 
     // Set all negative numbers to 0.
-    for (size_t i = 0; i < H.n_elem; i++)
+    for (long i = 0; i < H.n_elem; i++)
     {
       if (H(i) < 0.0)
       {

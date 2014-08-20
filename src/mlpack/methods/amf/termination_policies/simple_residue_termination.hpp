@@ -29,7 +29,7 @@ class SimpleResidueTermination
 {
  public:
   SimpleResidueTermination(const double minResidue = 1e-10,
-                           const size_t maxIterations = 10000)
+                           const long maxIterations = 10000)
         : minResidue(minResidue), maxIterations(maxIterations) { }
 
   template<typename MatType>
@@ -39,8 +39,8 @@ class SimpleResidueTermination
     iteration = 1;
     normOld = 0;
 
-    const size_t n = V.n_rows;
-    const size_t m = V.n_cols;
+    const long n = V.n_rows;
+    const long m = V.n_cols;
 
     nm = n * m;
   }
@@ -68,18 +68,18 @@ class SimpleResidueTermination
   }
 
   const double& Index() { return residue; }
-  const size_t& Iteration() { return iteration; }
-  const size_t& MaxIterations() { return maxIterations; }
+  const long& Iteration() { return iteration; }
+  const long& MaxIterations() { return maxIterations; }
 
 public:
   double minResidue;
-  size_t maxIterations;
+  long maxIterations;
 
   double residue;
-  size_t iteration;
+  long iteration;
   double normOld;
 
-  size_t nm;
+  long nm;
 }; // class SimpleResidueTermination
 
 }; // namespace amf

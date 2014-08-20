@@ -34,7 +34,7 @@ class NeighborSearchRules
  public:
   NeighborSearchRules(const typename TreeType::Mat& referenceSet,
                       const typename TreeType::Mat& querySet,
-                      arma::Mat<size_t>& neighbors,
+                      arma::Mat<long>& neighbors,
                       arma::mat& distances,
                       MetricType& metric);
   /**
@@ -45,7 +45,7 @@ class NeighborSearchRules
    * @param queryIndex Index of query point.
    * @param referenceIndex Index of reference point.
    */
-  double BaseCase(const size_t queryIndex, const size_t referenceIndex);
+  double BaseCase(const long queryIndex, const long referenceIndex);
 
   /**
    * Get the score for recursion order.  A low score indicates priority for
@@ -55,7 +55,7 @@ class NeighborSearchRules
    * @param queryIndex Index of query point.
    * @param referenceNode Candidate node to be recursed into.
    */
-  double Score(const size_t queryIndex, TreeType& referenceNode);
+  double Score(const long queryIndex, TreeType& referenceNode);
 
   /**
    * Re-evaluate the score for recursion order.  A low score indicates priority
@@ -68,7 +68,7 @@ class NeighborSearchRules
    * @param referenceNode Candidate node to be recursed into.
    * @param oldScore Old score produced by Score() (or Rescore()).
    */
-  double Rescore(const size_t queryIndex,
+  double Rescore(const long queryIndex,
                  TreeType& referenceNode,
                  const double oldScore) const;
 
@@ -98,14 +98,14 @@ class NeighborSearchRules
                  const double oldScore) const;
 
   //! Get the number of base cases that have been performed.
-  size_t BaseCases() const { return baseCases; }
+  long BaseCases() const { return baseCases; }
   //! Modify the number of base cases that have been performed.
-  size_t& BaseCases() { return baseCases; }
+  long& BaseCases() { return baseCases; }
 
   //! Get the number of scores that have been performed.
-  size_t Scores() const { return scores; }
+  long Scores() const { return scores; }
   //! Modify the number of scores that have been performed.
-  size_t& Scores() { return scores; }
+  long& Scores() { return scores; }
 
   //! Convenience typedef.
   typedef NeighborSearchTraversalInfo<TreeType> TraversalInfoType;
@@ -123,7 +123,7 @@ class NeighborSearchRules
   const typename TreeType::Mat& querySet;
 
   //! The matrix the resultant neighbor indices should be stored in.
-  arma::Mat<size_t>& neighbors;
+  arma::Mat<long>& neighbors;
 
   //! The matrix the resultant neighbor distances should be stored in.
   arma::mat& distances;
@@ -132,16 +132,16 @@ class NeighborSearchRules
   MetricType& metric;
 
   //! The last query point BaseCase() was called with.
-  size_t lastQueryIndex;
+  long lastQueryIndex;
   //! The last reference point BaseCase() was called with.
-  size_t lastReferenceIndex;
+  long lastReferenceIndex;
   //! The last base case result.
   double lastBaseCase;
 
   //! The number of base cases that have been performed.
-  size_t baseCases;
+  long baseCases;
   //! The number of scores that have been performed.
-  size_t scores;
+  long scores;
 
   //! Traversal info for the parent combination; this is updated by the
   //! traversal before each call to Score().
@@ -161,9 +161,9 @@ class NeighborSearchRules
    * @param neighbor Index of reference point which is being inserted.
    * @param distance Distance from query point to reference point.
    */
-  void InsertNeighbor(const size_t queryIndex,
-                      const size_t pos,
-                      const size_t neighbor,
+  void InsertNeighbor(const long queryIndex,
+                      const long pos,
+                      const long neighbor,
                       const double distance);
 };
 

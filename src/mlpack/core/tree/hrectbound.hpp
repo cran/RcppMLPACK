@@ -56,7 +56,7 @@ class HRectBound
    * Initializes to specified dimensionality with each dimension the empty
    * set.
    */
-  HRectBound(const size_t dimension);
+  HRectBound(const long dimension);
 
   //! Copy constructor; necessary to prevent memory leaks.
   HRectBound(const HRectBound& other);
@@ -73,13 +73,13 @@ class HRectBound
   void Clear();
 
   //! Gets the dimensionality.
-  size_t Dim() const { return dim; }
+  long Dim() const { return dim; }
 
   //! Get the range for a particular dimension.  No bounds checking.  Be
   //! careful: this may make MinWidth() invalid.
-  math::Range& operator[](const size_t i) { return bounds[i]; }
+  math::Range& operator[](const long i) { return bounds[i]; }
   //! Modify the range for a particular dimension.  No bounds checking.
-  const math::Range& operator[](const size_t i) const { return bounds[i]; }
+  const math::Range& operator[](const long i) const { return bounds[i]; }
 
   //! Get the minimum width of the bound.
   double MinWidth() const { return minWidth; }
@@ -184,7 +184,7 @@ class HRectBound
 
  private:
   //! The dimensionality of the bound.
-  size_t dim;
+  long dim;
   //! The bounds for each dimension.
   math::Range* bounds;
   //! Cached minimum width of bound.

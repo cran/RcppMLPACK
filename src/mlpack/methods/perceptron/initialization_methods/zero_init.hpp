@@ -36,8 +36,8 @@ class ZeroInitialization
   ZeroInitialization() { }
 
   inline static void Initialize(arma::mat& W,
-                                const size_t row,
-                                const size_t col)
+                                const long row,
+                                const long col)
   {
     arma::mat tempWeights(row, col);
     tempWeights.fill(0.0);
@@ -46,7 +46,7 @@ class ZeroInitialization
   }
 }; // class ZeroInitialization
 
-}; // namespace perceptron
-}; // namespace mlpack
+} // namespace perceptron
+} // namespace mlpack
 
 #endif

@@ -55,11 +55,11 @@ MRKDStatistic::MRKDStatistic(const TreeType& node) :
     parentStat(NULL)
 {
   centerOfMass = dataset.col(begin);
-  for (size_t i = begin + 1; i < begin + count; ++i)
+  for (long i = begin + 1; i < begin + count; ++i)
     centerOfMass += dataset.col(i);
 
   sumOfSquaredNorms = 0.0;
-  for (size_t i = begin; i < begin + count; ++i)
+  for (long i = begin; i < begin + count; ++i)
     sumOfSquaredNorms += arma::norm(dataset.col(i), 2);
 }
 
@@ -75,8 +75,8 @@ MRKDStatistic::MRKDStatistic(const TreeType& node) :
  *
 template<typename MatType>
 MRKDStatistic::MRKDStatistic(const MatType& dataset,
-                             const size_t begin,
-                             const size_t count,
+                             const long begin,
+                             const long count,
                              MRKDStatistic& leftStat,
                              MRKDStatistic& rightStat) :
     dataset(&dataset),

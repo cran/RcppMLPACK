@@ -42,7 +42,7 @@ class NMFMultiplicativeDistanceUpdate
   NMFMultiplicativeDistanceUpdate() { }
 
   template<typename MatType>
-  void Initialize(const MatType& dataset, const size_t rank)
+  void Initialize(const MatType& dataset, const long rank)
   {
         (void)dataset;
         (void)rank;

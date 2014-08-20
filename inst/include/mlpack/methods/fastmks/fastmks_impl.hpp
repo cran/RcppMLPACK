@@ -200,8 +200,8 @@ FastMKS<KernelType, TreeType>::~FastMKS()
 }
 
 template<typename KernelType, typename TreeType>
-void FastMKS<KernelType, TreeType>::Search(const size_t k,
-        arma::Mat<size_t>& indices,
+void FastMKS<KernelType, TreeType>::Search(const long k,
+        arma::Mat<long>& indices,
         arma::mat& products)
 {
     // No remapping will be necessary because we are using the cover tree.
@@ -215,9 +215,9 @@ void FastMKS<KernelType, TreeType>::Search(const size_t k,
     if (naive)
     {
         // Simple double loop.  Stupid, slow, but a good benchmark.
-        for (size_t q = 0; q < querySet.n_cols; ++q)
+        for (long q = 0; q < querySet.n_cols; ++q)
         {
-            for (size_t r = 0; r < referenceSet.n_cols; ++r)
+            for (long r = 0; r < referenceSet.n_cols; ++r)
             {
                 if ((&querySet == &referenceSet) && (q == r))
                     continue;
@@ -225,7 +225,7 @@ void FastMKS<KernelType, TreeType>::Search(const size_t k,
                 const double eval = metric.Kernel().Evaluate(querySet.unsafe_col(q),
                                     referenceSet.unsafe_col(r));
 
-                size_t insertPosition;
+                long insertPosition;
                 for (insertPosition = 0; insertPosition < indices.n_rows;
                         ++insertPosition)
                     if (eval > products(insertPosition, q))
@@ -251,11 +251,11 @@ void FastMKS<KernelType, TreeType>::Search(const size_t k,
 
         typename TreeType::template SingleTreeTraverser<RuleType> traverser(rules);
 
-        for (size_t i = 0; i < querySet.n_cols; ++i)
+        for (long i = 0; i < querySet.n_cols; ++i)
             traverser.Traverse(i, *referenceTree);
 
         // Save the number of pruned nodes.
-        const size_t numPrunes = traverser.NumPrunes();
+        const long numPrunes = traverser.NumPrunes();
 
         Rcpp::Rcout << "Pruned " << numPrunes << " nodes." << std::endl;
 
@@ -274,7 +274,7 @@ void FastMKS<KernelType, TreeType>::Search(const size_t k,
 
     traverser.Traverse(*queryTree, *referenceTree);
 
-    const size_t numPrunes = traverser.NumPrunes();
+    const long numPrunes = traverser.NumPrunes();
 
     Rcpp::Rcout << "Pruned " << numPrunes << " nodes." << std::endl;
     Rcpp::Rcout << rules.BaseCases() << " base cases." << std::endl;
@@ -293,11 +293,11 @@ void FastMKS<KernelType, TreeType>::Search(const size_t k,
  * @param distance Distance from query point to reference point.
  */
 template<typename KernelType, typename TreeType>
-void FastMKS<KernelType, TreeType>::InsertNeighbor(arma::Mat<size_t>& indices,
+void FastMKS<KernelType, TreeType>::InsertNeighbor(arma::Mat<long>& indices,
         arma::mat& products,
-        const size_t queryIndex,
-        const size_t pos,
-        const size_t neighbor,
+        const long queryIndex,
+        const long pos,
+        const long neighbor,
         const double distance)
 {
     // We only memmove() if there is actually a need to shift something.
@@ -309,7 +309,7 @@ void FastMKS<KernelType, TreeType>::InsertNeighbor(arma::Mat<size_t>& indices,
                 sizeof(double) * len);
         memmove(indices.colptr(queryIndex) + (pos + 1),
                 indices.colptr(queryIndex) + pos,
-                sizeof(size_t) * len);
+                sizeof(long) * len);
     }
 
     // Now put the new information in the right index.
@@ -334,8 +334,8 @@ std::string FastMKS<KernelType, TreeType>::ToString() const
 // Specialized implementation for tighter bounds for Gaussian.
 /*
 template<>
-void FastMKS<kernel::GaussianKernel>::Search(const size_t k,
-                                             arma::Mat<size_t>& indices,
+void FastMKS<kernel::GaussianKernel>::Search(const long k,
+                                             arma::Mat<long>& indices,
                                              arma::mat& products)
 {
   Rcpp::Rcout << "Alternate implementation!" << std::endl;
@@ -348,21 +348,21 @@ void FastMKS<kernel::GaussianKernel>::Search(const size_t k,
 
 
 
-  size_t kernelEvaluations = 0;
+  long kernelEvaluations = 0;
 
   // Naive implementation.
   if (naive)
   {
     // Simple double loop.  Stupid, slow, but a good benchmark.
-    for (size_t q = 0; q < querySet.n_cols; ++q)
+    for (long q = 0; q < querySet.n_cols; ++q)
     {
-      for (size_t r = 0; r < referenceSet.n_cols; ++r)
+      for (long r = 0; r < referenceSet.n_cols; ++r)
       {
         const double eval = metric.Kernel().Evaluate(querySet.unsafe_col(q),
             referenceSet.unsafe_col(r));
         ++kernelEvaluations;
 
-        size_t insertPosition;
+        long insertPosition;
         for (insertPosition = 0; insertPosition < indices.n_rows;
             ++insertPosition)
           if (eval > products(insertPosition, q))
@@ -383,17 +383,17 @@ void FastMKS<kernel::GaussianKernel>::Search(const size_t k,
   if (single)
   {
     // Calculate number of pruned nodes.
-    size_t numPrunes = 0;
+    long numPrunes = 0;
 
     // Precalculate query products ( || q || for all q).
     arma::vec queryProducts(querySet.n_cols);
-    for (size_t queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
+    for (long queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
       queryProducts[queryIndex] = sqrt(metric.Kernel().Evaluate(
           querySet.unsafe_col(queryIndex), querySet.unsafe_col(queryIndex)));
     kernelEvaluations += querySet.n_cols;
 
     // Screw the CoverTreeTraverser, we'll implement it by hand.
-    for (size_t queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
+    for (long queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
     {
       // Use an array of priority queues?
       std::priority_queue<
@@ -463,7 +463,7 @@ void FastMKS<kernel::GaussianKernel>::Search(const size_t k,
           else
             ++numPrunes;
 
-          for (size_t i = 1; i < referenceNode->NumChildren(); ++i)
+          for (long i = 1; i < referenceNode->NumChildren(); ++i)
           {
             // Before we evaluate the child, let's see if it can possibly have
             // a better evaluation.
@@ -502,7 +502,7 @@ void FastMKS<kernel::GaussianKernel>::Search(const size_t k,
                 if (childFrame.eval > products(products.n_rows - 1, queryIndex))
                 {
                   // This is a better result.  Find out where to insert.
-                  size_t insertPosition = 0;
+                  long insertPosition = 0;
                   for ( ; insertPosition < products.n_rows - 1;
                       ++insertPosition)
                     if (childFrame.eval > products(insertPosition, queryIndex))

@@ -32,11 +32,11 @@ namespace kmeans {
  * Take action about an empty cluster.
  */
 template<typename MatType>
-size_t MaxVarianceNewCluster::EmptyCluster(const MatType& data,
-                                           const size_t emptyCluster,
+long MaxVarianceNewCluster::EmptyCluster(const MatType& data,
+                                           const long emptyCluster,
                                            const MatType& centroids,
-                                           arma::Col<size_t>& clusterCounts,
-                                           arma::Col<size_t>& assignments)
+                                           arma::Col<long>& clusterCounts,
+                                           arma::Col<long>& assignments)
 {
   // First, we need to find the cluster with maximum variance (by which I mean
   // the sum of the covariance matrices).
@@ -45,7 +45,7 @@ size_t MaxVarianceNewCluster::EmptyCluster(const MatType& data,
 
   // Add the variance of each point's distance away from the cluster.  I think
   // this is the sensible thing to do.
-  for (size_t i = 0; i < data.n_cols; ++i)
+  for (long i = 0; i < data.n_cols; ++i)
   {
     variances[assignments[i]] += metric::SquaredEuclideanDistance::Evaluate(
         data.col(i), centroids.col(assignments[i]));
@@ -56,7 +56,7 @@ size_t MaxVarianceNewCluster::EmptyCluster(const MatType& data,
   // matter because variances.max() won't pick it up.  If the number of points
   // in the cluster is 1, we ensure that cluster is not selected by forcing the
   // variance to 0.
-  for (size_t i = 0; i < clusterCounts.n_elem; ++i)
+  for (long i = 0; i < clusterCounts.n_elem; ++i)
     variances[i] /= (clusterCounts[i] == 1) ? DBL_MAX : clusterCounts[i];
 
   // Now find the cluster with maximum variance.
@@ -64,9 +64,9 @@ size_t MaxVarianceNewCluster::EmptyCluster(const MatType& data,
   variances.max(maxVarCluster);
 
   // Now, inside this cluster, find the point which is furthest away.
-  size_t furthestPoint = data.n_cols;
+  long furthestPoint = data.n_cols;
   double maxDistance = -DBL_MAX;
-  for (size_t i = 0; i < data.n_cols; ++i)
+  for (long i = 0; i < data.n_cols; ++i)
   {
     if (assignments[i] == maxVarCluster)
     {

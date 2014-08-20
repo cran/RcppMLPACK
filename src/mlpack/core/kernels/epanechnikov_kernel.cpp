@@ -31,7 +31,7 @@ using namespace mlpack::kernel;
  *
  * @param dimension Dimension to calculate the normalizer for.
  */
-double EpanechnikovKernel::Normalizer(const size_t dimension)
+double EpanechnikovKernel::Normalizer(const long dimension)
 {
   return 2.0 * pow(bandwidth, (double) dimension) *
       std::pow(M_PI, dimension / 2.0) /

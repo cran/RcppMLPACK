@@ -44,8 +44,8 @@ class MVU
  public:
   MVU(const arma::mat& dataIn);
 
-  void Unfold(const size_t newDim,
-              const size_t numNeighbors,
+  void Unfold(const long newDim,
+              const long numNeighbors,
               arma::mat& outputCoordinates);
 
  private:

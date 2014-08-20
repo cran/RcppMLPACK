@@ -50,14 +50,14 @@ class MRKDStatistic
   std::string ToString() const;
 
   //! Get the index of the initial item in the dataset.
-  size_t Begin() const { return begin; }
+  long Begin() const { return begin; }
   //! Modify the index of the initial item in the dataset.
-  size_t& Begin() { return begin; }
+  long& Begin() { return begin; }
 
   //! Get the number of items in the dataset.
-  size_t Count() const { return count; }
+  long Count() const { return count; }
   //! Modify the number of items in the dataset.
-  size_t& Count() { return count; }
+  long& Count() { return count; }
 
   //! Get the center of mass.
   const arma::colvec& CenterOfMass() const { return centerOfMass; }
@@ -65,22 +65,22 @@ class MRKDStatistic
   arma::colvec& CenterOfMass() { return centerOfMass; }
 
   //! Get the index of the dominating centroid.
-  size_t DominatingCentroid() const { return dominatingCentroid; }
+  long DominatingCentroid() const { return dominatingCentroid; }
   //! Modify the index of the dominating centroid.
-  size_t& DominatingCentroid() { return dominatingCentroid; }
+  long& DominatingCentroid() { return dominatingCentroid; }
 
   //! Access the whitelist.
-  const std::vector<size_t>& Whitelist() const { return whitelist; }
+  const std::vector<long>& Whitelist() const { return whitelist; }
   //! Modify the whitelist.
-  std::vector<size_t>& Whitelist() { return whitelist; }
+  std::vector<long>& Whitelist() { return whitelist; }
 
  private:
   //! The data points this object contains.
   const arma::mat* dataset;
   //! The initial item in the dataset, so we don't have to make a copy.
-  size_t begin;
+  long begin;
   //! The number of items in the dataset.
-  size_t count;
+  long count;
   //! The left child.
   const MRKDStatistic* leftStat;
   //! The right child.
@@ -96,10 +96,10 @@ class MRKDStatistic
 
   // There may be a better place to store this -- HRectBound?
   //! The index of the dominating centroid of the associated hyperrectangle.
-  size_t dominatingCentroid;
+  long dominatingCentroid;
 
   //! The list of centroids that cannot own this hyperrectangle.
-  std::vector<size_t> whitelist;
+  std::vector<long> whitelist;
   //! Whether or not the whitelist is valid.
   bool isWhitelistValid;
 };

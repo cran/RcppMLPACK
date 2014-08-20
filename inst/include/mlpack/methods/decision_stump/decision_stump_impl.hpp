@@ -42,9 +42,9 @@ namespace decision_stump {
  */
 template<typename MatType>
 DecisionStump<MatType>::DecisionStump(const MatType& data,
-                                      const arma::Row<size_t>& labels,
-                                      const size_t classes,
-                                      size_t inpBucketSize)
+                                      const arma::Row<long>& labels,
+                                      const long classes,
+                                      long inpBucketSize)
 {
   numClass = classes;
   bucketSize = inpBucketSize;
@@ -52,7 +52,7 @@ DecisionStump<MatType>::DecisionStump(const MatType& data,
   // If classLabels are not all identical, proceed with training.
   int bestAtt = 0;
   double entropy;
-  const double rootEntropy = CalculateEntropy<size_t>(
+  const double rootEntropy = CalculateEntropy<long>(
       labels.subvec(0, labels.n_elem - 1));
 
   double gain, bestGain = 0.0;
@@ -96,7 +96,7 @@ DecisionStump<MatType>::DecisionStump(const MatType& data,
  */
 template<typename MatType>
 void DecisionStump<MatType>::Classify(const MatType& test,
-                                      arma::Row<size_t>& predictedLabels)
+                                      arma::Row<long>& predictedLabels)
 {
   for (int i = 0; i < test.n_cols; i++)
   {
@@ -160,7 +160,7 @@ DecisionStump<MatType>::ModifyData(MatType& data, const arma::Row<double>& D)
 template <typename MatType>
 double DecisionStump<MatType>::SetupSplitAttribute(
     const arma::rowvec& attribute,
-    const arma::Row<size_t>& labels)
+    const arma::Row<long>& labels)
 {
   int i, count, begin, end;
   double entropy = 0.0;
@@ -172,7 +172,7 @@ double DecisionStump<MatType>::SetupSplitAttribute(
   // labels.  This sort is stable.
   arma::uvec sortedIndexAtt = arma::stable_sort_index(attribute.t());
 
-  arma::Row<size_t> sortedLabels(attribute.n_elem);
+  arma::Row<long> sortedLabels(attribute.n_elem);
   sortedLabels.fill(0);
 
   for (i = 0; i < attribute.n_elem; i++)
@@ -196,7 +196,7 @@ double DecisionStump<MatType>::SetupSplitAttribute(
       // Use ratioEl to calculate the ratio of elements in this split.
       const double ratioEl = ((double) (end - begin + 1) / sortedLabels.n_elem);
 
-      entropy += ratioEl * CalculateEntropy<size_t>(
+      entropy += ratioEl * CalculateEntropy<long>(
           sortedLabels.subvec(begin, end));
       i++;
     }
@@ -223,7 +223,7 @@ double DecisionStump<MatType>::SetupSplitAttribute(
       }
       const double ratioEl = ((double) (end - begin + 1) / sortedLabels.n_elem);
 
-      entropy += ratioEl * CalculateEntropy<size_t>(
+      entropy += ratioEl * CalculateEntropy<long>(
           sortedLabels.subvec(begin, end));
 
       i = end + 1;
@@ -245,16 +245,16 @@ double DecisionStump<MatType>::SetupSplitAttribute(
 template <typename MatType>
 template <typename rType>
 void DecisionStump<MatType>::TrainOnAtt(const arma::rowvec& attribute,
-                                        const arma::Row<size_t>& labels)
+                                        const arma::Row<long>& labels)
 {
-  size_t i, count, begin, end;
+  long i, count, begin, end;
 
   arma::rowvec sortedSplitAtt = arma::sort(attribute);
   arma::uvec sortedSplitIndexAtt = arma::stable_sort_index(attribute.t());
-  arma::Row<size_t> sortedLabels(attribute.n_elem);
+  arma::Row<long> sortedLabels(attribute.n_elem);
   sortedLabels.fill(0);
   arma::vec tempSplit;
-  arma::Row<size_t> tempLabel;
+  arma::Row<long> tempLabel;
 
   for (i = 0; i < attribute.n_elem; i++)
     sortedLabels(i) = labels(sortedSplitIndexAtt(i));
@@ -401,7 +401,7 @@ template <typename rType>
 int DecisionStump<MatType>::IsDistinct(const arma::Row<rType>& featureRow)
 {
   rType val = featureRow(0);
-  for (size_t i = 1; i < featureRow.n_elem; ++i)
+  for (long i = 1; i < featureRow.n_elem; ++i)
     if (val != featureRow(i))
       return 1;
   return 0;
@@ -418,9 +418,9 @@ template<typename AttType, typename LabelType>
 double DecisionStump<MatType>::CalculateEntropy(arma::subview_row<LabelType> labels)
 {
   double entropy = 0.0;
-  size_t j;
+  long j;
 
-  arma::Row<size_t> numElem(numClass);
+  arma::Row<long> numElem(numClass);
   numElem.fill(0);
 
   // Populate numElem; they are used as helpers to calculate

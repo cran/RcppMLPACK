@@ -38,7 +38,7 @@ LinearRegression::LinearRegression(const arma::mat& predictors,
   // We store the number of rows and columns of the predictors.
   // Reminder: Armadillo stores the data transposed from how we think of it,
   //           that is, columns are actually rows (see: column major order).
-  const size_t nCols = predictors.n_cols;
+  const long nCols = predictors.n_cols;
 
   // Here we add the row of ones to the predictors.
   arma::mat p;
@@ -115,8 +115,8 @@ double LinearRegression::ComputeError(const arma::mat& predictors,
                                       const arma::vec& responses) const
 {
   // Get the number of columns and rows of the dataset.
-  const size_t nCols = predictors.n_cols;
-  const size_t nRows = predictors.n_rows;
+  const long nCols = predictors.n_cols;
+  const long nRows = predictors.n_rows;
 
   // Ensure that we have the correct number of dimensions in the dataset.
   if (nRows != parameters.n_rows - 1)

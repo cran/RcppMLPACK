@@ -26,7 +26,7 @@ using namespace mlpack;
 using namespace mlpack::optimization;
 using namespace mlpack::optimization::test;
 
-double SGDTestFunction::Evaluate(const arma::mat& coordinates, const size_t i)
+double SGDTestFunction::Evaluate(const arma::mat& coordinates, const long i)
     const
 {
   switch (i)
@@ -46,7 +46,7 @@ double SGDTestFunction::Evaluate(const arma::mat& coordinates, const size_t i)
 }
 
 void SGDTestFunction::Gradient(const arma::mat& coordinates,
-                               const size_t i,
+                               const long i,
                                arma::mat& gradient) const
 {
   gradient.zeros(3);

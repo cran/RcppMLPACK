@@ -85,8 +85,8 @@ void LARS::Regress(const arma::mat& matX,
   // Compute the initial maximum correlation among all dimensions.
   arma::vec corr = vecXTy;
   double maxCorr = 0;
-  size_t changeInd = 0;
-  for (size_t i = 0; i < vecXTy.n_elem; ++i)
+  long changeInd = 0;
+  for (long i = 0; i < vecXTy.n_elem; ++i)
   {
     if (fabs(corr(i)) > maxCorr)
     {
@@ -123,7 +123,7 @@ void LARS::Regress(const arma::mat& matX,
   {
     // Compute the maximum correlation among inactive dimensions.
     maxCorr = 0;
-    for (size_t i = 0; i < dataRef.n_cols; i++)
+    for (long i = 0; i < dataRef.n_cols; i++)
     {
       if ((!isActive[i]) && (!isIgnored[i]) && (fabs(corr(i)) > maxCorr))
       {
@@ -137,7 +137,7 @@ void LARS::Regress(const arma::mat& matX,
       if (useCholesky)
       {
         // vec newGramCol = vec(activeSet.size());
-        // for (size_t i = 0; i < activeSet.size(); i++)
+        // for (long i = 0; i < activeSet.size(); i++)
         // {
         //   newGramCol[i] = dot(matX.col(activeSet[i]), matX.col(changeInd));
         // }
@@ -154,7 +154,7 @@ void LARS::Regress(const arma::mat& matX,
 
     // Compute signs of correlations.
     arma::vec s = arma::vec(activeSet.size());
-    for (size_t i = 0; i < activeSet.size(); i++)
+    for (long i = 0; i < activeSet.size(); i++)
       s(i) = corr(activeSet[i]) / fabs(corr(activeSet[i]));
 
     // Compute the "equiangular" direction in parameter space (betaDirection).
@@ -204,8 +204,8 @@ void LARS::Regress(const arma::mat& matX,
     else
     {
       arma::mat matGramActive = arma::mat(activeSet.size(), activeSet.size());
-      for (size_t i = 0; i < activeSet.size(); i++)
-        for (size_t j = 0; j < activeSet.size(); j++)
+      for (long i = 0; i < activeSet.size(); i++)
+        for (long j = 0; j < activeSet.size(); j++)
           matGramActive(i, j) = matGram(activeSet[i], activeSet[j]);
 
       // Check for singularity.
@@ -241,7 +241,7 @@ void LARS::Regress(const arma::mat& matX,
     if ((activeSet.size() + ignoreSet.size()) < dataRef.n_cols)
     {
       // Compute correlations with direction.
-      for (size_t ind = 0; ind < dataRef.n_cols; ind++)
+      for (long ind = 0; ind < dataRef.n_cols; ind++)
       {
         if (isActive[ind] || isIgnored[ind])
           continue;
@@ -261,9 +261,9 @@ void LARS::Regress(const arma::mat& matX,
     {
       lassocond = false;
       double lassoboundOnGamma = DBL_MAX;
-      size_t activeIndToKickOut = -1;
+      long activeIndToKickOut = -1;
 
-      for (size_t i = 0; i < activeSet.size(); i++)
+      for (long i = 0; i < activeSet.size(); i++)
       {
         double val = -beta(activeSet[i]) / betaDirection(i);
         if ((val > 0) && (val < lassoboundOnGamma))
@@ -285,7 +285,7 @@ void LARS::Regress(const arma::mat& matX,
     yHat += gamma * yHatDirection;
 
     // Update the estimator.
-    for (size_t i = 0; i < activeSet.size(); i++)
+    for (long i = 0; i < activeSet.size(); i++)
     {
       beta(activeSet[i]) += gamma * betaDirection(i);
     }
@@ -313,7 +313,7 @@ void LARS::Regress(const arma::mat& matX,
       corr -= lambda2 * beta;
 
     double curLambda = 0;
-    for (size_t i = 0; i < activeSet.size(); i++)
+    for (long i = 0; i < activeSet.size(); i++)
       curLambda += fabs(corr(activeSet[i]));
 
     curLambda /= ((double) activeSet.size());
@@ -338,19 +338,19 @@ void LARS::Regress(const arma::mat& matX,
 }
 
 // Private functions.
-void LARS::Deactivate(const size_t activeVarInd)
+void LARS::Deactivate(const long activeVarInd)
 {
   isActive[activeSet[activeVarInd]] = false;
   activeSet.erase(activeSet.begin() + activeVarInd);
 }
 
-void LARS::Activate(const size_t varInd)
+void LARS::Activate(const long varInd)
 {
   isActive[varInd] = true;
   activeSet.push_back(varInd);
 }
 
-void LARS::Ignore(const size_t varInd)
+void LARS::Ignore(const long varInd)
 {
   isIgnored[varInd] = true;
   ignoreSet.push_back(varInd);
@@ -361,7 +361,7 @@ void LARS::ComputeYHatDirection(const arma::mat& matX,
                                 arma::vec& yHatDirection)
 {
   yHatDirection.fill(0);
-  for (size_t i = 0; i < activeSet.size(); i++)
+  for (long i = 0; i < activeSet.size(); i++)
     yHatDirection += betaDirection(i) * matX.col(activeSet[i]);
 }
 
@@ -460,9 +460,9 @@ void LARS::GivensRotate(const arma::vec::fixed<2>& x,
   }
 }
 
-void LARS::CholeskyDelete(const size_t colToKill)
+void LARS::CholeskyDelete(const long colToKill)
 {
-  size_t n = matUtriCholFactor.n_rows;
+  long n = matUtriCholFactor.n_rows;
 
   if (colToKill == (n - 1))
   {
@@ -474,7 +474,7 @@ void LARS::CholeskyDelete(const size_t colToKill)
     matUtriCholFactor.shed_col(colToKill); // remove column colToKill
     n--;
 
-    for (size_t k = colToKill; k < n; k++)
+    for (long k = colToKill; k < n; k++)
     {
       arma::mat matG;
       arma::vec::fixed<2> rotatedVec;

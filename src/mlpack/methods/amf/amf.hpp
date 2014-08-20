@@ -54,7 +54,7 @@ namespace amf {
  *
  * @code
  * extern arma::mat V; // Matrix that we want to perform LMF on.
- * size_t r = 10; // Rank of decomposition
+ * long r = 10; // Rank of decomposition
  * arma::mat W; // Basis matrix
  * arma::mat H; // Encoding matrix
  *
@@ -107,7 +107,7 @@ class AMF
    */
   template<typename MatType>
   double Apply(const MatType& V,
-               const size_t r,
+               const long r,
                arma::mat& W,
                arma::mat& H);
 

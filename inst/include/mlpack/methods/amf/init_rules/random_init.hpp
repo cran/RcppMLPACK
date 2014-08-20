@@ -36,13 +36,13 @@ class RandomInitialization
 
   template<typename MatType>
   inline static void Initialize(const MatType& V,
-                                const size_t r,
+                                const long r,
                                 arma::mat& W,
                                 arma::mat& H)
   {
     // Simple implementation (left in the header file due to its simplicity).
-    size_t n = V.n_rows;
-    size_t m = V.n_cols;
+    long n = V.n_rows;
+    long m = V.n_cols;
 
     // Intialize to random values.
     W.randu(n, r);

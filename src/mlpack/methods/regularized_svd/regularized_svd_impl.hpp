@@ -30,8 +30,8 @@ template<template<typename> class OptimizerType>
 RegularizedSVD<OptimizerType>::RegularizedSVD(const arma::mat& data,
                                               arma::mat& u,
                                               arma::mat& v,
-                                              const size_t rank,
-                                              const size_t iterations,
+                                              const long rank,
+                                              const long iterations,
                                               const double alpha,
                                               const double lambda) :
     data(data),
@@ -49,8 +49,8 @@ RegularizedSVD<OptimizerType>::RegularizedSVD(const arma::mat& data,
   const double out = optimizer.Optimize(parameters);
 
   
-  const size_t numUsers = max(data.row(0)) + 1;
-  const size_t numItems = max(data.row(1)) + 1;
+  const long numUsers = max(data.row(0)) + 1;
+  const long numItems = max(data.row(1)) + 1;
   
   u = parameters.submat(0, 0, rank - 1, numUsers - 1);
   v = parameters.submat(0, numUsers, rank - 1, numUsers + numItems - 1);

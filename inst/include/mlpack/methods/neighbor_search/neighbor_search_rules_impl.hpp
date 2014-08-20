@@ -32,7 +32,7 @@ template<typename SortPolicy, typename MetricType, typename TreeType>
 NeighborSearchRules<SortPolicy, MetricType, TreeType>::NeighborSearchRules(
     const typename TreeType::Mat& referenceSet,
     const typename TreeType::Mat& querySet,
-    arma::Mat<size_t>& neighbors,
+    arma::Mat<long>& neighbors,
     arma::mat& distances,
     MetricType& metric) :
     referenceSet(referenceSet),
@@ -55,7 +55,7 @@ NeighborSearchRules<SortPolicy, MetricType, TreeType>::NeighborSearchRules(
 template<typename SortPolicy, typename MetricType, typename TreeType>
 inline force_inline // Absolutely MUST be inline so optimizations can happen.
 double NeighborSearchRules<SortPolicy, MetricType, TreeType>::
-BaseCase(const size_t queryIndex, const size_t referenceIndex)
+BaseCase(const long queryIndex, const long referenceIndex)
 {
   // If the datasets are the same, then this search is only using one dataset
   // and we should not return identical points.
@@ -73,12 +73,12 @@ BaseCase(const size_t queryIndex, const size_t referenceIndex)
   // If this distance is better than any of the current candidates, the
   // SortDistance() function will give us the position to insert it into.
   arma::vec queryDist = distances.unsafe_col(queryIndex);
-  arma::Col<size_t> queryIndices = neighbors.unsafe_col(queryIndex);
-  const size_t insertPosition = SortPolicy::SortDistance(queryDist,
+  arma::Col<long> queryIndices = neighbors.unsafe_col(queryIndex);
+  const long insertPosition = SortPolicy::SortDistance(queryDist,
       queryIndices, distance);
 
-  // SortDistance() returns (size_t() - 1) if we shouldn't add it.
-  if (insertPosition != (size_t() - 1))
+  // SortDistance() returns (long() - 1) if we shouldn't add it.
+  if (insertPosition != (long() - 1))
     InsertNeighbor(queryIndex, insertPosition, referenceIndex, distance);
 
   // Cache this information for the next time BaseCase() is called.
@@ -91,7 +91,7 @@ BaseCase(const size_t queryIndex, const size_t referenceIndex)
 
 template<typename SortPolicy, typename MetricType, typename TreeType>
 inline double NeighborSearchRules<SortPolicy, MetricType, TreeType>::Score(
-    const size_t queryIndex,
+    const long queryIndex,
     TreeType& referenceNode)
 {
   ++scores; // Count number of Score() calls.
@@ -132,7 +132,7 @@ inline double NeighborSearchRules<SortPolicy, MetricType, TreeType>::Score(
 
 template<typename SortPolicy, typename MetricType, typename TreeType>
 inline double NeighborSearchRules<SortPolicy, MetricType, TreeType>::Rescore(
-    const size_t queryIndex,
+    const long queryIndex,
     TreeType& /* referenceNode */,
     const double oldScore) const
 {
@@ -352,8 +352,8 @@ inline double NeighborSearchRules<SortPolicy, MetricType, TreeType>::
   // in a node.
 //  if (queryNode.Parent() != NULL && queryNode.NumPoints() > 0)
 //  {
-//    size_t parentIndexStart = 0;
-//    for (size_t i = 0; i < neighbors.n_rows; ++i)
+//    long parentIndexStart = 0;
+//    for (long i = 0; i < neighbors.n_rows; ++i)
 //    {
 //      const double pointDistance = distances(i, queryNode.Point(0));
 //      if (pointDistance == DBL_MAX)
@@ -376,7 +376,7 @@ inline double NeighborSearchRules<SortPolicy, MetricType, TreeType>::
 
   // Loop over all points in this node to find the best and worst distance
   // candidates (for (1) and (2)).
-  for (size_t i = 0; i < queryNode.NumPoints(); ++i)
+  for (long i = 0; i < queryNode.NumPoints(); ++i)
   {
     const double distance = distances(distances.n_rows - 1,
         queryNode.Point(i));
@@ -394,7 +394,7 @@ inline double NeighborSearchRules<SortPolicy, MetricType, TreeType>::
   const double queryMaxDescendantDistance =
       queryNode.FurthestDescendantDistance();
 
-  for (size_t i = 0; i < queryNode.NumChildren(); ++i)
+  for (long i = 0; i < queryNode.NumChildren(); ++i)
   {
     const double firstBound = queryNode.Child(i).Stat().FirstBound();
     const double secondBound = queryNode.Child(i).Stat().SecondBound();
@@ -470,9 +470,9 @@ inline double NeighborSearchRules<SortPolicy, MetricType, TreeType>::
  */
 template<typename SortPolicy, typename MetricType, typename TreeType>
 void NeighborSearchRules<SortPolicy, MetricType, TreeType>::InsertNeighbor(
-    const size_t queryIndex,
-    const size_t pos,
-    const size_t neighbor,
+    const long queryIndex,
+    const long pos,
+    const long neighbor,
     const double distance)
 {
   // We only memmove() if there is actually a need to shift something.
@@ -484,7 +484,7 @@ void NeighborSearchRules<SortPolicy, MetricType, TreeType>::InsertNeighbor(
         sizeof(double) * len);
     memmove(neighbors.colptr(queryIndex) + (pos + 1),
         neighbors.colptr(queryIndex) + pos,
-        sizeof(size_t) * len);
+        sizeof(long) * len);
   }
 
   // Now put the new information in the right index.

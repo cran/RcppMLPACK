@@ -51,7 +51,7 @@ class NystroemKernelRule
                                   arma::mat& transformedData,
                                   arma::vec& eigval,
                                   arma::mat& eigvec,
-                                  const size_t rank,
+                                  const long rank,
                                   KernelType kernel = KernelType())
     {
       arma::mat G, v;

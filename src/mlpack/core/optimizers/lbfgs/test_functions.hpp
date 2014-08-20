@@ -133,10 +133,10 @@ class GeneralizedRosenbrockFunction
   double Evaluate(const arma::mat& coordinates) const;
   void Gradient(const arma::mat& coordinates, arma::mat& gradient) const;
 
-  size_t NumFunctions() const { return n - 1; }
-  double Evaluate(const arma::mat& coordinates, const size_t i) const;
+  long NumFunctions() const { return n - 1; }
+  double Evaluate(const arma::mat& coordinates, const long i) const;
   void Gradient(const arma::mat& coordinates,
-                const size_t i,
+                const long i,
                 arma::mat& gradient) const;
 
   const arma::mat& GetInitialPoint() const;

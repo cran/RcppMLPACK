@@ -44,12 +44,12 @@ namespace optimization {
  */
 template<typename FunctionType>
 L_BFGS<FunctionType>::L_BFGS(FunctionType& function,
-                             const size_t numBasis,
-                             const size_t maxIterations,
+                             const long numBasis,
+                             const long maxIterations,
                              const double armijoConstant,
                              const double wolfe,
                              const double minGradientNorm,
-                             const size_t maxLineSearchTrials,
+                             const long maxLineSearchTrials,
                              const double minStep,
                              const double maxStep) :
     function(function),
@@ -65,8 +65,8 @@ L_BFGS<FunctionType>::L_BFGS(FunctionType& function,
   // Get the dimensions of the coordinates of the function; GetInitialPoint()
   // might return an arma::vec, but that's okay because then n_cols will simply
   // be 1.
-  const size_t rows = function.GetInitialPoint().n_rows;
-  const size_t cols = function.GetInitialPoint().n_cols;
+  const long rows = function.GetInitialPoint().n_rows;
+  const long cols = function.GetInitialPoint().n_cols;
 
   newIterateTmp.set_size(rows, cols);
   s.set_size(rows, cols, numBasis);
@@ -106,7 +106,7 @@ double L_BFGS<FunctionType>::Evaluate(const arma::mat& iterate)
  * @return The calculated scaling factor
  */
 template<typename FunctionType>
-double L_BFGS<FunctionType>::ChooseScalingFactor(const size_t iterationNum,
+double L_BFGS<FunctionType>::ChooseScalingFactor(const long iterationNum,
                                                  const arma::mat& gradient)
 {
   double scalingFactor = 1.0;
@@ -182,7 +182,7 @@ bool L_BFGS<FunctionType>::LineSearch(double& functionValue,
       initialSearchDirectionDotGradient;
 
   // The number of iteration in the search.
-  size_t numIterations = 0;
+  long numIterations = 0;
 
   // Armijo step size scaling factor for increase and decrease.
   const double inc = 2.1;
@@ -255,7 +255,7 @@ bool L_BFGS<FunctionType>::LineSearch(double& functionValue,
  */
 template<typename FunctionType>
 void L_BFGS<FunctionType>::SearchDirection(const arma::mat& gradient,
-                                           const size_t iterationNum,
+                                           const long iterationNum,
                                            const double scalingFactor,
                                            arma::mat& searchDirection)
 {
@@ -269,8 +269,8 @@ void L_BFGS<FunctionType>::SearchDirection(const arma::mat& gradient,
   arma::vec rho(numBasis);
   arma::vec alpha(numBasis);
 
-  size_t limit = (numBasis > iterationNum) ? 0 : (iterationNum - numBasis);
-  for (size_t i = iterationNum; i != limit; i--)
+  long limit = (numBasis > iterationNum) ? 0 : (iterationNum - numBasis);
+  for (long i = iterationNum; i != limit; i--)
   {
     int translatedPosition = (i + (numBasis - 1)) % numBasis;
     rho[iterationNum - i] = 1.0 / arma::dot(y.slice(translatedPosition),
@@ -282,7 +282,7 @@ void L_BFGS<FunctionType>::SearchDirection(const arma::mat& gradient,
 
   searchDirection *= scalingFactor;
 
-  for (size_t i = limit; i < iterationNum; i++)
+  for (long i = limit; i < iterationNum; i++)
   {
     int translatedPosition = i % numBasis;
     double beta = rho[iterationNum - i - 1] *
@@ -307,7 +307,7 @@ void L_BFGS<FunctionType>::SearchDirection(const arma::mat& gradient,
  * @param oldGradient Gradient at last iteration point (oldIterate)
  */
 template<typename FunctionType>
-void L_BFGS<FunctionType>::UpdateBasisSet(const size_t iterationNum,
+void L_BFGS<FunctionType>::UpdateBasisSet(const long iterationNum,
                                           const arma::mat& iterate,
                                           const arma::mat& oldIterate,
                                           const arma::mat& gradient,
@@ -350,12 +350,12 @@ inline double L_BFGS<FunctionType>::Optimize(arma::mat& iterate)
  */
 template<typename FunctionType>
 double L_BFGS<FunctionType>::Optimize(arma::mat& iterate,
-                                      const size_t maxIterations)
+                                      const long maxIterations)
 {
   // Ensure that the cubes holding past iterations' information are the right
   // size.  Also set the current best point value to the maximum.
-  const size_t rows = function.GetInitialPoint().n_rows;
-  const size_t cols = function.GetInitialPoint().n_cols;
+  const long rows = function.GetInitialPoint().n_rows;
+  const long cols = function.GetInitialPoint().n_cols;
 
   s.set_size(rows, cols, numBasis);
   y.set_size(rows, cols, numBasis);
@@ -385,7 +385,7 @@ double L_BFGS<FunctionType>::Optimize(arma::mat& iterate,
   function.Gradient(iterate, gradient);
 
   // The main optimization loop.
-  for (size_t itNum = 0; optimizeUntilConvergence || (itNum != maxIterations);
+  for (long itNum = 0; optimizeUntilConvergence || (itNum != maxIterations);
        ++itNum)
   {
     Rcpp::Rcout << "L-BFGS iteration " << itNum << "; objective " <<

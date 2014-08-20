@@ -35,7 +35,7 @@ arma::vec DiscreteDistribution::Random() const
   arma::vec result(1);
 
   double sumProb = 0;
-  for (size_t obs = 0; obs < probabilities.n_elem; obs++)
+  for (long obs = 0; obs < probabilities.n_elem; obs++)
   {
     if ((sumProb += probabilities[obs]) >= randObs)
     {
@@ -58,11 +58,11 @@ void DiscreteDistribution::Estimate(const arma::mat& observations)
   probabilities.zeros();
 
   // Add the probability of each observation.  The addition of 0.5 to the
-  // observation is to turn the default flooring operation of the size_t cast
+  // observation is to turn the default flooring operation of the long cast
   // into a rounding operation.
-  for (size_t i = 0; i < observations.n_cols; i++)
+  for (long i = 0; i < observations.n_cols; i++)
   {
-    const size_t obs = size_t(observations(0, i) + 0.5);
+    const long obs = long(observations(0, i) + 0.5);
 
     // Ensure that the observation is within the bounds.
     if (obs >= probabilities.n_elem)
@@ -94,11 +94,11 @@ void DiscreteDistribution::Estimate(const arma::mat& observations,
   probabilities.zeros();
 
   // Add the probability of each observation.  The addition of 0.5 to the
-  // observation is to turn the default flooring operation of the size_t cast
+  // observation is to turn the default flooring operation of the long cast
   // into a rounding observation.
-  for (size_t i = 0; i < observations.n_cols; i++)
+  for (long i = 0; i < observations.n_cols; i++)
   {
-    const size_t obs = size_t(observations(0, i) + 0.5);
+    const long obs = long(observations(0, i) + 0.5);
 
     // Ensure that the observation is within the bounds.
     if (obs >= probabilities.n_elem)

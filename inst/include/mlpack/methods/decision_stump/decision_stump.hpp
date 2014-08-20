@@ -54,9 +54,9 @@ class DecisionStump
    * @param inpBucketSize Minimum size of bucket when splitting.
    */
   DecisionStump(const MatType& data,
-                const arma::Row<size_t>& labels,
-                const size_t classes,
-                size_t inpBucketSize);
+                const arma::Row<long>& labels,
+                const long classes,
+                long inpBucketSize);
 
   /**
    * Classification function. After training, classify test, and put the
@@ -66,7 +66,7 @@ class DecisionStump
    * @param predictedLabels Vector to store the predicted classes after
    *     classifying test data.
    */
-  void Classify(const MatType& test, arma::Row<size_t>& predictedLabels);
+  void Classify(const MatType& test, arma::Row<long>& predictedLabels);
 
   /**
    *
@@ -97,25 +97,25 @@ class DecisionStump
   arma::vec& Split() { return split; }
 
   //! Access the labels for each split bin.
-  const arma::Col<size_t> BinLabels() const { return binLabels; }
+  const arma::Col<long> BinLabels() const { return binLabels; }
   //! Modify the labels for each split bin (be careful!).
-  arma::Col<size_t>& BinLabels() { return binLabels; }
+  arma::Col<long>& BinLabels() { return binLabels; }
 
  private:
   //! Stores the number of classes.
-  size_t numClass;
+  long numClass;
 
   //! Stores the value of the attribute on which to split.
   int splitAttribute;
 
   //! Size of bucket while determining splitting criterion.
-  size_t bucketSize;
+  long bucketSize;
 
   //! Stores the splitting values after training.
   arma::vec split;
 
   //! Stores the labels for each splitting bin.
-  arma::Col<size_t> binLabels;
+  arma::Col<long> binLabels;
 
   /**
    * Sets up attribute as if it were splitting on it and finds entropy when
@@ -125,7 +125,7 @@ class DecisionStump
    *     candidate for the splitting attribute.
    */
   double SetupSplitAttribute(const arma::rowvec& attribute,
-                             const arma::Row<size_t>& labels);
+                             const arma::Row<long>& labels);
 
   /**
    * After having decided the attribute on which to split, train on that
@@ -135,7 +135,7 @@ class DecisionStump
    *      on which we now train the decision stump.
    */
   template <typename rType> void TrainOnAtt(const arma::rowvec& attribute,
-                                            const arma::Row<size_t>& labels);
+                                            const arma::Row<long>& labels);
 
   /**
    * After the "split" matrix has been set up, merge ranges with identical class

@@ -42,10 +42,10 @@ class KMeansSelection
    * @return Matrix pointer in which centroids are stored.
    */
   const static arma::mat* Select(const arma::mat& data,
-                                 const size_t m,
-                                 const size_t maxIterations = 5)
+                                 const long m,
+                                 const long maxIterations = 5)
   {
-    arma::Col<size_t> assignments;
+    arma::Col<long> assignments;
     arma::mat* centroids = new arma::mat;
 
     // Perform the K-Means clustering method.
@@ -56,7 +56,7 @@ class KMeansSelection
   }
 };
 
-}; // namespace kernel
-}; // namespace mlpack
+} // namespace kernel
+} // namespace mlpack
 
 #endif

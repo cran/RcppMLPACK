@@ -48,12 +48,12 @@ class RandomAcolInitialization
 
   template<typename MatType>
   inline static void Initialize(const MatType& V,
-                                const size_t r,
+                                const long r,
                                 arma::mat& W,
                                 arma::mat& H)
   {
-    const size_t n = V.n_rows;
-    const size_t m = V.n_cols;
+    const long n = V.n_rows;
+    const long m = V.n_cols;
 
     if (p > m)
     {
@@ -64,9 +64,9 @@ class RandomAcolInitialization
     W.zeros(n, r);
 
     // Initialize W matrix with random columns.
-    for (size_t col = 0; col < r; col++)
+    for (long col = 0; col < r; col++)
     {
-      for (size_t randCol = 0; randCol < p; randCol++)
+      for (long randCol = 0; randCol < p; randCol++)
       {
         // .col() does not work in this case, as of Armadillo 3.920.
         W.unsafe_col(col) += V.col(math::RandInt(0, m));

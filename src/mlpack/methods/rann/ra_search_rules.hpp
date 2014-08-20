@@ -38,7 +38,7 @@ class RASearchRules
 public:
     RASearchRules(const arma::mat& referenceSet,
                   const arma::mat& querySet,
-                  arma::Mat<size_t>& neighbors,
+                  arma::Mat<long>& neighbors,
                   arma::mat& distances,
                   MetricType& metric,
                   const double tau = 5,
@@ -46,11 +46,11 @@ public:
                   const bool naive = false,
                   const bool sampleAtLeaves = false,
                   const bool firstLeafExact = false,
-                  const size_t singleSampleLimit = 20);
+                  const long singleSampleLimit = 20);
 
 
 
-    double BaseCase(const size_t queryIndex, const size_t referenceIndex);
+    double BaseCase(const long queryIndex, const long referenceIndex);
 
     /**
      * Get the score for recursion order.  A low score indicates priority for
@@ -74,7 +74,7 @@ public:
      * @param queryIndex Index of query point.
      * @param referenceNode Candidate node to be recursed into.
      */
-    double Score(const size_t queryIndex, TreeType& referenceNode);
+    double Score(const long queryIndex, TreeType& referenceNode);
 
     /**
      * Get the score for recursion order.  A low score indicates priority for
@@ -99,7 +99,7 @@ public:
      * @param referenceNode Candidate node to be recursed into.
      * @param baseCaseResult Result of BaseCase(queryIndex, referenceNode).
      */
-    double Score(const size_t queryIndex,
+    double Score(const long queryIndex,
                  TreeType& referenceNode,
                  const double baseCaseResult);
 
@@ -120,7 +120,7 @@ public:
      * @param referenceNode Candidate node to be recursed into.
      * @param oldScore Old score produced by Score() (or Rescore()).
      */
-    double Rescore(const size_t queryIndex,
+    double Rescore(const long queryIndex,
                    TreeType& referenceNode,
                    const double oldScore);
 
@@ -195,11 +195,11 @@ public:
                    const double oldScore);
 
 
-    size_t NumDistComputations()
+    long NumDistComputations()
     {
         return numDistComputations;
     }
-    size_t NumEffectiveSamples()
+    long NumEffectiveSamples()
     {
         if (numSamplesMade.n_elem == 0)
             return 0;
@@ -226,7 +226,7 @@ private:
     const arma::mat& querySet;
 
     //! The matrix the resultant neighbor indices should be stored in.
-    arma::Mat<size_t>& neighbors;
+    arma::Mat<long>& neighbors;
 
     //! The matrix the resultant neighbor distances should be stored in.
     arma::mat& distances;
@@ -241,19 +241,19 @@ private:
     bool firstLeafExact;
 
     //! The limit on the largest node that can be approximated by sampling
-    size_t singleSampleLimit;
+    long singleSampleLimit;
 
     //! The minimum number of samples required per query
-    size_t numSamplesReqd;
+    long numSamplesReqd;
 
     //! The number of samples made for every query
-    arma::Col<size_t> numSamplesMade;
+    arma::Col<long> numSamplesMade;
 
     //! The sampling ratio
     double samplingRatio;
 
     // TO REMOVE: just for testing
-    size_t numDistComputations;
+    long numDistComputations;
 
     TraversalInfoType traversalInfo;
 
@@ -266,9 +266,9 @@ private:
      * @param neighbor Index of reference point which is being inserted.
      * @param distance Distance from query point to reference point.
      */
-    void InsertNeighbor(const size_t queryIndex,
-                        const size_t pos,
-                        const size_t neighbor,
+    void InsertNeighbor(const long queryIndex,
+                        const long pos,
+                        const long neighbor,
                         const double distance);
 
     /**
@@ -280,8 +280,8 @@ private:
      * @param tau The rank-approximation in percentile of the data.
      * @param alpha The success probability desired.
      */
-    size_t MinimumSamplesReqd(const size_t n,
-                              const size_t k,
+    long MinimumSamplesReqd(const long n,
+                              const long k,
                               const double tau,
                               const double alpha) const;
 
@@ -294,10 +294,10 @@ private:
      * @param m The number of random samples.
      * @param t The desired rank-approximation.
      */
-    double SuccessProbability(const size_t n,
-                              const size_t k,
-                              const size_t m,
-                              const size_t t) const;
+    double SuccessProbability(const long n,
+                              const long k,
+                              const long m,
+                              const long t) const;
 
     /**
      * Pick up desired number of samples (with replacement) from a given range
@@ -308,14 +308,14 @@ private:
      * @param rangeUpperBound The upper bound on the range of integers.
      * @param distinctSamples The list of the distinct samples.
      */
-    void ObtainDistinctSamples(const size_t numSamples,
-                               const size_t rangeUpperBound,
+    void ObtainDistinctSamples(const long numSamples,
+                               const long rangeUpperBound,
                                arma::uvec& distinctSamples) const;
 
     /**
      * Perform actual scoring for single-tree case.
      */
-    double Score(const size_t queryIndex,
+    double Score(const long queryIndex,
                  TreeType& referenceNode,
                  const double distance,
                  const double bestDistance);

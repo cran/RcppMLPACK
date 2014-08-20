@@ -43,7 +43,7 @@ class RegularizedSVDFunction
    * @param lambda Regularization parameter used for optimization.
    */
   RegularizedSVDFunction(const arma::mat& data,
-                         const size_t rank,
+                         const long rank,
                          const double lambda);
   
   /**
@@ -61,7 +61,7 @@ class RegularizedSVDFunction
    * @param i Index of the training example to be used.
    */
   double Evaluate(const arma::mat& parameters,
-                  const size_t i) const;
+                  const long i) const;
   
   /**
    * Evaluates the full gradient of the cost function over all the training
@@ -80,19 +80,19 @@ class RegularizedSVDFunction
   const arma::mat& Dataset() const { return data; }
   
   //! Return the number of training examples. Useful for SGD optimizer.
-  size_t NumFunctions() const { return data.n_cols; }
+  long NumFunctions() const { return data.n_cols; }
   
   //! Return the number of users in the data.
-  size_t NumUsers() const { return numUsers; }
+  long NumUsers() const { return numUsers; }
   
   //! Return the number of items in the data.
-  size_t NumItems() const { return numItems; }
+  long NumItems() const { return numItems; }
   
   //! Return the regularization parameters.
   double Lambda() const { return lambda; }
   
   //! Return the rank used for the factorization.
-  size_t Rank() const { return rank; }
+  long Rank() const { return rank; }
                          
  private:
   //! Rating data.
@@ -100,13 +100,13 @@ class RegularizedSVDFunction
   //! Initial parameter point.
   arma::mat initialPoint;
   //! Rank used for matrix factorization.
-  size_t rank;
+  long rank;
   //! Regularization parameter for the optimization.
   double lambda;
   //! Number of users in the given dataset.
-  size_t numUsers;
+  long numUsers;
   //! Number of items in the given dataset.
-  size_t numItems;
+  long numItems;
 };
 
 }; // namespace svd

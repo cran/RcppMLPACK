@@ -202,8 +202,8 @@ class NeighborSearch
    * @param distances Matrix storing distances of neighbors for each query
    *     point.
    */
-  void Search(const size_t k,
-              arma::Mat<size_t>& resultingNeighbors,
+  void Search(const long k,
+              arma::Mat<long>& resultingNeighbors,
               arma::mat& distances);
 
   // Returns a string representation of this object. 
@@ -240,9 +240,9 @@ class NeighborSearch
   MetricType metric;
 
   //! Permutations of reference points during tree building.
-  std::vector<size_t> oldFromNewReferences;
+  std::vector<long> oldFromNewReferences;
   //! Permutations of query points during tree building.
-  std::vector<size_t> oldFromNewQueries;
+  std::vector<long> oldFromNewQueries;
 }; // class NeighborSearch
 
 }; // namespace neighbor

@@ -48,7 +48,7 @@ class LRSDP
    * @param rank Rank of the solution (<= rows).
    * @param rows Number of rows in the solution.
    */
-  LRSDP(const size_t numConstraints,
+  LRSDP(const long numConstraints,
         const arma::mat& initialPoint);
 
   /**
@@ -60,7 +60,7 @@ class LRSDP
    * @param initialPoint Initial point of the optimization.
    * @param auglag Pre-initialized AugLagrangian<LRSDP> object.
    */
-  LRSDP(const size_t numConstraints,
+  LRSDP(const long numConstraints,
         const arma::mat& initialPoint,
         AugLagrangian<LRSDPFunction>& augLagrangian);
 

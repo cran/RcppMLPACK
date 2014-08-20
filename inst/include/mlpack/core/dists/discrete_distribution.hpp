@@ -45,9 +45,9 @@ namespace distribution /** Probability distributions. */ {
  * @note
  * This class, like every other class in MLPACK, uses arma::vec to represent
  * observations.  While a discrete distribution only has positive integers
- * (size_t) as observations, these can be converted to doubles (which is what
+ * (long) as observations, these can be converted to doubles (which is what
  * arma::vec holds).  This distribution internally converts those doubles back
- * into size_t before comparisons.
+ * into long before comparisons.
  * @endnote
  */
 class DiscreteDistribution
@@ -66,7 +66,7 @@ class DiscreteDistribution
    * @param numObservations Number of possible observations this distribution
    *    can have.
    */
-  DiscreteDistribution(const size_t numObservations) :
+  DiscreteDistribution(const long numObservations) :
       probabilities(arma::ones<arma::vec>(numObservations) / numObservations)
   { /* nothing to do */ }
 
@@ -92,7 +92,7 @@ class DiscreteDistribution
   /**
    * Get the dimensionality of the distribution.
    */
-  size_t Dimensionality() const { return 1; }
+  long Dimensionality() const { return 1; }
 
   /**
    * Return the probability of the given observation.  If the observation is
@@ -104,9 +104,9 @@ class DiscreteDistribution
    */
   double Probability(const arma::vec& observation) const
   {
-    // Adding 0.5 helps ensure that we cast the floating point to a size_t
+    // Adding 0.5 helps ensure that we cast the floating point to a long
     // correctly.
-    const size_t obs = size_t(observation[0] + 0.5);
+    const long obs = long(observation[0] + 0.5);
 
     // Ensure that the observation is within the bounds.
     if (obs >= probabilities.n_elem)

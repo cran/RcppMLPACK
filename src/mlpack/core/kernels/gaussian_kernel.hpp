@@ -96,7 +96,7 @@ class GaussianKernel
    * @param dimension
    * @return the normalization constant
    */
-  double Normalizer(const size_t dimension)
+  double Normalizer(const long dimension)
   {
     return pow(sqrt(2.0 * M_PI) * bandwidth, (double) dimension);
   }

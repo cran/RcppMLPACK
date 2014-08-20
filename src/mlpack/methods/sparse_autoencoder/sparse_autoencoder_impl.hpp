@@ -30,8 +30,8 @@ namespace nn {
 
 template<template<typename> class OptimizerType>
 SparseAutoencoder<OptimizerType>::SparseAutoencoder(const arma::mat& data,
-                                                    const size_t visibleSize,
-                                                    const size_t hiddenSize,
+                                                    const long visibleSize,
+                                                    const long hiddenSize,
                                                     double lambda,
                                                     double beta,
                                                     double rho) :
@@ -78,8 +78,8 @@ template<template<typename> class OptimizerType>
 void SparseAutoencoder<OptimizerType>::GetNewFeatures(arma::mat& data,
                                                       arma::mat& features)
 {
-  const size_t l1 = hiddenSize;
-  const size_t l2 = visibleSize;
+  const long l1 = hiddenSize;
+  const long l2 = visibleSize;
 
   Sigmoid(parameters.submat(0, 0, l1 - 1, l2 - 1) * data +
       arma::repmat(parameters.submat(0, l2, l1 - 1, l2), 1, data.n_cols),

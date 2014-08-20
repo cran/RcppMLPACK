@@ -39,15 +39,15 @@ class OrderedSelection
    * @param m Number of points to select.
    * @return Indices of selected points from the dataset.
    */
-  const static arma::Col<size_t> Select(const arma::mat& /* unused */,
-                                        const size_t m)
+  const static arma::Col<long> Select(const arma::mat& /* unused */,
+                                        const long m)
   {
     // This generates [0 1 2 3 ... (m - 1)].
-    return arma::linspace<arma::Col<size_t> >(0, m - 1, m);
+    return arma::linspace<arma::Col<long> >(0, m - 1, m);
   }
 };
 
-}; // namespace kernel
-}; // namespace mlpack
+} // namespace kernel
+} // namespace mlpack
 
 #endif

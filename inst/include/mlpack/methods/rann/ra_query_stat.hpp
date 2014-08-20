@@ -74,12 +74,12 @@ public:
     }
 
     //! Get the number of samples made.
-    size_t NumSamplesMade() const
+    long NumSamplesMade() const
     {
         return numSamplesMade;
     }
     //! Modify the number of samples made.
-    size_t& NumSamplesMade()
+    long& NumSamplesMade()
     {
         return numSamplesMade;
     }
@@ -89,7 +89,7 @@ private:
     double bound;
 
     //! The minimum number of samples made by any query in this node.
-    size_t numSamplesMade;
+    long numSamplesMade;
 
 };
 

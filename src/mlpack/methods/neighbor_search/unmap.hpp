@@ -42,11 +42,11 @@ namespace neighbor {
  * @param distancesOut Matrix to store unmapped distances into.
  * @param squareRoot If true, take the square root of the distances.
  */
-void Unmap(const arma::Mat<size_t>& neighbors,
+void Unmap(const arma::Mat<long>& neighbors,
            const arma::mat& distances,
-           const std::vector<size_t>& referenceMap,
-           const std::vector<size_t>& queryMap,
-           arma::Mat<size_t>& neighborsOut,
+           const std::vector<long>& referenceMap,
+           const std::vector<long>& queryMap,
+           arma::Mat<long>& neighborsOut,
            arma::mat& distancesOut,
            const bool squareRoot = false);
 
@@ -63,10 +63,10 @@ void Unmap(const arma::Mat<size_t>& neighbors,
  * @param distancesOut Matrix to store unmapped distances into.
  * @param squareRoot If true, take the square root of the distances.
  */
-void Unmap(const arma::Mat<size_t>& neighbors,
+void Unmap(const arma::Mat<long>& neighbors,
            const arma::mat& distances,
-           const std::vector<size_t>& referenceMap,
-           arma::Mat<size_t>& neighborsOut,
+           const std::vector<long>& referenceMap,
+           arma::Mat<long>& neighborsOut,
            arma::mat& distancesOut,
            const bool squareRoot = false);
 

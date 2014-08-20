@@ -63,7 +63,7 @@ void LaplaceDistribution::Estimate(const arma::mat& observations)
   // The maximum likelihood estimate of the scale parameter is the mean
   // deviation from the mean.
   scale = 0.0;
-  for (size_t i = 0; i < observations.n_cols; ++i)
+  for (long i = 0; i < observations.n_cols; ++i)
     scale += arma::norm(observations.col(i) - mean, 2);
   scale /= observations.n_cols;
 }
@@ -79,14 +79,14 @@ void LaplaceDistribution::Estimate(const arma::mat& observations,
   // I am not completely sure that this change results in a valid maximum
   // likelihood estimator given probabilities of points.
   mean.zeros(observations.n_rows);
-  for (size_t i = 0; i < observations.n_cols; ++i)
+  for (long i = 0; i < observations.n_cols; ++i)
     mean += observations.col(i) * probabilities(i);
   mean /= arma::accu(probabilities);
 
   // This the same formula as the previous function, but here we are multiplying
   // by the probability that the point is actually from this distribution.
   scale = 0.0;
-  for (size_t i = 0; i < observations.n_cols; ++i)
+  for (long i = 0; i < observations.n_cols; ++i)
     scale += probabilities(i) * arma::norm(observations.col(i) - mean, 2);
   scale /= arma::accu(probabilities);
 }

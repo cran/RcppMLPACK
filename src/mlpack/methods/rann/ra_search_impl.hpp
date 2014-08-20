@@ -39,7 +39,7 @@ namespace aux
 template<typename TreeType>
 TreeType* BuildTree(
     typename TreeType::Mat& dataset,
-    std::vector<size_t>& oldFromNew,
+    std::vector<long>& oldFromNew,
     typename boost::enable_if_c<
     tree::TreeTraits<TreeType>::RearrangesDataset == true, TreeType*
     >::type = 0)
@@ -51,7 +51,7 @@ TreeType* BuildTree(
 template<typename TreeType>
 TreeType* BuildTree(
     const typename TreeType::Mat& dataset,
-    const std::vector<size_t>& /* oldFromNew */,
+    const std::vector<long>& /* oldFromNew */,
     const typename boost::enable_if_c<
     tree::TreeTraits<TreeType>::RearrangesDataset == false, TreeType*
     >::type = 0)
@@ -207,14 +207,14 @@ RASearch<SortPolicy, MetricType, TreeType>::
  */
 template<typename SortPolicy, typename MetricType, typename TreeType>
 void RASearch<SortPolicy, MetricType, TreeType>::
-Search(const size_t k,
-       arma::Mat<size_t>& resultingNeighbors,
+Search(const long k,
+       arma::Mat<long>& resultingNeighbors,
        arma::mat& distances,
        const double tau,
        const double alpha,
        const bool sampleAtLeaves,
        const bool firstLeafExact,
-       const size_t singleSampleLimit)
+       const long singleSampleLimit)
 {
 
 
@@ -222,7 +222,7 @@ Search(const size_t k,
     // indices back to their original indices when this computation is finished.
     // To avoid an extra copy, we will store the neighbors and distances in a
     // separate matrix.
-    arma::Mat<size_t>* neighborPtr = &resultingNeighbors;
+    arma::Mat<long>* neighborPtr = &resultingNeighbors;
     arma::mat* distancePtr = &distances;
 
     // Mapping is only required if this tree type rearranges points and we are not
@@ -232,7 +232,7 @@ Search(const size_t k,
         if (treeOwner && !(singleMode && hasQuerySet))
             distancePtr = new arma::mat; // Query indices need to be mapped.
         if (treeOwner)
-            neighborPtr = new arma::Mat<size_t>; // All indices need mapping.
+            neighborPtr = new arma::Mat<long>; // All indices need mapping.
     }
 
     // Set the size of the neighbor and distance matrices.
@@ -240,7 +240,7 @@ Search(const size_t k,
     distancePtr->set_size(k, querySet.n_cols);
     distancePtr->fill(SortPolicy::WorstDistance());
 
-    size_t numPrunes = 0;
+    long numPrunes = 0;
 
     if (naive)
     {
@@ -254,7 +254,7 @@ Search(const size_t k,
 
         // Find how many samples from the reference set we need and sample uniformly
         // from the reference set without replacement.
-        const size_t numSamples = rules.MinimumSamplesReqd(referenceSet.n_cols, k,
+        const long numSamples = rules.MinimumSamplesReqd(referenceSet.n_cols, k,
                                   tau, alpha);
         arma::uvec distinctSamples;
         rules.ObtainDistinctSamples(numSamples, referenceSet.n_cols,
@@ -262,9 +262,9 @@ Search(const size_t k,
 
         // Run the base case on each combination of query point and sampled
         // reference point.
-        for (size_t i = 0; i < querySet.n_cols; ++i)
-            for (size_t j = 0; j < distinctSamples.n_elem; ++j)
-                rules.BaseCase(i, (size_t) distinctSamples[j]);
+        for (long i = 0; i < querySet.n_cols; ++i)
+            for (long j = 0; j < distinctSamples.n_elem; ++j)
+                rules.BaseCase(i, (long) distinctSamples[j]);
     }
     else if (singleMode)
     {
@@ -286,7 +286,7 @@ Search(const size_t k,
             traverser(rules);
 
             // Now have it traverse for each point.
-            for (size_t i = 0; i < querySet.n_cols; ++i)
+            for (long i = 0; i < querySet.n_cols; ++i)
                 traverser.Traverse(i, *referenceTree);
 
             numPrunes = traverser.NumPrunes();
@@ -343,13 +343,13 @@ Search(const size_t k,
         resultingNeighbors.set_size(k, querySet.n_cols);
         distances.set_size(k, querySet.n_cols);
 
-        for (size_t i = 0; i < distances.n_cols; i++)
+        for (long i = 0; i < distances.n_cols; i++)
         {
             // Map distances (copy a column).
             distances.col(oldFromNewQueries[i]) = distancePtr->col(i);
 
             // Map indices of neighbors.
-            for (size_t j = 0; j < distances.n_rows; j++)
+            for (long j = 0; j < distances.n_rows; j++)
             {
                 resultingNeighbors(j, oldFromNewQueries[i]) =
                     oldFromNewReferences[(*neighborPtr)(j, i)];
@@ -366,13 +366,13 @@ Search(const size_t k,
         resultingNeighbors.set_size(k, querySet.n_cols);
         distances.set_size(k, querySet.n_cols);
 
-        for (size_t i = 0; i < distances.n_cols; i++)
+        for (long i = 0; i < distances.n_cols; i++)
         {
             // Map distances (copy a column).
             distances.col(oldFromNewReferences[i]) = distancePtr->col(i);
 
             // Map indices of neighbors.
-            for (size_t j = 0; j < distances.n_rows; j++)
+            for (long j = 0; j < distances.n_rows; j++)
             {
                 resultingNeighbors(j, oldFromNewReferences[i]) =
                     oldFromNewReferences[(*neighborPtr)(j, i)];
@@ -385,9 +385,9 @@ Search(const size_t k,
         resultingNeighbors.set_size(k, querySet.n_cols);
 
         // Map indices of neighbors.
-        for (size_t i = 0; i < resultingNeighbors.n_cols; i++)
+        for (long i = 0; i < resultingNeighbors.n_cols; i++)
         {
-            for (size_t j = 0; j < resultingNeighbors.n_rows; j++)
+            for (long j = 0; j < resultingNeighbors.n_rows; j++)
             {
                 resultingNeighbors(j, i) = oldFromNewReferences[(*neighborPtr)(j, i)];
             }
@@ -417,7 +417,7 @@ void RASearch<SortPolicy, MetricType, TreeType>::ResetRAQueryStat(
     treeNode->Stat().Bound() = SortPolicy::WorstDistance();
     treeNode->Stat().NumSamplesMade() = 0;
 
-    for (size_t i = 0; i < treeNode->NumChildren(); i++)
+    for (long i = 0; i < treeNode->NumChildren(); i++)
         ResetRAQueryStat(&treeNode->Child(i));
 }
 

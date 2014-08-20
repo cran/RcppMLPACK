@@ -75,7 +75,7 @@ class BallBound
    *
    * @param dimension Dimensionality of ball bound.
    */
-  BallBound(const size_t dimension);
+  BallBound(const long dimension);
 
   /**
    * Create the ball bound with the specified radius and center.
@@ -114,7 +114,7 @@ class BallBound
   double MinWidth() const { return radius * 2.0; }
 
   //! Get the range in a certain dimension.
-  math::Range operator[](const size_t i) const;
+  math::Range operator[](const long i) const;
 
   /**
    * Determines if a point is within this bound.

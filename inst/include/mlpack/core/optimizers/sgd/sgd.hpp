@@ -65,10 +65,10 @@ namespace optimization {
  * For SGD to work, a DecomposableFunctionType template parameter is required.
  * This class must implement the following function:
  *
- *   size_t NumFunctions();
- *   double Evaluate(const arma::mat& coordinates, const size_t i);
+ *   long NumFunctions();
+ *   double Evaluate(const arma::mat& coordinates, const long i);
  *   void Gradient(const arma::mat& coordinates,
- *                 const size_t i,
+ *                 const long i,
  *                 arma::mat& gradient);
  *
  * NumFunctions() should return the number of functions (\f$n\f$), and in the
@@ -99,7 +99,7 @@ class SGD
    */
   SGD(DecomposableFunctionType& function,
       const double stepSize = 0.01,
-      const size_t maxIterations = 100000,
+      const long maxIterations = 100000,
       const double tolerance = 1e-5,
       const bool shuffle = true);
 
@@ -124,9 +124,9 @@ class SGD
   double& StepSize() { return stepSize; }
 
   //! Get the maximum number of iterations (0 indicates no limit).
-  size_t MaxIterations() const { return maxIterations; }
+  long MaxIterations() const { return maxIterations; }
   //! Modify the maximum number of iterations (0 indicates no limit).
-  size_t& MaxIterations() { return maxIterations; }
+  long& MaxIterations() { return maxIterations; }
 
   //! Get the tolerance for termination.
   double Tolerance() const { return tolerance; }
@@ -149,7 +149,7 @@ class SGD
   double stepSize;
 
   //! The maximum number of allowed iterations.
-  size_t maxIterations;
+  long maxIterations;
 
   //! The tolerance for termination.
   double tolerance;

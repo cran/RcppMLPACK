@@ -187,8 +187,8 @@ public:
      * @param indices Matrix to store resulting indices of max-kernel search in.
      * @param products Matrix to store resulting max-kernel values in.
      */
-    void Search(const size_t k,
-                arma::Mat<size_t>& indices,
+    void Search(const long k,
+                arma::Mat<long>& indices,
                 arma::mat& products);
 
     //! Get the inner-product metric induced by the given kernel.
@@ -231,11 +231,11 @@ private:
     metric::IPMetric<KernelType> metric;
 
     //! Utility function.  Copied too many times from too many places.
-    void InsertNeighbor(arma::Mat<size_t>& indices,
+    void InsertNeighbor(arma::Mat<long>& indices,
                         arma::mat& products,
-                        const size_t queryIndex,
-                        const size_t pos,
-                        const size_t neighbor,
+                        const long queryIndex,
+                        const long pos,
+                        const long neighbor,
                         const double distance);
 };
 

@@ -82,7 +82,7 @@ class EpanechnikovKernel
    *
    * @param dimension Dimension to calculate the normalizer for.
    */
-  double Normalizer(const size_t dimension);
+  double Normalizer(const long dimension);
   
   // Returns String of O bject
   std::string ToString() const;

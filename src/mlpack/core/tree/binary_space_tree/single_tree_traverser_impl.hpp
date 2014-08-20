@@ -50,7 +50,7 @@ template<typename BoundType,
 template<typename RuleType>
 void BinarySpaceTree<BoundType, StatisticType, MatType, SplitType>::
 SingleTreeTraverser<RuleType>::Traverse(
-    const size_t queryIndex,
+    const long queryIndex,
     BinarySpaceTree<BoundType, StatisticType, MatType, SplitType>&
         referenceNode)
 {
@@ -64,7 +64,7 @@ SingleTreeTraverser<RuleType>::Traverse(
   // Immediately run the base case if it's not pruned.
   if ((leftScore != DBL_MAX) && (referenceNode.Left()->IsLeaf()))
   {
-    for (size_t i = referenceNode.Left()->Begin();
+    for (long i = referenceNode.Left()->Begin();
          i < referenceNode.Left()->End(); ++i)
       rule.BaseCase(queryIndex, i);
   }
@@ -74,7 +74,7 @@ SingleTreeTraverser<RuleType>::Traverse(
   // Immediately run the base case if it's not pruned.
   if ((rightScore != DBL_MAX) && (referenceNode.Right()->IsLeaf()))
   {
-    for (size_t i = referenceNode.Right()->Begin();
+    for (long i = referenceNode.Right()->Begin();
          i < referenceNode.Right()->End(); ++i)
       rule.BaseCase(queryIndex, i);
   }

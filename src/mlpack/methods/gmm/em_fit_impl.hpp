@@ -34,7 +34,7 @@ namespace gmm {
 //! Constructor.
 template<typename InitialClusteringType, typename CovarianceConstraintPolicy>
 EMFit<InitialClusteringType, CovarianceConstraintPolicy>::EMFit(
-    const size_t maxIterations,
+    const long maxIterations,
     const double tolerance,
     InitialClusteringType clusterer,
     CovarianceConstraintPolicy constraint) :
@@ -65,7 +65,7 @@ void EMFit<InitialClusteringType, CovarianceConstraintPolicy>::Estimate(
   arma::mat condProb(observations.n_cols, means.size());
 
   // Iterate to update the model until no more improvement is found.
-  size_t iteration = 1;
+  long iteration = 1;
   while (std::abs(l - lOld) > tolerance && iteration != maxIterations)
   {
     Rcpp::Rcout << "EMFit::Estimate(): iteration " << iteration << ", "
@@ -73,7 +73,7 @@ void EMFit<InitialClusteringType, CovarianceConstraintPolicy>::Estimate(
 
     // Calculate the conditional probabilities of choosing a particular
     // Gaussian given the observations and the present theta value.
-    for (size_t i = 0; i < means.size(); i++)
+    for (long i = 0; i < means.size(); i++)
     {
       // Store conditional probabilities into condProb vector for each
       // Gaussian.  First we make an alias of the condProb vector.
@@ -83,7 +83,7 @@ void EMFit<InitialClusteringType, CovarianceConstraintPolicy>::Estimate(
     }
 
     // Normalize row-wise.
-    for (size_t i = 0; i < condProb.n_rows; i++)
+    for (long i = 0; i < condProb.n_rows; i++)
     {
       // Avoid dividing by zero; if the probability for everything is 0, we
       // don't want to make it NaN.
@@ -97,7 +97,7 @@ void EMFit<InitialClusteringType, CovarianceConstraintPolicy>::Estimate(
 
     // Calculate the new value of the means using the updated conditional
     // probabilities.
-    for (size_t i = 0; i < means.size(); i++)
+    for (long i = 0; i < means.size(); i++)
     {
       // Don't update if there's no probability of the Gaussian having points.
       if (probRowSums[i] != 0)
@@ -151,12 +151,12 @@ void EMFit<InitialClusteringType, CovarianceConstraintPolicy>::Estimate(
   arma::mat condProb(observations.n_cols, means.size());
 
   // Iterate to update the model until no more improvement is found.
-  size_t iteration = 1;
+  long iteration = 1;
   while (std::abs(l - lOld) > tolerance && iteration != maxIterations)
   {
     // Calculate the conditional probabilities of choosing a particular
     // Gaussian given the observations and the present theta value.
-    for (size_t i = 0; i < means.size(); i++)
+    for (long i = 0; i < means.size(); i++)
     {
       // Store conditional probabilities into condProb vector for each
       // Gaussian.  First we make an alias of the condProb vector.
@@ -166,7 +166,7 @@ void EMFit<InitialClusteringType, CovarianceConstraintPolicy>::Estimate(
     }
 
     // Normalize row-wise.
-    for (size_t i = 0; i < condProb.n_rows; i++)
+    for (long i = 0; i < condProb.n_rows; i++)
     {
       // Avoid dividing by zero; if the probability for everything is 0, we
       // don't want to make it NaN.
@@ -181,7 +181,7 @@ void EMFit<InitialClusteringType, CovarianceConstraintPolicy>::Estimate(
 
     // Calculate the new value of the means using the updated conditional
     // probabilities.
-    for (size_t i = 0; i < means.size(); i++)
+    for (long i = 0; i < means.size(); i++)
     {
       // Calculate the sum of probabilities of points, which is the
       // conditional probability of each point being from Gaussian i
@@ -225,23 +225,23 @@ InitialClustering(const arma::mat& observations,
                   arma::vec& weights)
 {
   // Assignments from clustering.
-  arma::Col<size_t> assignments;
+  arma::Col<long> assignments;
 
   // Run clustering algorithm.
   clusterer.Cluster(observations, means.size(), assignments);
 
   // Now calculate the means, covariances, and weights.
   weights.zeros();
-  for (size_t i = 0; i < means.size(); ++i)
+  for (long i = 0; i < means.size(); ++i)
   {
     means[i].zeros();
     covariances[i].zeros();
   }
 
   // From the assignments, generate our means, covariances, and weights.
-  for (size_t i = 0; i < observations.n_cols; ++i)
+  for (long i = 0; i < observations.n_cols; ++i)
   {
-    const size_t cluster = assignments[i];
+    const long cluster = assignments[i];
 
     // Add this to the relevant mean.
     means[cluster] += observations.col(i);
@@ -254,7 +254,7 @@ InitialClustering(const arma::mat& observations,
   }
 
   // Now normalize the mean and covariance.
-  for (size_t i = 0; i < means.size(); ++i)
+  for (long i = 0; i < means.size(); ++i)
   {
 //    covariances[i] -= means[i] * trans(means[i]);
 
@@ -262,14 +262,14 @@ InitialClustering(const arma::mat& observations,
 //    covariances[i] /= (weights[i] > 1) ? weights[i] : 1;
   }
 
-  for (size_t i = 0; i < observations.n_cols; ++i)
+  for (long i = 0; i < observations.n_cols; ++i)
   {
-    const size_t cluster = assignments[i];
+    const long cluster = assignments[i];
     const arma::vec normObs = observations.col(i) - means[cluster];
     covariances[cluster] += normObs * normObs.t();
   }
 
-  for (size_t i = 0; i < means.size(); ++i)
+  for (long i = 0; i < means.size(); ++i)
   {
     covariances[i] /= (weights[i] > 1) ? weights[i] : 1;
 
@@ -292,14 +292,14 @@ double EMFit<InitialClusteringType, CovarianceConstraintPolicy>::LogLikelihood(
 
   arma::vec phis;
   arma::mat likelihoods(means.size(), observations.n_cols);
-  for (size_t i = 0; i < means.size(); ++i)
+  for (long i = 0; i < means.size(); ++i)
   {
     phi(observations, means[i], covariances[i], phis);
     likelihoods.row(i) = weights(i) * trans(phis);
   }
 
   // Now sum over every point.
-  for (size_t j = 0; j < observations.n_cols; ++j)
+  for (long j = 0; j < observations.n_cols; ++j)
   {
     if (accu(likelihoods.col(j)) == 0)
       Rcpp::Rcout << "Likelihood of point " << j << " is 0!  It is probably an "

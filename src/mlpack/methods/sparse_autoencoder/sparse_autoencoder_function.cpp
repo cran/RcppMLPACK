@@ -26,8 +26,8 @@ using namespace mlpack::nn;
 using namespace std;
 
 SparseAutoencoderFunction::SparseAutoencoderFunction(const arma::mat& data,
-                                                     const size_t visibleSize,
-                                                     const size_t hiddenSize,
+                                                     const long visibleSize,
+                                                     const long hiddenSize,
                                                      const double lambda,
                                                      const double beta,
                                                      const double rho) :
@@ -94,9 +94,9 @@ double SparseAutoencoderFunction::Evaluate(const arma::mat& parameters) const
   // to control the parameter weights and sparsity of the model respectively.
 
   // Compute the limits for the parameters w1, w2, b1 and b2.
-  const size_t l1 = hiddenSize;
-  const size_t l2 = visibleSize;
-  const size_t l3 = 2 * hiddenSize;
+  const long l1 = hiddenSize;
+  const long l2 = visibleSize;
+  const long l3 = 2 * hiddenSize;
 
   // w1, w2, b1 and b2 are not extracted separately, 'parameters' is directly
   // used in their place to avoid copying data. The following representations
@@ -161,9 +161,9 @@ void SparseAutoencoderFunction::Gradient(const arma::mat& parameters,
   // and hidden layer activations to get the parameter gradients.
 
   // Compute the limits for the parameters w1, w2, b1 and b2.
-  const size_t l1 = hiddenSize;
-  const size_t l2 = visibleSize;
-  const size_t l3 = 2 * hiddenSize;
+  const long l1 = hiddenSize;
+  const long l2 = visibleSize;
+  const long l3 = 2 * hiddenSize;
 
   // w1, w2, b1 and b2 are not extracted separately, 'parameters' is directly
   // used in their place to avoid copying data. The following representations

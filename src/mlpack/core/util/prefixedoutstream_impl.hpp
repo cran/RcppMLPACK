@@ -116,8 +116,8 @@ void PrefixedOutStream::BaseLogic(const T& val)
     // Now, we need to check for newlines in this line.  If we find one, output
     // up until the newline, then output the newline and the prefix and continue
     // looking.
-    size_t nl;
-    size_t pos = 0;
+    long nl;
+    long pos = 0;
     while ((nl = line.find('\n', pos)) != std::string::npos)
     {
       PrefixIfNeeded();

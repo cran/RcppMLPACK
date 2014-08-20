@@ -114,7 +114,7 @@ inline double phi(const arma::vec& x,
   g_mean = f * invDiff;
 
   // Calculate the g_cov values; this is a (1 x (dim * (dim + 1) / 2)) vector.
-  for (size_t i = 0; i < d_cov.size(); i++)
+  for (long i = 0; i < d_cov.size(); i++)
   {
     arma::mat inv_d = cinv * d_cov[i];
 
@@ -149,7 +149,7 @@ inline void phi(const arma::mat& x,
   // later we are referencing columns, not rows -- that is faster.
   arma::mat rhs = -0.5 * inv(cov) * diffs;
   arma::vec exponents(diffs.n_cols); // We will now fill this.
-  for (size_t i = 0; i < diffs.n_cols; i++)
+  for (long i = 0; i < diffs.n_cols; i++)
     exponents(i) = exp(accu(diffs.unsafe_col(i) % rhs.unsafe_col(i)));
 
   probabilities = pow(2 * M_PI, (double) mean.n_elem / -2.0) *

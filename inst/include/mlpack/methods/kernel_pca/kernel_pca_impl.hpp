@@ -43,7 +43,7 @@ void KernelPCA<KernelType, KernelRule>::Apply(const arma::mat& data,
                                   arma::mat& transformedData,
                                   arma::vec& eigval,
                                   arma::mat& eigvec,
-                                  const size_t newDimension)
+                                  const long newDimension)
 {
   KernelRule::ApplyKernelMatrix(data, transformedData, eigval,
                                 eigvec, newDimension, kernel);
@@ -80,7 +80,7 @@ void KernelPCA<KernelType, KernelRule>::Apply(const arma::mat& data,
 //! Use KPCA for dimensionality reduction.
 template <typename KernelType, typename KernelRule>
 void KernelPCA<KernelType, KernelRule>::Apply(arma::mat& data,
-                                    const size_t newDimension)
+                                    const long newDimension)
 {
   arma::mat coeffs;
   arma::vec eigVal;

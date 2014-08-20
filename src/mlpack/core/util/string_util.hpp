@@ -30,7 +30,7 @@ namespace util {
 
 //! A utility function that replaces all all newlines with a number of spaces
 //! depending on the indentation level.
-std::string Indent(std::string input, const size_t howManyTabs = 1);
+std::string Indent(std::string input, const long howManyTabs = 1);
 
 }; // namespace util
 }; // namespace mlpack

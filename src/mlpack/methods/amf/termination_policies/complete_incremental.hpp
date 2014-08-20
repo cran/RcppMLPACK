@@ -63,12 +63,12 @@ class CompleteIncrementalTermination
   {
     return t_policy.Index();
   }
-  const size_t& Iteration()
+  const long& Iteration()
   {
     return iteration;
   }
   
-  const size_t& MaxIterations()
+  const long& MaxIterations()
   {
     return t_policy.MaxIterations();
   }
@@ -76,8 +76,8 @@ class CompleteIncrementalTermination
  private:
   TerminationPolicy t_policy;
 
-  size_t incrementalIndex;
-  size_t iteration;
+  long incrementalIndex;
+  long iteration;
 };
 
 } // namespace amf

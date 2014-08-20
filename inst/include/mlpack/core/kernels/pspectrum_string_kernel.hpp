@@ -82,7 +82,7 @@ class PSpectrumStringKernel
    * @param p The length of substrings to search.
    */
   PSpectrumStringKernel(const std::vector<std::vector<std::string> >& datasets,
-                        const size_t p);
+                        const long p);
 
   /**
    * Evaluate the kernel for the string indices given.  As mentioned in the
@@ -106,9 +106,9 @@ class PSpectrumStringKernel
   { return counts; }
 
   //! Access the value of p.
-  size_t P() const { return p; }
+  long P() const { return p; }
   //! Modify the value of p.
-  size_t& P() { return p; }
+  long& P() { return p; }
 
    /*
    * Returns a string representation of this object.
@@ -119,7 +119,7 @@ class PSpectrumStringKernel
     convert << "  p used: " << p << std::endl;
     convert << "  Dataset:" << datasets.size() << std::endl;
     std::ostringstream convertb;
-    for (size_t ind=0; ind < datasets.size(); ind++)
+    for (long ind=0; ind < datasets.size(); ind++)
       convertb << datasets[ind].size();
     convert << mlpack::util::Indent(convertb.str(),2);
     return convert.str();
@@ -133,7 +133,7 @@ class PSpectrumStringKernel
   std::vector<std::vector<std::map<std::string, int> > > counts;
 
   //! The value of p to use in calculation.
-  size_t p;
+  long p;
 };
 
 }; // namespace kernel

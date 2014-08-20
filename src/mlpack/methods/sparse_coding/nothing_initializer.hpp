@@ -43,14 +43,14 @@ class NothingInitializer
    * method.
    */
   static void Initialize(const arma::mat& /* data */,
-                         const size_t /* atoms */,
+                         const long /* atoms */,
                          arma::mat& /* dictionary */)
   {
     // Do nothing!
   }
 };
 
-}; // namespace sparse_coding
-}; // namespace mlpack
+} // namespace sparse_coding
+} // namespace mlpack
 
 #endif

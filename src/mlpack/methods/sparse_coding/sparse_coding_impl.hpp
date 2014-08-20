@@ -31,7 +31,7 @@ namespace sparse_coding {
 
 template<typename DictionaryInitializer>
 SparseCoding<DictionaryInitializer>::SparseCoding(const arma::mat& data,
-                                                  const size_t atoms,
+                                                  const long atoms,
                                                   const double lambda1,
                                                   const double lambda2) :
     atoms(atoms),
@@ -45,7 +45,7 @@ SparseCoding<DictionaryInitializer>::SparseCoding(const arma::mat& data,
 }
 
 template<typename DictionaryInitializer>
-void SparseCoding<DictionaryInitializer>::Encode(const size_t maxIterations,
+void SparseCoding<DictionaryInitializer>::Encode(const long maxIterations,
                                                  const double objTolerance,
                                                  const double newtonTolerance)
 {
@@ -64,7 +64,7 @@ void SparseCoding<DictionaryInitializer>::Encode(const size_t maxIterations,
       / ((double) (atoms * data.n_cols)) << "%." << std::endl;
   Rcpp::Rcout << "  Objective value: " << Objective() << "." << std::endl;
 
-  for (size_t t = 1; t != maxIterations; ++t)
+  for (long t = 1; t != maxIterations; ++t)
   {
     // Print current iteration, and maximum number of iterations (if it isn't
     // 0).
@@ -113,7 +113,7 @@ void SparseCoding<DictionaryInitializer>::OptimizeCode()
   // lambda2 > 0.
   arma::mat matGram = trans(dictionary) * dictionary;
 
-  for (size_t i = 0; i < data.n_cols; ++i)
+  for (long i = 0; i < data.n_cols; ++i)
   {
     // Report progress.
     if ((i % 100) == 0)
@@ -142,16 +142,16 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
   if (adjacencies.n_elem > 0)
   {
     // This gets the column index.  Intentional integer division.
-    size_t curPointInd = (size_t) (adjacencies(0) / atoms);
+    long curPointInd = (long) (adjacencies(0) / atoms);
 
-    size_t nextColIndex = (curPointInd + 1) * atoms;
-    for (size_t l = 1; l < adjacencies.n_elem; ++l)
+    long nextColIndex = (curPointInd + 1) * atoms;
+    for (long l = 1; l < adjacencies.n_elem; ++l)
     {
       // If l no longer refers to an element in this column, advance the column
       // number accordingly.
       if (adjacencies(l) >= nextColIndex)
       {
-        curPointInd = (size_t) (adjacencies(l) / atoms);
+        curPointInd = (long) (adjacencies(l) / atoms);
         nextColIndex = (curPointInd + 1) * atoms;
       }
 
@@ -160,16 +160,16 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
   }
 
   // Handle the case of inactive atoms (atoms not used in the given coding).
-  std::vector<size_t> inactiveAtoms;
+  std::vector<long> inactiveAtoms;
 
-  for (size_t j = 0; j < atoms; ++j)
+  for (long j = 0; j < atoms; ++j)
   {
     if (accu(codes.row(j) != 0) == 0)
       inactiveAtoms.push_back(j);
   }
 
-  const size_t nInactiveAtoms = inactiveAtoms.size();
-  const size_t nActiveAtoms = atoms - nInactiveAtoms;
+  const long nInactiveAtoms = inactiveAtoms.size();
+  const long nActiveAtoms = atoms - nInactiveAtoms;
 
   // Efficient construction of Z restricted to active atoms.
   arma::mat matActiveZ;
@@ -200,7 +200,7 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
 
   //vec dualVars = diagvec(solve(dictionary, data * trans(codes))
   //    - codes * trans(codes));
-  //for (size_t i = 0; i < dualVars.n_elem; i++)
+  //for (long i = 0; i < dualVars.n_elem; i++)
   //  if (dualVars(i) < 0)
   //    dualVars(i) = 0;
 
@@ -223,7 +223,7 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
 
   double normGradient;
   double improvement;
-  for (size_t t = 1; !converged; ++t)
+  for (long t = 1; !converged; ++t)
   {
     arma::mat A = codesZT + diagmat(dualVars);
 
@@ -285,8 +285,8 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
         diagmat(dualVars), codesXT));
 
     // Update all atoms.
-    size_t currentInactiveIndex = 0;
-    for (size_t i = 0; i < atoms; ++i)
+    long currentInactiveIndex = 0;
+    for (long i = 0; i < atoms; ++i)
     {
       if (inactiveAtoms[currentInactiveIndex] == i)
       {
@@ -315,7 +315,7 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
 template<typename DictionaryInitializer>
 void SparseCoding<DictionaryInitializer>::ProjectDictionary()
 {
-  for (size_t j = 0; j < atoms; j++)
+  for (long j = 0; j < atoms; j++)
   {
     double atomNorm = norm(dictionary.col(j), 2);
     if (atomNorm > 1)

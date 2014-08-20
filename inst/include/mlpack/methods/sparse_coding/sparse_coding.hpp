@@ -128,7 +128,7 @@ class SparseCoding
    * @param lambda2 Regularization parameter for l2-norm penalty
    */
   SparseCoding(const arma::mat& data,
-               const size_t atoms,
+               const long atoms,
                const double lambda1,
                const double lambda2 = 0);
 
@@ -143,7 +143,7 @@ class SparseCoding
    * @param newtonTolerance Tolerance for the Newton's method dictionary
    *     optimization step.
    */
-  void Encode(const size_t maxIterations = 0,
+  void Encode(const long maxIterations = 0,
               const double objTolerance = 0.01,
               const double newtonTolerance = 1e-6);
 
@@ -193,7 +193,7 @@ class SparseCoding
 
  private:
   //! Number of atoms.
-  size_t atoms;
+  long atoms;
 
   //! Data matrix (columns are points).
   const arma::mat& data;
@@ -211,8 +211,8 @@ class SparseCoding
   double lambda2;
 };
 
-}; // namespace sparse_coding
-}; // namespace mlpack
+} // namespace sparse_coding
+} // namespace mlpack
 
 // Include implementation.
 #include "sparse_coding_impl.hpp"

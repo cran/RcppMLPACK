@@ -37,11 +37,11 @@ namespace naive_bayes {
 template<typename MatType>
 NaiveBayesClassifier<MatType>::NaiveBayesClassifier(
     const MatType& data,
-    const arma::Col<size_t>& labels,
-    const size_t classes,
+    const arma::Col<long>& labels,
+    const long classes,
     const bool incrementalVariance)
 {
-  const size_t dimensionality = data.n_rows;
+  const long dimensionality = data.n_rows;
 
   // Update the variables according to the number of features and classes
   // present in the data.
@@ -57,9 +57,9 @@ NaiveBayesClassifier<MatType>::NaiveBayesClassifier(
   if (incrementalVariance)
   {
     // Use incremental algorithm.
-    for (size_t j = 0; j < data.n_cols; ++j)
+    for (long j = 0; j < data.n_cols; ++j)
     {
-      const size_t label = labels[j];
+      const long label = labels[j];
       ++probabilities[label];
 
       arma::vec delta = data.col(j) - means.col(label);
@@ -67,7 +67,7 @@ NaiveBayesClassifier<MatType>::NaiveBayesClassifier(
       variances.col(label) += delta % (data.col(j) - means.col(label));
     }
 
-    for (size_t i = 0; i < classes; ++i)
+    for (long i = 0; i < classes; ++i)
     {
       if (probabilities[i] > 2)
         variances.col(i) /= (probabilities[i] - 1);
@@ -82,33 +82,33 @@ NaiveBayesClassifier<MatType>::NaiveBayesClassifier(
     // have this (and the incremental algorithm) be other options.
 
     // Calculate the means.
-    for (size_t j = 0; j < data.n_cols; ++j)
+    for (long j = 0; j < data.n_cols; ++j)
     {
-      const size_t label = labels[j];
+      const long label = labels[j];
       ++probabilities[label];
       means.col(label) += data.col(j);
     }
 
     // Normalize means.
-    for (size_t i = 0; i < classes; ++i)
+    for (long i = 0; i < classes; ++i)
       if (probabilities[i] != 0.0)
         means.col(i) /= probabilities[i];
 
     // Calculate variances.
-    for (size_t j = 0; j < data.n_cols; ++j)
+    for (long j = 0; j < data.n_cols; ++j)
     {
-      const size_t label = labels[j];
+      const long label = labels[j];
       variances.col(label) += square(data.col(j) - means.col(label));
     }
 
     // Normalize variances.
-    for (size_t i = 0; i < classes; ++i)
+    for (long i = 0; i < classes; ++i)
       if (probabilities[i] > 1)
         variances.col(i) /= (probabilities[i] - 1);
   }
 
   // Ensure that the variances are invertible.
-  for (size_t i = 0; i < variances.n_elem; ++i)
+  for (long i = 0; i < variances.n_elem; ++i)
     if (variances[i] == 0.0)
       variances[i] = 1e-50;
 
@@ -117,7 +117,7 @@ NaiveBayesClassifier<MatType>::NaiveBayesClassifier(
 
 template<typename MatType>
 void NaiveBayesClassifier<MatType>::Classify(const MatType& data,
-                                             arma::Col<size_t>& results)
+                                             arma::Col<long>& results)
 {
   // Check that the number of features in the test data is same as in the
   // training data.
@@ -136,14 +136,14 @@ void NaiveBayesClassifier<MatType>::Classify(const MatType& data,
   // means.n_cols.
 
   // Loop over every class.
-  for (size_t i = 0; i < means.n_cols; i++)
+  for (long i = 0; i < means.n_cols; i++)
   {
     // This is an adaptation of gmm::phi() for the case where the covariance is
     // a diagonal matrix.
     arma::mat diffs = data - arma::repmat(means.col(i), 1, data.n_cols);
     arma::mat rhs = -0.5 * arma::diagmat(invVar.col(i)) * diffs;
     arma::vec exponents(diffs.n_cols);
-    for (size_t j = 0; j < diffs.n_cols; ++j)
+    for (long j = 0; j < diffs.n_cols; ++j)
       exponents(j) = std::exp(arma::accu(diffs.col(j) % rhs.unsafe_col(j)));
 
     testProbs.col(i) += log(pow(2 * M_PI, (double) data.n_rows / -2.0) *
@@ -151,7 +151,7 @@ void NaiveBayesClassifier<MatType>::Classify(const MatType& data,
   }
 
   // Now calculate the label.
-  for (size_t i = 0; i < data.n_cols; ++i)
+  for (long i = 0; i < data.n_cols; ++i)
   {
     // Find the index of the class with maximum probability for this point.
     arma::uword maxIndex = 0;

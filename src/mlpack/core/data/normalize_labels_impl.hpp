@@ -43,7 +43,7 @@ namespace data
  */
 template<typename eT>
 void NormalizeLabels(const arma::Col<eT>& labelsIn,
-                     arma::Col<size_t>& labels,
+                     arma::Col<long>& labels,
                      arma::Col<eT>& mapping)
 {
     // Loop over the input labels, and develop the mapping.  We'll first naively
@@ -51,11 +51,11 @@ void NormalizeLabels(const arma::Col<eT>& labelsIn,
     // we'll resize it back down to its actual size.
     mapping.set_size(labelsIn.n_elem);
     labels.set_size(labelsIn.n_elem);
-    size_t curLabel = 0;
-    for (size_t i = 0; i < labelsIn.n_elem; ++i)
+    long curLabel = 0;
+    for (long i = 0; i < labelsIn.n_elem; ++i)
     {
         bool found = false;
-        for (size_t j = 0; j < curLabel; ++j)
+        for (long j = 0; j < curLabel; ++j)
         {
             // Is the label already in the list of labels we have seen?
             if (labelsIn[i] == mapping[j])
@@ -88,14 +88,14 @@ void NormalizeLabels(const arma::Col<eT>& labelsIn,
  * @param labelsOut Vector to store new labels in.
  */
 template<typename eT>
-void RevertLabels(const arma::Col<size_t>& labels,
+void RevertLabels(const arma::Col<long>& labels,
                   const arma::Col<eT>& mapping,
                   arma::Col<eT>& labelsOut)
 {
     // We already have the mapping, so we just need to loop over each element.
     labelsOut.set_size(labels.n_elem);
 
-    for (size_t i = 0; i < labels.n_elem; ++i)
+    for (long i = 0; i < labels.n_elem; ++i)
         labelsOut[i] = mapping[labels[i]];
 }
 

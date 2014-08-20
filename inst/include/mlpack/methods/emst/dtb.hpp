@@ -111,11 +111,11 @@ class DualTreeBoruvka
   UnionFind connections;
 
   //! Permutations of points during tree building.
-  std::vector<size_t> oldFromNew;
+  std::vector<long> oldFromNew;
   //! List of edge nodes.
-  arma::Col<size_t> neighborsInComponent;
+  arma::Col<long> neighborsInComponent;
   //! List of edge nodes.
-  arma::Col<size_t> neighborsOutComponent;
+  arma::Col<long> neighborsOutComponent;
   //! List of edge distances.
   arma::vec neighborsDistances;
 
@@ -193,7 +193,7 @@ class DualTreeBoruvka
   /**
    * Adds a single edge to the edge list
    */
-  void AddEdge(const size_t e1, const size_t e2, const double distance);
+  void AddEdge(const long e1, const long e2, const double distance);
 
   /**
    * Adds all the edges found in one iteration to the list of neighbors.

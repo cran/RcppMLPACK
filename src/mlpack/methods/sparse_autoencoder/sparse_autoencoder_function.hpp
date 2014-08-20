@@ -48,8 +48,8 @@ class SparseAutoencoderFunction
    * @param rho Sparsity parameter.
    */
   SparseAutoencoderFunction(const arma::mat& data,
-                            const size_t visibleSize,
-                            const size_t hiddenSize,
+                            const long visibleSize,
+                            const long hiddenSize,
                             const double lambda = 0.0001,
                             const double beta = 3,
                             const double rho = 0.01);
@@ -95,25 +95,25 @@ class SparseAutoencoderFunction
   const arma::mat& GetInitialPoint() const { return initialPoint; }
 
   //! Sets size of the visible layer.
-  void VisibleSize(const size_t visible)
+  void VisibleSize(const long visible)
   {
     this->visibleSize = visible;
   }
 
   //! Gets size of the visible layer.
-  size_t VisibleSize() const
+  long VisibleSize() const
   {
     return visibleSize;
   }
 
   //! Sets size of the hidden layer.
-  void HiddenSize(const size_t hidden)
+  void HiddenSize(const long hidden)
   {
     this->hiddenSize = hidden;
   }
 
   //! Gets the size of the hidden layer.
-  size_t HiddenSize() const
+  long HiddenSize() const
   {
     return hiddenSize;
   }
@@ -160,9 +160,9 @@ class SparseAutoencoderFunction
   //! Intial parameter vector.
   arma::mat initialPoint;
   //! Size of the visible layer.
-  size_t visibleSize;
+  long visibleSize;
   //! Size of the hidden layer.
-  size_t hiddenSize;
+  long hiddenSize;
   //! L2-regularization parameter.
   double lambda;
   //! KL divergence parameter.
