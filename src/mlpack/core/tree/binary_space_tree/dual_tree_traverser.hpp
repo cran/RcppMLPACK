@@ -7,7 +7,7 @@
  * manner with a given set of rules which indicate the branches which can be
  * pruned and the order in which to recurse.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -57,40 +57,40 @@ class BinarySpaceTree<BoundType, StatisticType, MatType, SplitType>::
                 BinarySpaceTree& referenceNode);
 
   //! Get the number of prunes.
-  long NumPrunes() const { return numPrunes; }
+  size_t NumPrunes() const { return numPrunes; }
   //! Modify the number of prunes.
-  long& NumPrunes() { return numPrunes; }
+  size_t& NumPrunes() { return numPrunes; }
 
   //! Get the number of visited combinations.
-  long NumVisited() const { return numVisited; }
+  size_t NumVisited() const { return numVisited; }
   //! Modify the number of visited combinations.
-  long& NumVisited() { return numVisited; }
+  size_t& NumVisited() { return numVisited; }
 
   //! Get the number of times a node combination was scored.
-  long NumScores() const { return numScores; }
+  size_t NumScores() const { return numScores; }
   //! Modify the number of times a node combination was scored.
-  long& NumScores() { return numScores; }
+  size_t& NumScores() { return numScores; }
 
   //! Get the number of times a base case was calculated.
-  long NumBaseCases() const { return numBaseCases; }
+  size_t NumBaseCases() const { return numBaseCases; }
   //! Modify the number of times a base case was calculated.
-  long& NumBaseCases() { return numBaseCases; }
+  size_t& NumBaseCases() { return numBaseCases; }
 
  private:
   //! Reference to the rules with which the trees will be traversed.
   RuleType& rule;
 
   //! The number of prunes.
-  long numPrunes;
+  size_t numPrunes;
 
   //! The number of node combinations that have been visited during traversal.
-  long numVisited;
+  size_t numVisited;
 
   //! The number of times a node combination was scored.
-  long numScores;
+  size_t numScores;
 
   //! The number of times a base case was calculated.
-  long numBaseCases;
+  size_t numBaseCases;
 
   //! Traversal information, held in the class so that it isn't continually
   //! being reallocated.

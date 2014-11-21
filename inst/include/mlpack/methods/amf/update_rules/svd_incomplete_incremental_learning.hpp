@@ -15,7 +15,7 @@ class SVDIncompleteIncrementalLearning
     {}
 
   template<typename MatType>
-  void Initialize(const MatType& dataset, const long rank)
+  void Initialize(const MatType& dataset, const size_t rank)
   {
     (void)rank;
   
@@ -34,7 +34,7 @@ class SVDIncompleteIncrementalLearning
    * @param W Basis matrix to be updated.
    * @param H Encoding matrix.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -56,7 +56,7 @@ class SVDIncompleteIncrementalLearning
   {
     arma::mat deltaW(n, W.n_cols);
     deltaW.zeros();
-    for(long i = 0;i < n;i++)
+    for(size_t i = 0;i < n;i++)
     {
       double val;
       if((val = V(i, currentUserIndex)) != 0)
@@ -85,7 +85,7 @@ class SVDIncompleteIncrementalLearning
     arma::mat deltaH(H.n_rows, 1);
     deltaH.zeros();
 
-    for(long i = 0;i < n;i++)
+    for(size_t i = 0;i < n;i++)
     {
       double val;
       if((val = V(i, currentUserIndex)) != 0)
@@ -103,10 +103,10 @@ class SVDIncompleteIncrementalLearning
   double kw;
   double kh;
 
-  long n;
-  long m;
+  size_t n;
+  size_t m;
 
-  long currentUserIndex;
+  size_t currentUserIndex;
 };
 
 template<>
@@ -121,7 +121,7 @@ inline void SVDIncompleteIncrementalLearning::
                                       it != V.end_col(currentUserIndex);it++)
   {
     double val = *it;
-    long i = it.row();
+    size_t i = it.row();
     deltaW.row(i) += (val - arma::dot(W.row(i), H.col(currentUserIndex))) *
                                          arma::trans(H.col(currentUserIndex));
     if(kw != 0) deltaW.row(i) -= kw * W.row(i);
@@ -143,7 +143,7 @@ inline void SVDIncompleteIncrementalLearning::
                                         it != V.end_col(currentUserIndex);it++)
   {
     double val = *it;
-    long i = it.row();
+    size_t i = it.row();
     if((val = V(i, currentUserIndex)) != 0)
       deltaH += (val - arma::dot(W.row(i), H.col(currentUserIndex))) *
                                                     arma::trans(W.row(i));

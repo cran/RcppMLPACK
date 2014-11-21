@@ -4,7 +4,7 @@
  *
  * Implementation of hte LogisticRegressionFunction class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -82,7 +82,7 @@ double LogisticRegressionFunction::Evaluate(const arma::mat& parameters)
   // doesn't actually affect the optimization result, so we'll just ignore those
   // terms for computational efficiency.
   double result = 0.0;
-  for (long i = 0; i < responses.n_elem; ++i)
+  for (size_t i = 0; i < responses.n_elem; ++i)
   {
     if (responses[i] == 1)
       result += log(sigmoid[i]);
@@ -100,7 +100,7 @@ double LogisticRegressionFunction::Evaluate(const arma::mat& parameters)
  * as SGD.
  */
 double LogisticRegressionFunction::Evaluate(const arma::mat& parameters,
-                                            const long i) const
+                                            const size_t i) const
 {
   // Calculate the regularization term.  We must divide by the number of points,
   // so that sum(Evaluate(parameters, [1:points])) == Evaluate(parameters).
@@ -142,7 +142,7 @@ void LogisticRegressionFunction::Gradient(const arma::mat& parameters,
  * that use a separable objective function, such as SGD.
  */
 void LogisticRegressionFunction::Gradient(const arma::mat& parameters,
-                                          const long i,
+                                          const size_t i,
                                           arma::mat& gradient) const
 {
   // Calculate the regularization term.

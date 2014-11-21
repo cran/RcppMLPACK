@@ -5,7 +5,7 @@
  *
  * Defines methods useful for formatting output.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -28,12 +28,12 @@ using namespace std;
 
 //! A utility function that replaces all all newlines with a number of spaces
 //! depending on the indentation level.
-string mlpack::util::Indent(string input, const long howManyTabs)
+string mlpack::util::Indent(string input, const size_t howManyTabs)
 {
   // For each declared...
   string standardTab = "  ";
   string bigTab = "";
-  for (long ind = 0; ind < howManyTabs; ind++)
+  for (size_t ind = 0; ind < howManyTabs; ind++)
   {
     // Increase amount tabbed on later lines.
     bigTab += standardTab;
@@ -47,7 +47,7 @@ string mlpack::util::Indent(string input, const long howManyTabs)
   std::string tabbedNewline("\n" + bigTab);
 
   // Replace all newline characters with the precomputed character sequence.
-  long startPos = 0;
+  size_t startPos = 0;
   while ((startPos = input.find("\n", startPos)) != string::npos)
   {
     // Don't replace the last newline.

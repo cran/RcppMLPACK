@@ -4,7 +4,7 @@
  *
  * Use the Nystroem method for approximating a kernel matrix.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -51,7 +51,7 @@ class NystroemKernelRule
                                   arma::mat& transformedData,
                                   arma::vec& eigval,
                                   arma::mat& eigvec,
-                                  const long rank,
+                                  const size_t rank,
                                   KernelType kernel = KernelType())
     {
       arma::mat G, v;

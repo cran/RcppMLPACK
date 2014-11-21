@@ -4,7 +4,7 @@
  *
  * An implementation of the RegularizedSVDFunction class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -43,7 +43,7 @@ class RegularizedSVDFunction
    * @param lambda Regularization parameter used for optimization.
    */
   RegularizedSVDFunction(const arma::mat& data,
-                         const long rank,
+                         const size_t rank,
                          const double lambda);
   
   /**
@@ -61,7 +61,7 @@ class RegularizedSVDFunction
    * @param i Index of the training example to be used.
    */
   double Evaluate(const arma::mat& parameters,
-                  const long i) const;
+                  const size_t i) const;
   
   /**
    * Evaluates the full gradient of the cost function over all the training
@@ -80,19 +80,19 @@ class RegularizedSVDFunction
   const arma::mat& Dataset() const { return data; }
   
   //! Return the number of training examples. Useful for SGD optimizer.
-  long NumFunctions() const { return data.n_cols; }
+  size_t NumFunctions() const { return data.n_cols; }
   
   //! Return the number of users in the data.
-  long NumUsers() const { return numUsers; }
+  size_t NumUsers() const { return numUsers; }
   
   //! Return the number of items in the data.
-  long NumItems() const { return numItems; }
+  size_t NumItems() const { return numItems; }
   
   //! Return the regularization parameters.
   double Lambda() const { return lambda; }
   
   //! Return the rank used for the factorization.
-  long Rank() const { return rank; }
+  size_t Rank() const { return rank; }
                          
  private:
   //! Rating data.
@@ -100,13 +100,13 @@ class RegularizedSVDFunction
   //! Initial parameter point.
   arma::mat initialPoint;
   //! Rank used for matrix factorization.
-  long rank;
+  size_t rank;
   //! Regularization parameter for the optimization.
   double lambda;
   //! Number of users in the given dataset.
-  long numUsers;
+  size_t numUsers;
   //! Number of items in the given dataset.
-  long numItems;
+  size_t numItems;
 };
 
 }; // namespace svd

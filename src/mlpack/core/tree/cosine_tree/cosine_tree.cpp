@@ -4,7 +4,7 @@
  *
  * Implementation of cosine tree.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -38,7 +38,7 @@ CosineTree::CosineTree(const arma::mat& dataset) :
   l2NormsSquared.zeros(numColumns);
   
   // Set indices and calculate squared norms of the columns.
-  for(long i = 0; i < numColumns; i++)
+  for(size_t i = 0; i < numColumns; i++)
   {
     indices[i] = i;
     double l2Norm = arma::norm(dataset.col(i), 2);
@@ -55,7 +55,7 @@ CosineTree::CosineTree(const arma::mat& dataset) :
 }
 
 CosineTree::CosineTree(CosineTree& parentNode,
-                       const std::vector<long>& subIndices) :
+                       const std::vector<size_t>& subIndices) :
     dataset(parentNode.GetDataset()),
     parent(&parentNode),
     right(NULL),
@@ -67,7 +67,7 @@ CosineTree::CosineTree(CosineTree& parentNode,
   l2NormsSquared.zeros(numColumns);
   
   // Set indices and squared norms of the columns.
-  for(long i = 0; i < numColumns; i++)
+  for(size_t i = 0; i < numColumns; i++)
   {
     indices[i] = parentNode.indices[subIndices[i]];
     l2NormsSquared(i) = parentNode.l2NormsSquared(subIndices[i]);
@@ -183,12 +183,12 @@ double CosineTree::MonteCarloError(CosineTree* node,
                                    arma::vec* addBasisVector1,
                                    arma::vec* addBasisVector2)
 {
-  std::vector<long> sampledIndices;
+  std::vector<size_t> sampledIndices;
   arma::vec probabilities;
   
   // Sample O(log m) points from the input node's distribution.
   // 'm' is the number of columns present in the node.
-  long numSamples = log((double)node->NumColumns()) + 1;  
+  size_t numSamples = log(node->NumColumns()) + 1;  
   node->ColumnSamplesLS(sampledIndices, probabilities, numSamples);
   
   // Get pointer to the original dataset.
@@ -200,14 +200,14 @@ double CosineTree::MonteCarloError(CosineTree* node,
   
   // Set size of projection vector, depending on whether additional basis
   // vectors are passed.
-  long projectionSize;
+  size_t projectionSize;
   if(addBasisVector1 && addBasisVector2)
     projectionSize = treeQueue.size() + 2;
   else
     projectionSize = treeQueue.size();
   
   // For each sample, calculate the weighted projection onto the current basis.
-  for(long i = 0; i < numSamples; i++)
+  for(size_t i = 0; i < numSamples; i++)
   {
     // Initialize projection as a vector of zeros.
     arma::vec projection;
@@ -216,7 +216,7 @@ double CosineTree::MonteCarloError(CosineTree* node,
     CosineTree *currentNode;
     CosineNodeQueue::const_iterator j = treeQueue.begin();
   
-    long k = 0;
+    size_t k = 0;
     // Compute the projection of the sampled vector onto the existing subspace.
     for(; j != treeQueue.end(); j++, k++)
     {
@@ -273,7 +273,7 @@ void CosineTree::ConstructBasis(CosineNodeQueue& treeQueue)
   CosineNodeQueue::const_iterator i = treeQueue.begin();
   
   // Transfer basis vectors from the queue to the basis matrix.
-  long j = 0;
+  size_t j = 0;
   for(; i != treeQueue.end(); i++, j++)
   {
     currentNode = *i;
@@ -295,12 +295,12 @@ void CosineTree::CosineNodeSplit()
   cosineMax = arma::max(cosines % (cosines < 1));
   cosineMin = arma::min(cosines);
   
-  std::vector<long> leftIndices, rightIndices;
+  std::vector<size_t> leftIndices, rightIndices;
   
   // Split columns into left and right children. The splitting condition for the
   // column to be in the left child is as follows:
   //       cos_max - cos(i) <= cos(i) - cos_min
-  for(long i = 0; i < numColumns; i++)
+  for(size_t i = 0; i < numColumns; i++)
   {
     if(cosineMax - cosines(i) <= cosines(i) - cosineMin)
     {
@@ -317,16 +317,16 @@ void CosineTree::CosineNodeSplit()
   right = new CosineTree(*this, rightIndices);
 }
 
-void CosineTree::ColumnSamplesLS(std::vector<long>& sampledIndices,
+void CosineTree::ColumnSamplesLS(std::vector<size_t>& sampledIndices,
                                  arma::vec& probabilities,
-                                 long numSamples)
+                                 size_t numSamples)
 {
   // Initialize the cumulative distribution vector size.
   arma::vec cDistribution;
   cDistribution.zeros(numColumns + 1);
   
   // Calculate cumulative length-squared distribution for the node.
-  for(long i = 0; i < numColumns; i++)
+  for(size_t i = 0; i < numColumns; i++)
   {
     cDistribution(i+1) = cDistribution(i) + l2NormsSquared(i) / frobNormSquared;
   }
@@ -335,11 +335,11 @@ void CosineTree::ColumnSamplesLS(std::vector<long>& sampledIndices,
   sampledIndices.resize(numSamples);
   probabilities.zeros(numSamples);
   
-  for(long i = 0; i < numSamples; i++)
+  for(size_t i = 0; i < numSamples; i++)
   {
     // Generate a random value for sampling.
     double randValue = arma::randu();
-    long start = 0, end = numColumns, searchIndex;
+    size_t start = 0, end = numColumns, searchIndex;
     
     // Sample from the distribution and store corresponding probability.
     searchIndex = BinarySearch(cDistribution, randValue, start, end);
@@ -348,7 +348,7 @@ void CosineTree::ColumnSamplesLS(std::vector<long>& sampledIndices,
   }
 }
 
-long CosineTree::ColumnSampleLS()
+size_t CosineTree::ColumnSampleLS()
 {
   // If only one element is present, there can only be one sample.
   if(numColumns < 2)
@@ -361,25 +361,25 @@ long CosineTree::ColumnSampleLS()
   cDistribution.zeros(numColumns + 1);
   
   // Calculate cumulative length-squared distribution for the node.
-  for(long i = 0; i < numColumns; i++)
+  for(size_t i = 0; i < numColumns; i++)
   {
     cDistribution(i+1) = cDistribution(i) + l2NormsSquared(i) / frobNormSquared;
   }
   
   // Generate a random value for sampling.
   double randValue = arma::randu();
-  long start = 0, end = numColumns;
+  size_t start = 0, end = numColumns;
   
   // Sample from the distribution.
   return BinarySearch(cDistribution, randValue, start, end);
 }
 
-long CosineTree::BinarySearch(arma::vec& cDistribution,
+size_t CosineTree::BinarySearch(arma::vec& cDistribution,
                                 double value,
-                                long start,
-                                long end)
+                                size_t start,
+                                size_t end)
 {
-  long pivot = (start + end) / 2;
+  size_t pivot = (start + end) / 2;
   
   // If pivot is zero, first point is the sampled point.
   if(!pivot)
@@ -407,7 +407,7 @@ void CosineTree::CalculateCosines(arma::vec& cosines)
   // Initialize cosine vector as a vector of zeros.
   cosines.zeros(numColumns);
   
-  for(long i = 0; i < numColumns; i++)
+  for(size_t i = 0; i < numColumns; i++)
   {
     // If norm is zero, store cosine value as zero. Else, calculate cosine value
     // between two vectors.
@@ -429,7 +429,7 @@ void CosineTree::CalculateCentroid()
   centroid.zeros(dataset.n_rows);
   
   // Calculate centroid of columns in the node.
-  for(long i = 0; i < numColumns; i++)
+  for(size_t i = 0; i < numColumns; i++)
   {
     centroid += dataset.col(indices[i]);
   }

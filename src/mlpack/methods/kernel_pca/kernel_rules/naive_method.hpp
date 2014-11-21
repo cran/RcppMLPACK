@@ -4,7 +4,7 @@
  *
  * Use the naive method to construct the kernel matrix.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -47,7 +47,7 @@ class NaiveKernelRule
                                   arma::mat& transformedData,
                                   arma::vec& eigval,
                                   arma::mat& eigvec,
-                                  const long /* unused */,
+                                  const size_t /* unused */,
                                   KernelType kernel = KernelType())
   {
     // Construct the kernel matrix.
@@ -58,9 +58,9 @@ class NaiveKernelRule
     // Note that we only need to calculate the upper triangular part of the 
     // kernel matrix, since it is symmetric. This helps minimize the number of
     // kernel evaluations.
-    for (long i = 0; i < data.n_cols; ++i)
+    for (size_t i = 0; i < data.n_cols; ++i)
     {
-      for (long j = i; j < data.n_cols; ++j)
+      for (size_t j = i; j < data.n_cols; ++j)
       {
         // Evaluate the kernel on these two points.
         kernelMatrix(i, j) = kernel.Evaluate(data.unsafe_col(i),
@@ -69,8 +69,8 @@ class NaiveKernelRule
     }
 
     // Copy to the lower triangular part of the matrix.
-    for (long i = 1; i < data.n_cols; ++i)
-      for (long j = 0; j < i; ++j)
+    for (size_t i = 1; i < data.n_cols; ++i)
+      for (size_t j = 0; j < i; ++j)
         kernelMatrix(i, j) = kernelMatrix(j, i);
 
     // For PCA the data has to be centered, even if the data is centered. But it
@@ -88,7 +88,7 @@ class NaiveKernelRule
 
     // Swap the eigenvalues since they are ordered backwards (we need largest to
     // smallest).
-    for (long i = 0; i < floor(eigval.n_elem / 2.0); ++i)
+    for (size_t i = 0; i < floor(eigval.n_elem / 2.0); ++i)
       eigval.swap_rows(i, (eigval.n_elem - 1) - i);
 
     // Flip the coefficients to produce the same effect.

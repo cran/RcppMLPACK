@@ -6,7 +6,7 @@
  *
  * @experimental
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -47,7 +47,7 @@ HRectBound<Power, TakeRoot>::HRectBound() :
  * set.
  */
 template<int Power, bool TakeRoot>
-HRectBound<Power, TakeRoot>::HRectBound(const long dimension) :
+HRectBound<Power, TakeRoot>::HRectBound(const size_t dimension) :
     dim(dimension),
     bounds(new math::Range[dim]),
     minWidth(0)
@@ -63,7 +63,7 @@ HRectBound<Power, TakeRoot>::HRectBound(const HRectBound& other) :
     minWidth(other.MinWidth())
 {
   // Copy other bounds over.
-  for (long i = 0; i < dim; i++)
+  for (size_t i = 0; i < dim; i++)
     bounds[i] = other[i];
 }
 
@@ -85,7 +85,7 @@ HRectBound<Power, TakeRoot>& HRectBound<Power, TakeRoot>::operator=(
   }
 
   // Now copy each of the bound values.
-  for (long i = 0; i < dim; i++)
+  for (size_t i = 0; i < dim; i++)
     bounds[i] = other[i];
 
   minWidth = other.MinWidth();
@@ -109,7 +109,7 @@ HRectBound<Power, TakeRoot>::~HRectBound()
 template<int Power, bool TakeRoot>
 void HRectBound<Power, TakeRoot>::Clear()
 {
-  for (long i = 0; i < dim; i++)
+  for (size_t i = 0; i < dim; i++)
     bounds[i] = math::Range();
   minWidth = 0;
 }
@@ -126,7 +126,7 @@ void HRectBound<Power, TakeRoot>::Centroid(arma::vec& centroid) const
   if (!(centroid.n_elem == dim))
     centroid.set_size(dim);
 
-  for (long i = 0; i < dim; i++)
+  for (size_t i = 0; i < dim; i++)
     centroid(i) = bounds[i].Mid();
 }
 
@@ -139,12 +139,12 @@ double HRectBound<Power, TakeRoot>::MinDistance(
     const VecType& point,
     typename boost::enable_if<IsVector<VecType> >* /* junk */) const
 {
-
+  //Log::Assert(point.n_elem == dim);
 
   double sum = 0;
 
   double lower, higher;
-  for (long d = 0; d < dim; d++)
+  for (size_t d = 0; d < dim; d++)
   {
     lower = bounds[d].Lo() - point[d];
     higher = point[d] - bounds[d].Hi();
@@ -171,14 +171,14 @@ double HRectBound<Power, TakeRoot>::MinDistance(
 template<int Power, bool TakeRoot>
 double HRectBound<Power, TakeRoot>::MinDistance(const HRectBound& other) const
 {
-
+  //Log::Assert(dim == other.dim);
 
   double sum = 0;
   const math::Range* mbound = bounds;
   const math::Range* obound = other.bounds;
 
   double lower, higher;
-  for (long d = 0; d < dim; d++)
+  for (size_t d = 0; d < dim; d++)
   {
     lower = obound->Lo() - mbound->Hi();
     higher = mbound->Lo() - obound->Hi();
@@ -210,9 +210,9 @@ double HRectBound<Power, TakeRoot>::MaxDistance(
 {
   double sum = 0;
 
+  //Log::Assert(point.n_elem == dim);
 
-
-  for (long d = 0; d < dim; d++)
+  for (size_t d = 0; d < dim; d++)
   {
     double v = std::max(fabs(point[d] - bounds[d].Lo()),
         fabs(bounds[d].Hi() - point[d]));
@@ -234,10 +234,10 @@ double HRectBound<Power, TakeRoot>::MaxDistance(const HRectBound& other) const
 {
   double sum = 0;
 
-
+  //Log::Assert(dim == other.dim);
 
   double v;
-  for (long d = 0; d < dim; d++)
+  for (size_t d = 0; d < dim; d++)
   {
     v = std::max(fabs(other.bounds[d].Hi() - bounds[d].Lo()),
         fabs(bounds[d].Hi() - other.bounds[d].Lo()));
@@ -261,10 +261,10 @@ math::Range HRectBound<Power, TakeRoot>::RangeDistance(const HRectBound& other)
   double loSum = 0;
   double hiSum = 0;
 
-
+  //Log::Assert(dim == other.dim);
 
   double v1, v2, vLo, vHi;
-  for (long d = 0; d < dim; d++)
+  for (size_t d = 0; d < dim; d++)
   {
     v1 = other.bounds[d].Lo() - bounds[d].Hi();
     v2 = bounds[d].Lo() - other.bounds[d].Hi();
@@ -303,10 +303,10 @@ math::Range HRectBound<Power, TakeRoot>::RangeDistance(
   double loSum = 0;
   double hiSum = 0;
 
-
+  //Log::Assert(point.n_elem == dim);
 
   double v1, v2, vLo, vHi;
-  for (long d = 0; d < dim; d++)
+  for (size_t d = 0; d < dim; d++)
   {
     v1 = bounds[d].Lo() - point[d]; // Negative if point[d] > lo.
     v2 = point[d] - bounds[d].Hi(); // Negative if point[d] < hi.
@@ -349,13 +349,13 @@ template<typename MatType>
 HRectBound<Power, TakeRoot>& HRectBound<Power, TakeRoot>::operator|=(
     const MatType& data)
 {
-
+  //Log::Assert(data.n_rows == dim);
 
   arma::vec mins(min(data, 1));
   arma::vec maxs(max(data, 1));
 
   minWidth = DBL_MAX;
-  for (long i = 0; i < dim; i++)
+  for (size_t i = 0; i < dim; i++)
   {
     bounds[i] |= math::Range(mins[i], maxs[i]);
     const double width = bounds[i].Width();
@@ -373,10 +373,10 @@ template<int Power, bool TakeRoot>
 HRectBound<Power, TakeRoot>& HRectBound<Power, TakeRoot>::operator|=(
     const HRectBound& other)
 {
-
+  assert(other.dim == dim);
 
   minWidth = DBL_MAX;
-  for (long i = 0; i < dim; i++)
+  for (size_t i = 0; i < dim; i++)
   {
     bounds[i] |= other.bounds[i];
     const double width = bounds[i].Width();
@@ -394,7 +394,7 @@ template<int Power, bool TakeRoot>
 template<typename VecType>
 bool HRectBound<Power, TakeRoot>::Contains(const VecType& point) const
 {
-  for (long i = 0; i < point.n_elem; i++)
+  for (size_t i = 0; i < point.n_elem; i++)
   {
     if (!bounds[i].Contains(point(i)))
       return false;
@@ -410,7 +410,7 @@ template<int Power, bool TakeRoot>
 double HRectBound<Power, TakeRoot>::Diameter() const
 {
   double d = 0;
-  for (long i = 0; i < dim; ++i)
+  for (size_t i = 0; i < dim; ++i)
     d += std::pow(bounds[i].Hi() - bounds[i].Lo(), (double) Power);
 
   if (TakeRoot)
@@ -431,7 +431,7 @@ std::string HRectBound<Power, TakeRoot>::ToString() const
   convert << "  TakeRoot: " << (TakeRoot ? "true" : "false") << std::endl;
   convert << "  Dimensionality: " << dim << std::endl;
   convert << "  Bounds: " << std::endl;
-  for (long i = 0; i < dim; ++i)
+  for (size_t i = 0; i < dim; ++i)
     convert << util::Indent(bounds[i].ToString()) << std::endl;
   convert << "  Minimum width: " << minWidth << std::endl;
 

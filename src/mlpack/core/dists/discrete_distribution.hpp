@@ -5,7 +5,7 @@
  * Implementation of the discrete distribution, where each discrete observation
  * has a given probability.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -45,9 +45,9 @@ namespace distribution /** Probability distributions. */ {
  * @note
  * This class, like every other class in MLPACK, uses arma::vec to represent
  * observations.  While a discrete distribution only has positive integers
- * (long) as observations, these can be converted to doubles (which is what
+ * (size_t) as observations, these can be converted to doubles (which is what
  * arma::vec holds).  This distribution internally converts those doubles back
- * into long before comparisons.
+ * into size_t before comparisons.
  * @endnote
  */
 class DiscreteDistribution
@@ -66,7 +66,7 @@ class DiscreteDistribution
    * @param numObservations Number of possible observations this distribution
    *    can have.
    */
-  DiscreteDistribution(const long numObservations) :
+  DiscreteDistribution(const size_t numObservations) :
       probabilities(arma::ones<arma::vec>(numObservations) / numObservations)
   { /* nothing to do */ }
 
@@ -92,7 +92,7 @@ class DiscreteDistribution
   /**
    * Get the dimensionality of the distribution.
    */
-  long Dimensionality() const { return 1; }
+  size_t Dimensionality() const { return 1; }
 
   /**
    * Return the probability of the given observation.  If the observation is
@@ -104,9 +104,9 @@ class DiscreteDistribution
    */
   double Probability(const arma::vec& observation) const
   {
-    // Adding 0.5 helps ensure that we cast the floating point to a long
+    // Adding 0.5 helps ensure that we cast the floating point to a size_t
     // correctly.
-    const long obs = long(observation[0] + 0.5);
+    const size_t obs = size_t(observation[0] + 0.5);
 
     // Ensure that the observation is within the bounds.
     if (obs >= probabilities.n_elem)

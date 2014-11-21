@@ -4,7 +4,7 @@
  *
  * Linear algebra utilities.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -32,7 +32,7 @@ using namespace math;
  */
 void mlpack::math::VectorPower(arma::vec& vec, const double power)
 {
-  for (long i = 0; i < vec.n_elem; i++)
+  for (size_t i = 0; i < vec.n_elem; i++)
   {
     if (std::abs(vec(i)) > 1e-12)
       vec(i) = (vec(i) > 0) ? std::pow(vec(i), (double) power) :
@@ -73,7 +73,7 @@ void mlpack::math::WhitenUsingSVD(const arma::mat& x,
 
   svd(u, sVector, v, covX);
 
-  long d = sVector.n_elem;
+  size_t d = sVector.n_elem;
   invSMatrix.zeros(d, d);
   invSMatrix.diag() = 1 / sqrt(sVector);
 
@@ -115,7 +115,7 @@ void mlpack::math::RandVector(arma::vec& v)
 {
   v.zeros();
 
-  for (long i = 0; i + 1 < v.n_elem; i += 2)
+  for (size_t i = 0; i + 1 < v.n_elem; i += 2)
   {
     double a = Random();
     double b = Random();
@@ -172,11 +172,11 @@ void mlpack::math::Orthogonalize(arma::mat& x)
  * @param output Matrix to copy non-removed rows into.
  */
 void mlpack::math::RemoveRows(const arma::mat& input,
-                              const std::vector<long>& rowsToRemove,
+                              const std::vector<size_t>& rowsToRemove,
                               arma::mat& output)
 {
-  const long nRemove = rowsToRemove.size();
-  const long nKeep = input.n_rows - nRemove;
+  const size_t nRemove = rowsToRemove.size();
+  const size_t nKeep = input.n_rows - nRemove;
 
   if (nRemove == 0)
   {
@@ -186,8 +186,8 @@ void mlpack::math::RemoveRows(const arma::mat& input,
   {
     output.set_size(nKeep, input.n_cols);
 
-    long curRow = 0;
-    long removeInd = 0;
+    size_t curRow = 0;
+    size_t removeInd = 0;
     // First, check 0 to first row to remove.
     if (rowsToRemove[0] > 0)
     {
@@ -200,7 +200,7 @@ void mlpack::math::RemoveRows(const arma::mat& input,
     // penultimate row.
     while (removeInd < nRemove - 1)
     {
-      const long height = rowsToRemove[removeInd + 1] -
+      const size_t height = rowsToRemove[removeInd + 1] -
           rowsToRemove[removeInd] - 1;
 
       if (height > 0)

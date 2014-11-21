@@ -5,7 +5,7 @@
  * The function to be optimized for sparse autoencoders.  Any mlpack optimizer
  * can be used.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -48,8 +48,8 @@ class SparseAutoencoderFunction
    * @param rho Sparsity parameter.
    */
   SparseAutoencoderFunction(const arma::mat& data,
-                            const long visibleSize,
-                            const long hiddenSize,
+                            const size_t visibleSize,
+                            const size_t hiddenSize,
                             const double lambda = 0.0001,
                             const double beta = 3,
                             const double rho = 0.01);
@@ -95,25 +95,25 @@ class SparseAutoencoderFunction
   const arma::mat& GetInitialPoint() const { return initialPoint; }
 
   //! Sets size of the visible layer.
-  void VisibleSize(const long visible)
+  void VisibleSize(const size_t visible)
   {
     this->visibleSize = visible;
   }
 
   //! Gets size of the visible layer.
-  long VisibleSize() const
+  size_t VisibleSize() const
   {
     return visibleSize;
   }
 
   //! Sets size of the hidden layer.
-  void HiddenSize(const long hidden)
+  void HiddenSize(const size_t hidden)
   {
     this->hiddenSize = hidden;
   }
 
   //! Gets the size of the hidden layer.
-  long HiddenSize() const
+  size_t HiddenSize() const
   {
     return hiddenSize;
   }
@@ -160,9 +160,9 @@ class SparseAutoencoderFunction
   //! Intial parameter vector.
   arma::mat initialPoint;
   //! Size of the visible layer.
-  long visibleSize;
+  size_t visibleSize;
   //! Size of the hidden layer.
-  long hiddenSize;
+  size_t hiddenSize;
   //! L2-regularization parameter.
   double lambda;
   //! KL divergence parameter.

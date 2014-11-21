@@ -4,7 +4,7 @@
  *
  * Implementation of Local Coordinate Coding
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -31,7 +31,7 @@ namespace lcc {
 template<typename DictionaryInitializer>
 LocalCoordinateCoding<DictionaryInitializer>::LocalCoordinateCoding(
     const arma::mat& data,
-    const long atoms,
+    const size_t atoms,
     const double lambda) :
     atoms(atoms),
     data(data),
@@ -44,9 +44,10 @@ LocalCoordinateCoding<DictionaryInitializer>::LocalCoordinateCoding(
 
 template<typename DictionaryInitializer>
 void LocalCoordinateCoding<DictionaryInitializer>::Encode(
-    const long maxIterations,
+    const size_t maxIterations,
     const double objTolerance)
 {
+  //Timer::Start("local_coordinate_coding");
 
   double lastObjVal = DBL_MAX;
 
@@ -62,7 +63,7 @@ void LocalCoordinateCoding<DictionaryInitializer>::Encode(
   Rcpp::Rcout << "  Objective value: " << Objective(adjacencies) << "."
       << std::endl;
 
-  for (long t = 1; t != maxIterations; t++)
+  for (size_t t = 1; t != maxIterations; t++)
   {
     Rcpp::Rcout << "Iteration " << t << " of " << maxIterations << "."
         << std::endl;
@@ -105,6 +106,7 @@ void LocalCoordinateCoding<DictionaryInitializer>::Encode(
     lastObjVal = curObjVal;
   }
 
+  //Timer::Stop("local_coordinate_coding");
 }
 
 template<typename DictionaryInitializer>
@@ -117,7 +119,7 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeCode()
   arma::mat dictGram = trans(dictionary) * dictionary;
   arma::mat dictGramTD(dictGram.n_rows, dictGram.n_cols);
 
-  for (long i = 0; i < data.n_cols; i++)
+  for (size_t i = 0; i < data.n_cols; i++)
   {
     // report progress
     if ((i % 100) == 0)
@@ -150,17 +152,17 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeDictionary(
   if (adjacencies.n_elem > 0)
   {
     // This gets the column index.  Intentional integer division.
-    long curPointInd = (long) (adjacencies(0) / atoms);
+    size_t curPointInd = (size_t) (adjacencies(0) / atoms);
     ++neighborCounts(curPointInd);
 
-    long nextColIndex = (curPointInd + 1) * atoms;
-    for (long l = 1; l < adjacencies.n_elem; l++)
+    size_t nextColIndex = (curPointInd + 1) * atoms;
+    for (size_t l = 1; l < adjacencies.n_elem; l++)
     {
       // If l no longer refers to an element in this column, advance the column
       // number accordingly.
       if (adjacencies(l) >= nextColIndex)
       {
-        curPointInd = (long) (adjacencies(l) / atoms);
+        curPointInd = (size_t) (adjacencies(l) / atoms);
         nextColIndex = (curPointInd + 1) * atoms;
       }
 
@@ -175,8 +177,8 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeDictionary(
 
   dataPrime(arma::span::all, arma::span(0, data.n_cols - 1)) = data;
 
-  long curCol = data.n_cols;
-  for (long i = 0; i < data.n_cols; i++)
+  size_t curCol = data.n_cols;
+  for (size_t i = 0; i < data.n_cols; i++)
   {
     if (neighborCounts(i) > 0)
     {
@@ -187,13 +189,13 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeDictionary(
   }
 
   // Handle the case of inactive atoms (atoms not used in the given coding).
-  std::vector<long> inactiveAtoms;
-  for (long j = 0; j < atoms; ++j)
+  std::vector<size_t> inactiveAtoms;
+  for (size_t j = 0; j < atoms; ++j)
     if (accu(codes.row(j) != 0) == 0)
       inactiveAtoms.push_back(j);
 
-  const long nInactiveAtoms = inactiveAtoms.size();
-  const long nActiveAtoms = atoms - nInactiveAtoms;
+  const size_t nInactiveAtoms = inactiveAtoms.size();
+  const size_t nActiveAtoms = atoms - nInactiveAtoms;
 
   // Efficient construction of codes restricted to active atoms.
   arma::mat codesPrime = arma::zeros(nActiveAtoms, data.n_cols +
@@ -211,8 +213,8 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeDictionary(
 
     // Create reverse atom lookup for active atoms.
     arma::uvec atomReverseLookup(atoms);
-    long inactiveOffset = 0;
-    for (long i = 0; i < atoms; ++i)
+    size_t inactiveOffset = 0;
+    for (size_t i = 0; i < atoms; ++i)
     {
       if (inactiveAtoms[inactiveOffset] == i)
         ++inactiveOffset;
@@ -223,11 +225,11 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeDictionary(
     codesPrime(arma::span::all, arma::span(0, data.n_cols - 1)) = activeCodes;
 
     // Fill the rest of codesPrime.
-    for (long l = 0; l < adjacencies.n_elem; ++l)
+    for (size_t l = 0; l < adjacencies.n_elem; ++l)
     {
       // Recover the location in the codes matrix that this adjacency refers to.
-      long atomInd = adjacencies(l) % atoms;
-      long pointInd = (long) (adjacencies(l) / atoms);
+      size_t atomInd = adjacencies(l) % atoms;
+      size_t pointInd = (size_t) (adjacencies(l) / atoms);
 
       // Fill matrix.
       codesPrime(atomReverseLookup(atomInd), data.n_cols + l) = 1.0;
@@ -239,11 +241,11 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeDictionary(
     // All atoms are active.
     codesPrime(arma::span::all, arma::span(0, data.n_cols - 1)) = codes;
 
-    for (long l = 0; l < adjacencies.n_elem; ++l)
+    for (size_t l = 0; l < adjacencies.n_elem; ++l)
     {
       // Recover the location in the codes matrix that this adjacency refers to.
-      long atomInd = adjacencies(l) % atoms;
-      long pointInd = (long) (adjacencies(l) / atoms);
+      size_t atomInd = adjacencies(l) % atoms;
+      size_t pointInd = (size_t) (adjacencies(l) / atoms);
 
       // Fill matrix.
       codesPrime(atomInd, data.n_cols + l) = 1.0;
@@ -276,8 +278,8 @@ void LocalCoordinateCoding<DictionaryInitializer>::OptimizeDictionary(
                   codesPrime * diagmat(wSquared) * trans(dataPrime)));
 
     // Update all atoms.
-    long currentInactiveIndex = 0;
-    for (long i = 0; i < atoms; ++i)
+    size_t currentInactiveIndex = 0;
+    for (size_t i = 0; i < atoms; ++i)
     {
       if (inactiveAtoms[currentInactiveIndex] == i)
       {
@@ -307,11 +309,11 @@ double LocalCoordinateCoding<DictionaryInitializer>::Objective(
 {
   double weightedL1NormZ = 0;
 
-  for (long l = 0; l < adjacencies.n_elem; l++)
+  for (size_t l = 0; l < adjacencies.n_elem; l++)
   {
     // Map adjacency back to its location in the codes matrix.
-    const long atomInd = adjacencies(l) % atoms;
-    const long pointInd = (long) (adjacencies(l) / atoms);
+    const size_t atomInd = adjacencies(l) % atoms;
+    const size_t pointInd = (size_t) (adjacencies(l) / atoms);
 
     weightedL1NormZ += fabs(codes(atomInd, pointInd)) * arma::as_scalar(
         arma::sum(arma::square(dictionary.col(atomInd) - data.col(pointInd))));

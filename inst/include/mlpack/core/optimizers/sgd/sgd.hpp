@@ -4,7 +4,7 @@
  *
  * Stochastic Gradient Descent (SGD).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -65,10 +65,10 @@ namespace optimization {
  * For SGD to work, a DecomposableFunctionType template parameter is required.
  * This class must implement the following function:
  *
- *   long NumFunctions();
- *   double Evaluate(const arma::mat& coordinates, const long i);
+ *   size_t NumFunctions();
+ *   double Evaluate(const arma::mat& coordinates, const size_t i);
  *   void Gradient(const arma::mat& coordinates,
- *                 const long i,
+ *                 const size_t i,
  *                 arma::mat& gradient);
  *
  * NumFunctions() should return the number of functions (\f$n\f$), and in the
@@ -99,7 +99,7 @@ class SGD
    */
   SGD(DecomposableFunctionType& function,
       const double stepSize = 0.01,
-      const long maxIterations = 100000,
+      const size_t maxIterations = 100000,
       const double tolerance = 1e-5,
       const bool shuffle = true);
 
@@ -124,9 +124,9 @@ class SGD
   double& StepSize() { return stepSize; }
 
   //! Get the maximum number of iterations (0 indicates no limit).
-  long MaxIterations() const { return maxIterations; }
+  size_t MaxIterations() const { return maxIterations; }
   //! Modify the maximum number of iterations (0 indicates no limit).
-  long& MaxIterations() { return maxIterations; }
+  size_t& MaxIterations() { return maxIterations; }
 
   //! Get the tolerance for termination.
   double Tolerance() const { return tolerance; }
@@ -149,7 +149,7 @@ class SGD
   double stepSize;
 
   //! The maximum number of allowed iterations.
-  long maxIterations;
+  size_t maxIterations;
 
   //! The tolerance for termination.
   double tolerance;

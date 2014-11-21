@@ -6,7 +6,7 @@
  * K-Means clustering".  This class is meant to provide better initial points
  * for the k-means algorithm.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -33,31 +33,31 @@ namespace kmeans {
 //! Partition the given dataset according to Bradley and Fayyad's algorithm.
 template<typename MatType>
 void RefinedStart::Cluster(const MatType& data,
-                           const long clusters,
-                           arma::Col<long>& assignments) const
+                           const size_t clusters,
+                           arma::Col<size_t>& assignments) const
 {
   math::RandomSeed(std::time(NULL));
 
   // This will hold the sampled datasets.
-  const long numPoints = long(percentage * data.n_cols);
+  const size_t numPoints = size_t(percentage * data.n_cols);
   MatType sampledData(data.n_rows, numPoints);
   // vector<bool> is packed so each bool is 1 bit.
   std::vector<bool> pointsUsed(data.n_cols, false);
   arma::mat sampledCentroids(data.n_rows, samplings * clusters);
 
   // We will use these objects repeatedly for clustering.
-  arma::Col<long> sampledAssignments;
+  arma::Col<size_t> sampledAssignments;
   arma::mat centroids;
   KMeans<> kmeans;
 
-  for (long i = 0; i < samplings; ++i)
+  for (size_t i = 0; i < samplings; ++i)
   {
     // First, assemble the sampled dataset.
-    long curSample = 0;
+    size_t curSample = 0;
     while (curSample < numPoints)
     {
       // Pick a random point in [0, numPoints).
-      long sample = (long) math::RandInt(data.n_cols);
+      size_t sample = (size_t) math::RandInt(data.n_cols);
 
       if (!pointsUsed[sample])
       {
@@ -85,13 +85,13 @@ void RefinedStart::Cluster(const MatType& data,
 
   // Turn the final centroids into assignments.
   assignments.set_size(data.n_cols);
-  for (long i = 0; i < data.n_cols; ++i)
+  for (size_t i = 0; i < data.n_cols; ++i)
   {
     // Find the closest centroid to this point.
     double minDistance = std::numeric_limits<double>::infinity();
-    long closestCluster = clusters;
+    size_t closestCluster = clusters;
 
-    for (long j = 0; j < clusters; ++j)
+    for (size_t j = 0; j < clusters; ++j)
     {
       const double distance = kmeans.Metric().Evaluate(data.col(i),
           centroids.col(j));

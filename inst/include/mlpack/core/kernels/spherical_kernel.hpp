@@ -5,7 +5,7 @@
  * This is an example kernel.  If you are making your own kernel, follow the
  * outline specified in this file.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -85,7 +85,7 @@ class SphericalKernel
         break;
     }
   }
-  double Normalizer(long dimension)
+  double Normalizer(size_t dimension)
   {
     return pow(bandwidth, (double) dimension) * pow(M_PI, dimension / 2.0) /
         boost::math::tgamma(dimension / 2.0 + 1.0);

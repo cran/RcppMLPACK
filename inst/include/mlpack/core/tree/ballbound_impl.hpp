@@ -6,7 +6,7 @@
  *
  * @experimental
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -46,7 +46,7 @@ BallBound<VecType, TMetricType>::BallBound() :
  * @param dimension Dimensionality of ball bound.
  */
 template<typename VecType, typename TMetricType>
-BallBound<VecType, TMetricType>::BallBound(const long dimension) :
+BallBound<VecType, TMetricType>::BallBound(const size_t dimension) :
     radius(-DBL_MAX),
     center(dimension),
     metric(new TMetricType()),
@@ -98,7 +98,7 @@ BallBound<VecType, TMetricType>::~BallBound()
 
 //! Get the range in a certain dimension.
 template<typename VecType, typename TMetricType>
-math::Range BallBound<VecType, TMetricType>::operator[](const long i) const
+math::Range BallBound<VecType, TMetricType>::operator[](const size_t i) const
 {
   if (radius < 0)
     return math::Range();
@@ -248,7 +248,7 @@ BallBound<VecType, TMetricType>::operator|=(const MatType& data)
   }
 
   // Now iteratively add points.
-  for (long i = 0; i < data.n_cols; ++i)
+  for (size_t i = 0; i < data.n_cols; ++i)
   {
     const double dist = metric->Evaluate(center, (VecType) data.col(i));
 

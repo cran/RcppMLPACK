@@ -6,7 +6,7 @@
  * optimization method (also called the 'method of multipliers'.  This class
  * uses the L-BFGS optimizer.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -43,9 +43,9 @@ namespace optimization {
  *
  * - double Evaluate(const arma::mat& coordinates);
  * - void Gradient(const arma::mat& coordinates, arma::mat& gradient);
- * - long NumConstraints();
- * - double EvaluateConstraint(long index, const arma::mat& coordinates);
- * - double GradientConstraint(long index, const arma::mat& coordinates,
+ * - size_t NumConstraints();
+ * - double EvaluateConstraint(size_t index, const arma::mat& coordinates);
+ * - double GradientConstraint(size_t index, const arma::mat& coordinates,
  *        arma::mat& gradient);
  *
  * The number of constraints must be greater than or equal to 0, and
@@ -94,7 +94,7 @@ class AugLagrangian
    * @param sigma Initial penalty parameter.
    */
   bool Optimize(arma::mat& coordinates,
-                const long maxIterations = 1000);
+                const size_t maxIterations = 1000);
 
   /**
    * Optimize the function, giving initial estimates for the Lagrange
@@ -111,7 +111,7 @@ class AugLagrangian
   bool Optimize(arma::mat& coordinates,
                 const arma::vec& initLambda,
                 const double initSigma,
-                const long maxIterations = 1000);
+                const size_t maxIterations = 1000);
 
   //! Get the LagrangianFunction.
   const LagrangianFunction& Function() const { return function; }

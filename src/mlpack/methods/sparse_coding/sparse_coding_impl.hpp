@@ -5,7 +5,7 @@
  * Implementation of Sparse Coding with Dictionary Learning using l1 (LASSO) or
  * l1+l2 (Elastic Net) regularization.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -31,7 +31,7 @@ namespace sparse_coding {
 
 template<typename DictionaryInitializer>
 SparseCoding<DictionaryInitializer>::SparseCoding(const arma::mat& data,
-                                                  const long atoms,
+                                                  const size_t atoms,
                                                   const double lambda1,
                                                   const double lambda2) :
     atoms(atoms),
@@ -45,11 +45,11 @@ SparseCoding<DictionaryInitializer>::SparseCoding(const arma::mat& data,
 }
 
 template<typename DictionaryInitializer>
-void SparseCoding<DictionaryInitializer>::Encode(const long maxIterations,
+void SparseCoding<DictionaryInitializer>::Encode(const size_t maxIterations,
                                                  const double objTolerance,
                                                  const double newtonTolerance)
 {
-
+  //Timer::Start("sparse_coding");
 
   double lastObjVal = DBL_MAX;
 
@@ -64,7 +64,7 @@ void SparseCoding<DictionaryInitializer>::Encode(const long maxIterations,
       / ((double) (atoms * data.n_cols)) << "%." << std::endl;
   Rcpp::Rcout << "  Objective value: " << Objective() << "." << std::endl;
 
-  for (long t = 1; t != maxIterations; ++t)
+  for (size_t t = 1; t != maxIterations; ++t)
   {
     // Print current iteration, and maximum number of iterations (if it isn't
     // 0).
@@ -103,7 +103,7 @@ void SparseCoding<DictionaryInitializer>::Encode(const long maxIterations,
     lastObjVal = curObjVal;
   }
 
-
+  //Timer::Stop("sparse_coding");
 }
 
 template<typename DictionaryInitializer>
@@ -113,7 +113,7 @@ void SparseCoding<DictionaryInitializer>::OptimizeCode()
   // lambda2 > 0.
   arma::mat matGram = trans(dictionary) * dictionary;
 
-  for (long i = 0; i < data.n_cols; ++i)
+  for (size_t i = 0; i < data.n_cols; ++i)
   {
     // Report progress.
     if ((i % 100) == 0)
@@ -142,16 +142,16 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
   if (adjacencies.n_elem > 0)
   {
     // This gets the column index.  Intentional integer division.
-    long curPointInd = (long) (adjacencies(0) / atoms);
+    size_t curPointInd = (size_t) (adjacencies(0) / atoms);
 
-    long nextColIndex = (curPointInd + 1) * atoms;
-    for (long l = 1; l < adjacencies.n_elem; ++l)
+    size_t nextColIndex = (curPointInd + 1) * atoms;
+    for (size_t l = 1; l < adjacencies.n_elem; ++l)
     {
       // If l no longer refers to an element in this column, advance the column
       // number accordingly.
       if (adjacencies(l) >= nextColIndex)
       {
-        curPointInd = (long) (adjacencies(l) / atoms);
+        curPointInd = (size_t) (adjacencies(l) / atoms);
         nextColIndex = (curPointInd + 1) * atoms;
       }
 
@@ -160,16 +160,16 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
   }
 
   // Handle the case of inactive atoms (atoms not used in the given coding).
-  std::vector<long> inactiveAtoms;
+  std::vector<size_t> inactiveAtoms;
 
-  for (long j = 0; j < atoms; ++j)
+  for (size_t j = 0; j < atoms; ++j)
   {
     if (accu(codes.row(j) != 0) == 0)
       inactiveAtoms.push_back(j);
   }
 
-  const long nInactiveAtoms = inactiveAtoms.size();
-  const long nActiveAtoms = atoms - nInactiveAtoms;
+  const size_t nInactiveAtoms = inactiveAtoms.size();
+  const size_t nActiveAtoms = atoms - nInactiveAtoms;
 
   // Efficient construction of Z restricted to active atoms.
   arma::mat matActiveZ;
@@ -200,7 +200,7 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
 
   //vec dualVars = diagvec(solve(dictionary, data * trans(codes))
   //    - codes * trans(codes));
-  //for (long i = 0; i < dualVars.n_elem; i++)
+  //for (size_t i = 0; i < dualVars.n_elem; i++)
   //  if (dualVars(i) < 0)
   //    dualVars(i) = 0;
 
@@ -223,7 +223,7 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
 
   double normGradient;
   double improvement;
-  for (long t = 1; !converged; ++t)
+  for (size_t t = 1; !converged; ++t)
   {
     arma::mat A = codesZT + diagmat(dualVars);
 
@@ -285,8 +285,8 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
         diagmat(dualVars), codesXT));
 
     // Update all atoms.
-    long currentInactiveIndex = 0;
-    for (long i = 0; i < atoms; ++i)
+    size_t currentInactiveIndex = 0;
+    for (size_t i = 0; i < atoms; ++i)
     {
       if (inactiveAtoms[currentInactiveIndex] == i)
       {
@@ -315,7 +315,7 @@ double SparseCoding<DictionaryInitializer>::OptimizeDictionary(
 template<typename DictionaryInitializer>
 void SparseCoding<DictionaryInitializer>::ProjectDictionary()
 {
-  for (long j = 0; j < atoms; j++)
+  for (size_t j = 0; j < atoms; j++)
   {
     double atomNorm = norm(dictionary.col(j), 2);
     if (atomNorm > 1)
@@ -359,7 +359,7 @@ std::string SparseCoding<DictionaryInitializer>::ToString() const
   return convert.str();
 }
 
-} // namespace sparse_coding
-} // namespace mlpack
+}; // namespace sparse_coding
+}; // namespace mlpack
 
 #endif

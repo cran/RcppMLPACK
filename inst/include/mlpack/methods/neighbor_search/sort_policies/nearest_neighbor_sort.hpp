@@ -5,7 +5,7 @@
  * Implementation of the SortPolicy class for NeighborSearch; in this case, the
  * nearest neighbors are those that are most important.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -43,7 +43,7 @@ class NearestNeighborSort
  public:
   /**
    * Return the index in the vector where the new distance should be inserted,
-   * or (long() - 1) if it should not be inserted (i.e. if it is not any
+   * or (size_t() - 1) if it should not be inserted (i.e. if it is not any
    * better than any of the existing points in the list).  The list should be
    * sorted such that the best point is the first in the list.  The actual
    * insertion is not performed.
@@ -52,11 +52,11 @@ class NearestNeighborSort
    *     point is first in the list.
    * @param new_distance Distance to try to insert
    *
-   * @return long containing the position to insert into, or (long() - 1)
+   * @return size_t containing the position to insert into, or (size_t() - 1)
    *     if the new distance should not be inserted.
    */
-  static long SortDistance(const arma::vec& list,
-                             const arma::Col<long>& indices,
+  static size_t SortDistance(const arma::vec& list,
+                             const arma::Col<size_t>& indices,
                              double newDistance);
 
   /**

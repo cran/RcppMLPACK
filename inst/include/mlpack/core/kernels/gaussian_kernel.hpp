@@ -6,7 +6,7 @@
  *
  * Implementation of the Gaussian kernel (GaussianKernel).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -96,7 +96,7 @@ class GaussianKernel
    * @param dimension
    * @return the normalization constant
    */
-  double Normalizer(const long dimension)
+  double Normalizer(const size_t dimension)
   {
     return pow(sqrt(2.0 * M_PI) * bandwidth, (double) dimension);
   }

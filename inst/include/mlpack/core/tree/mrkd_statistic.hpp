@@ -4,7 +4,7 @@
  *
  * Definition of the statistic for multi-resolution kd-trees.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -50,14 +50,14 @@ class MRKDStatistic
   std::string ToString() const;
 
   //! Get the index of the initial item in the dataset.
-  long Begin() const { return begin; }
+  size_t Begin() const { return begin; }
   //! Modify the index of the initial item in the dataset.
-  long& Begin() { return begin; }
+  size_t& Begin() { return begin; }
 
   //! Get the number of items in the dataset.
-  long Count() const { return count; }
+  size_t Count() const { return count; }
   //! Modify the number of items in the dataset.
-  long& Count() { return count; }
+  size_t& Count() { return count; }
 
   //! Get the center of mass.
   const arma::colvec& CenterOfMass() const { return centerOfMass; }
@@ -65,22 +65,22 @@ class MRKDStatistic
   arma::colvec& CenterOfMass() { return centerOfMass; }
 
   //! Get the index of the dominating centroid.
-  long DominatingCentroid() const { return dominatingCentroid; }
+  size_t DominatingCentroid() const { return dominatingCentroid; }
   //! Modify the index of the dominating centroid.
-  long& DominatingCentroid() { return dominatingCentroid; }
+  size_t& DominatingCentroid() { return dominatingCentroid; }
 
   //! Access the whitelist.
-  const std::vector<long>& Whitelist() const { return whitelist; }
+  const std::vector<size_t>& Whitelist() const { return whitelist; }
   //! Modify the whitelist.
-  std::vector<long>& Whitelist() { return whitelist; }
+  std::vector<size_t>& Whitelist() { return whitelist; }
 
  private:
   //! The data points this object contains.
   const arma::mat* dataset;
   //! The initial item in the dataset, so we don't have to make a copy.
-  long begin;
+  size_t begin;
   //! The number of items in the dataset.
-  long count;
+  size_t count;
   //! The left child.
   const MRKDStatistic* leftStat;
   //! The right child.
@@ -96,10 +96,10 @@ class MRKDStatistic
 
   // There may be a better place to store this -- HRectBound?
   //! The index of the dominating centroid of the associated hyperrectangle.
-  long dominatingCentroid;
+  size_t dominatingCentroid;
 
   //! The list of centroids that cannot own this hyperrectangle.
-  std::vector<long> whitelist;
+  std::vector<size_t> whitelist;
   //! Whether or not the whitelist is valid.
   bool isWhitelistValid;
 };

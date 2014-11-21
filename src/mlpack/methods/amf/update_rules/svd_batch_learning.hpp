@@ -2,7 +2,7 @@
  * @file simple_residue_termination.hpp
  * @author Sumedh Ghaisas
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -39,10 +39,10 @@ class SVDBatchLearning
     {}
 
   template<typename MatType>
-  void Initialize(const MatType& dataset, const long rank)
+  void Initialize(const MatType& dataset, const size_t rank)
   {
-    const long n = dataset.n_rows;
-    const long m = dataset.n_cols;
+    const size_t n = dataset.n_rows;
+    const size_t m = dataset.n_cols;
 
     mW.zeros(n, rank);
     mH.zeros(rank, m);
@@ -62,19 +62,19 @@ class SVDBatchLearning
                       arma::mat& W,
                       const arma::mat& H)
   {
-    long n = V.n_rows;
-    long m = V.n_cols;
+    size_t n = V.n_rows;
+    size_t m = V.n_cols;
 
-    long r = W.n_cols;
+    size_t r = W.n_cols;
 
     mW = momentum * mW;
 
     arma::mat deltaW(n, r);
     deltaW.zeros();
 
-    for(long i = 0;i < n;i++)
+    for(size_t i = 0;i < n;i++)
     {
-      for(long j = 0;j < m;j++)
+      for(size_t j = 0;j < m;j++)
       {
         double val;
         if((val = V(i, j)) != 0)
@@ -102,19 +102,19 @@ class SVDBatchLearning
                       const arma::mat& W,
                       arma::mat& H)
   {
-    long n = V.n_rows;
-    long m = V.n_cols;
+    size_t n = V.n_rows;
+    size_t m = V.n_cols;
 
-    long r = W.n_cols;
+    size_t r = W.n_cols;
 
     mH = momentum * mH;
 
     arma::mat deltaH(r, m);
     deltaH.zeros();
 
-    for(long j = 0;j < m;j++)
+    for(size_t j = 0;j < m;j++)
     {
-      for(long i = 0;i < n;i++)
+      for(size_t i = 0;i < n;i++)
       {
         double val;
         if((val = V(i, j)) != 0)
@@ -145,9 +145,9 @@ inline void SVDBatchLearning::WUpdate<arma::sp_mat>(const arma::sp_mat& V,
                                                     arma::mat& W,
                                                     const arma::mat& H)
 {
-  long n = V.n_rows;
+  size_t n = V.n_rows;
 
-  long r = W.n_cols;
+  size_t r = W.n_cols;
 
   mW = momentum * mW;
 
@@ -156,13 +156,13 @@ inline void SVDBatchLearning::WUpdate<arma::sp_mat>(const arma::sp_mat& V,
 
   for(arma::sp_mat::const_iterator it = V.begin();it != V.end();it++)
   {
-    long row = it.row();
-    long col = it.col();
+    size_t row = it.row();
+    size_t col = it.col();
     deltaW.row(it.row()) += (*it - arma::dot(W.row(row), H.col(col))) * 
                                                   arma::trans(H.col(col));
   }
 
-  if(kw != 0) for(long i = 0; i < n; i++)
+  if(kw != 0) for(size_t i = 0; i < n; i++)
   {
     deltaW.row(i) -= kw * W.row(i);
   }
@@ -176,9 +176,9 @@ inline void SVDBatchLearning::HUpdate<arma::sp_mat>(const arma::sp_mat& V,
                                                     const arma::mat& W,
                                                     arma::mat& H)
 {
-  long m = V.n_cols;
+  size_t m = V.n_cols;
 
-  long r = W.n_cols;
+  size_t r = W.n_cols;
 
   mH = momentum * mH;
 
@@ -187,13 +187,13 @@ inline void SVDBatchLearning::HUpdate<arma::sp_mat>(const arma::sp_mat& V,
 
   for(arma::sp_mat::const_iterator it = V.begin();it != V.end();it++)
   {
-    long row = it.row();
-    long col = it.col();
+    size_t row = it.row();
+    size_t col = it.col();
     deltaH.col(col) += (*it - arma::dot(W.row(row), H.col(col))) * 
                                                 arma::trans(W.row(row));
   }
 
-  if(kh != 0) for(long j = 0; j < m; j++)
+  if(kh != 0) for(size_t j = 0; j < m; j++)
   {
     deltaH.col(j) -= kh * H.col(j);
   }

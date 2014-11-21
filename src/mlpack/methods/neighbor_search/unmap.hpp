@@ -4,7 +4,7 @@
  *
  * Convenience methods to unmap results.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -42,11 +42,11 @@ namespace neighbor {
  * @param distancesOut Matrix to store unmapped distances into.
  * @param squareRoot If true, take the square root of the distances.
  */
-void Unmap(const arma::Mat<long>& neighbors,
+void Unmap(const arma::Mat<size_t>& neighbors,
            const arma::mat& distances,
-           const std::vector<long>& referenceMap,
-           const std::vector<long>& queryMap,
-           arma::Mat<long>& neighborsOut,
+           const std::vector<size_t>& referenceMap,
+           const std::vector<size_t>& queryMap,
+           arma::Mat<size_t>& neighborsOut,
            arma::mat& distancesOut,
            const bool squareRoot = false);
 
@@ -63,10 +63,10 @@ void Unmap(const arma::Mat<long>& neighbors,
  * @param distancesOut Matrix to store unmapped distances into.
  * @param squareRoot If true, take the square root of the distances.
  */
-void Unmap(const arma::Mat<long>& neighbors,
+void Unmap(const arma::Mat<size_t>& neighbors,
            const arma::mat& distances,
-           const std::vector<long>& referenceMap,
-           arma::Mat<long>& neighborsOut,
+           const std::vector<size_t>& referenceMap,
+           arma::Mat<size_t>& neighborsOut,
            arma::mat& distancesOut,
            const bool squareRoot = false);
 

@@ -4,7 +4,7 @@
  *
  * Implementation of the Gaussian distribution.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -50,7 +50,7 @@ class GaussianDistribution
    * Create a Gaussian distribution with zero mean and identity covariance with
    * the given dimensionality.
    */
-  GaussianDistribution(const long dimension) :
+  GaussianDistribution(const size_t dimension) :
       mean(arma::zeros<arma::vec>(dimension)),
       covariance(arma::eye<arma::mat>(dimension, dimension))
   { /* Nothing to do. */ }
@@ -62,7 +62,7 @@ class GaussianDistribution
       mean(mean), covariance(covariance) { /* Nothing to do. */ }
 
   //! Return the dimensionality of this distribution.
-  long Dimensionality() const { return mean.n_elem; }
+  size_t Dimensionality() const { return mean.n_elem; }
 
   /**
    * Return the probability of the given observation.

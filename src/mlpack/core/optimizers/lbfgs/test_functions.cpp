@@ -4,7 +4,7 @@
  *
  * Implementations of the test functions defined in test_functions.hpp.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -188,7 +188,7 @@ void GeneralizedRosenbrockFunction::Gradient(const arma::mat& coordinates,
 
 //! Calculate the objective function of one of the individual functions.
 double GeneralizedRosenbrockFunction::Evaluate(const arma::mat& coordinates,
-                                               const long i) const
+                                               const size_t i) const
 {
   return 100 * std::pow((std::pow(coordinates[i], 2) - coordinates[i + 1]), 2) +
       std::pow(1 - coordinates[i], 2);
@@ -196,7 +196,7 @@ double GeneralizedRosenbrockFunction::Evaluate(const arma::mat& coordinates,
 
 //! Calculate the gradient of one of the individual functions.
 void GeneralizedRosenbrockFunction::Gradient(const arma::mat& coordinates,
-                                             const long i,
+                                             const size_t i,
                                              arma::mat& gradient) const
 {
   gradient.zeros(n);

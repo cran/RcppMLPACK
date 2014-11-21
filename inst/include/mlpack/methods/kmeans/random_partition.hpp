@@ -5,7 +5,7 @@
  * Very simple partitioner which partitions the data randomly into the number of
  * desired clusters.  Used as the default InitialPartitionPolicy for KMeans.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -52,11 +52,11 @@ class RandomPartition
    */
   template<typename MatType>
   inline static void Cluster(const MatType& data,
-                             const long clusters,
-                             arma::Col<long>& assignments)
+                             const size_t clusters,
+                             arma::Col<size_t>& assignments)
   {
     // Implementation is so simple we'll put it here in the header file.
-    assignments = arma::shuffle(arma::linspace<arma::Col<long> >(0,
+    assignments = arma::shuffle(arma::linspace<arma::Col<size_t> >(0,
         (clusters - 1), data.n_cols));
   }
 };

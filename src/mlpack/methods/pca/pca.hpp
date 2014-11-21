@@ -5,7 +5,7 @@
  * Defines the PCA class to perform Principal Components Analysis on the
  * specified data set.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -83,12 +83,12 @@ class PCA
    * @param newDimension New dimension of the data.
    * @return Amount of the variance of the data retained (between 0 and 1).
    */
-  double Apply(arma::mat& data, const long newDimension) const;
+  double Apply(arma::mat& data, const size_t newDimension) const;
 
-  //! This overload is here to make sure int gets casted right to long.
+  //! This overload is here to make sure int gets casted right to size_t.
   inline double Apply(arma::mat& data, const int newDimension) const
   {
-    return Apply(data, long(newDimension));
+    return Apply(data, size_t(newDimension));
   }
 
   /**
@@ -125,7 +125,7 @@ class PCA
 
 }; // class PCA
 
-} // namespace pca
-} // namespace mlpack
+}; // namespace pca
+}; // namespace mlpack
 
 #endif

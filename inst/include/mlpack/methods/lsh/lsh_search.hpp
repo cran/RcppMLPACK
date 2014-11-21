@@ -20,7 +20,7 @@
  * }
  *
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -82,11 +82,11 @@ class LSHSearch
    */
   LSHSearch(const arma::mat& referenceSet,
             const arma::mat& querySet,
-            const long numProj,
-            const long numTables,
+            const size_t numProj,
+            const size_t numTables,
             const double hashWidth = 0.0,
-            const long secondHashSize = 99901,
-            const long bucketSize = 500);
+            const size_t secondHashSize = 99901,
+            const size_t bucketSize = 500);
 
   /**
    * This function initializes the LSH class. It builds the hash on the
@@ -109,11 +109,11 @@ class LSHSearch
    *     Default values are already provided here.
    */
   LSHSearch(const arma::mat& referenceSet,
-            const long numProj,
-            const long numTables,
+            const size_t numProj,
+            const size_t numTables,
             const double hashWidth = 0.0,
-            const long secondHashSize = 99901,
-            const long bucketSize = 500);
+            const size_t secondHashSize = 99901,
+            const size_t bucketSize = 500);
 
   /**
    * Compute the nearest neighbors and store the output in the given matrices.
@@ -133,10 +133,10 @@ class LSHSearch
    *     By default, this is set to zero in which case all tables are
    *     considered.
    */
-  void Search(const long k,
-              arma::Mat<long>& resultingNeighbors,
+  void Search(const size_t k,
+              arma::Mat<size_t>& resultingNeighbors,
               arma::mat& distances,
-              const long numTablesToSearch = 0);
+              const size_t numTablesToSearch = 0);
 
   // Returns a string representation of this object. 
   std::string ToString() const;
@@ -168,9 +168,9 @@ class LSHSearch
    *    hashing the query into all the hash tables and eventually into
    *    multiple buckets of the second hash table.
    */
-  void ReturnIndicesFromTable(const long queryIndex,
+  void ReturnIndicesFromTable(const size_t queryIndex,
                               arma::uvec& referenceIndices,
-                              long numTablesToSearch);
+                              size_t numTablesToSearch);
 
   /**
    * This is a helper function that computes the distance of the query to the
@@ -179,7 +179,7 @@ class LSHSearch
    * @param queryIndex The index of the query in question
    * @param referenceIndex The index of the neighbor candidate in question
    */
-  double BaseCase(const long queryIndex, const long referenceIndex);
+  double BaseCase(const size_t queryIndex, const size_t referenceIndex);
 
   /**
    * This is a helper function that efficiently inserts better neighbor
@@ -193,8 +193,8 @@ class LSHSearch
    *    of the best 'k' candidates for the query in question.
    * @param distance The distance of the query to the neighbor candidate.
    */
-  void InsertNeighbor(const long queryIndex, const long pos,
-                      const long neighbor, const double distance);
+  void InsertNeighbor(const size_t queryIndex, const size_t pos,
+                      const size_t neighbor, const double distance);
 
   //! Reference dataset.
   const arma::mat& referenceSet;
@@ -203,10 +203,10 @@ class LSHSearch
   const arma::mat& querySet;
 
   //! The number of projections
-  const long numProj;
+  const size_t numProj;
 
   //! The number of hash tables
-  const long numTables;
+  const size_t numTables;
 
   //! The std::vector containing the projection matrix of each table
   std::vector<arma::mat> projections; // should be [numProj x dims] x numTables
@@ -218,33 +218,33 @@ class LSHSearch
   double hashWidth;
 
   //! The big prime representing the size of the second hash
-  const long secondHashSize;
+  const size_t secondHashSize;
 
   //! The weights of the second hash
   arma::vec secondHashWeights;
 
   //! The bucket size of the second hash
-  const long bucketSize;
+  const size_t bucketSize;
 
   //! Instantiation of the metric.
   metric::SquaredEuclideanDistance metric;
 
   //! The final hash table; should be (< secondHashSize) x bucketSize.
-  arma::Mat<long> secondHashTable;
+  arma::Mat<size_t> secondHashTable;
 
   //! The number of elements present in each hash bucket; should be
   //! secondHashSize.
-  arma::Col<long> bucketContentSize;
+  arma::Col<size_t> bucketContentSize;
 
   //! For a particular hash value, points to the row in secondHashTable
   //! corresponding to this value.  Should be secondHashSize.
-  arma::Col<long> bucketRowInHashTable;
+  arma::Col<size_t> bucketRowInHashTable;
 
   //! The pointer to the nearest neighbor distances.
   arma::mat* distancePtr;
 
   //! The pointer to the nearest neighbor indices.
-  arma::Mat<long>* neighborPtr;
+  arma::Mat<size_t>* neighborPtr;
 }; // class LSHSearch
 
 }; // namespace neighbor

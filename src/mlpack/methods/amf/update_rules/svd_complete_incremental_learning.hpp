@@ -18,7 +18,7 @@ class SVDCompleteIncrementalLearning
             : u(u), kw(kw), kh(kh)
     {}
 
-  void Initialize(const MatType& dataset, const long rank)
+  void Initialize(const MatType& dataset, const size_t rank)
   {
     (void)rank;
     n = dataset.n_rows;
@@ -37,7 +37,7 @@ class SVDCompleteIncrementalLearning
    * @param W Basis matrix to be updated.
    * @param H Encoding matrix.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -119,11 +119,11 @@ class SVDCompleteIncrementalLearning
   double kw;
   double kh;
 
-  long n;
-  long m;
+  size_t n;
+  size_t m;
 
-  long currentUserIndex;
-  long currentItemIndex;
+  size_t currentUserIndex;
+  size_t currentItemIndex;
 };
 
 template<>
@@ -141,7 +141,7 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
     delete it;
   }
 
-  void Initialize(const arma::sp_mat& dataset, const long rank)
+  void Initialize(const arma::sp_mat& dataset, const size_t rank)
   {
     (void)rank;
     n = dataset.n_rows;
@@ -173,8 +173,8 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
         it = new arma::sp_mat::const_iterator(V.begin());
     }
 
-    long currentUserIndex = it->col();
-    long currentItemIndex = it->row();
+    size_t currentUserIndex = it->col();
+    size_t currentItemIndex = it->row();
 
     arma::mat deltaW(1, W.n_cols);
     deltaW.zeros();
@@ -204,8 +204,8 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
     arma::mat deltaH(H.n_rows, 1);
     deltaH.zeros();
 
-    long currentUserIndex = it->col();
-    long currentItemIndex = it->row();
+    size_t currentUserIndex = it->col();
+    size_t currentItemIndex = it->row();
 
     deltaH += (**it - arma::dot(W.row(currentItemIndex), H.col(currentUserIndex))) 
                                         * arma::trans(W.row(currentItemIndex));
@@ -219,8 +219,8 @@ class SVDCompleteIncrementalLearning<arma::sp_mat>
   double kw;
   double kh;
 
-  long n;
-  long m;
+  size_t n;
+  size_t m;
 
   arma::sp_mat dummy;
   arma::sp_mat::const_iterator* it;

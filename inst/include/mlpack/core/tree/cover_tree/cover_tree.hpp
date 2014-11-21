@@ -4,7 +4,7 @@
  *
  * Definition of CoverTree, which can be used in place of the BinarySpaceTree.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -165,15 +165,15 @@ class CoverTree
    */
   CoverTree(const arma::mat& dataset,
             const double base,
-            const long pointIndex,
+            const size_t pointIndex,
             const int scale,
             CoverTree* parent,
             const double parentDistance,
-            arma::Col<long>& indices,
+            arma::Col<size_t>& indices,
             arma::vec& distances,
-            long nearSetSize,
-            long& farSetSize,
-            long& usedSetSize,
+            size_t nearSetSize,
+            size_t& farSetSize,
+            size_t& usedSetSize,
             MetricType& metric = NULL);
 
   /**
@@ -194,7 +194,7 @@ class CoverTree
    */
   CoverTree(const arma::mat& dataset,
             const double base,
-            const long pointIndex,
+            const size_t pointIndex,
             const int scale,
             CoverTree* parent,
             const double parentDistance,
@@ -227,20 +227,20 @@ class CoverTree
   const arma::mat& Dataset() const { return dataset; }
 
   //! Get the index of the point which this node represents.
-  long Point() const { return point; }
+  size_t Point() const { return point; }
   //! For compatibility with other trees; the argument is ignored.
-  long Point(const long) const { return point; }
+  size_t Point(const size_t) const { return point; }
 
   bool IsLeaf() const { return (children.size() == 0); }
-  long NumPoints() const { return 1; }
+  size_t NumPoints() const { return 1; }
 
   //! Get a particular child node.
-  const CoverTree& Child(const long index) const { return *children[index]; }
+  const CoverTree& Child(const size_t index) const { return *children[index]; }
   //! Modify a particular child node.
-  CoverTree& Child(const long index) { return *children[index]; }
+  CoverTree& Child(const size_t index) { return *children[index]; }
 
   //! Get the number of children.
-  long NumChildren() const { return children.size(); }
+  size_t NumChildren() const { return children.size(); }
 
   //! Get the children.
   const std::vector<CoverTree*>& Children() const { return children; }
@@ -248,10 +248,10 @@ class CoverTree
   std::vector<CoverTree*>& Children() { return children; }
 
   //! Get the number of descendant points.
-  long NumDescendants() const;
+  size_t NumDescendants() const;
 
   //! Get the index of a particular descendant point.
-  long Descendant(const long index) const;
+  size_t Descendant(const size_t index) const;
 
   //! Get the scale of this node.
   int Scale() const { return scale; }
@@ -350,7 +350,7 @@ class CoverTree
   const arma::mat& dataset;
 
   //! Index of the point in the matrix which this node represents.
-  long point;
+  size_t point;
 
   //! The list of children; the first is the self-child.
   std::vector<CoverTree*> children;
@@ -365,7 +365,7 @@ class CoverTree
   StatisticType stat;
 
   //! The number of descendant points.
-  long numDescendants;
+  size_t numDescendants;
 
   //! The parent node (NULL if this is the root of the tree).
   CoverTree* parent;
@@ -385,11 +385,11 @@ class CoverTree
   /**
    * Create the children for this node.
    */
-  void CreateChildren(arma::Col<long>& indices,
+  void CreateChildren(arma::Col<size_t>& indices,
                       arma::vec& distances,
-                      long nearSetSize,
-                      long& farSetSize,
-                      long& usedSetSize);
+                      size_t nearSetSize,
+                      size_t& farSetSize,
+                      size_t& usedSetSize);
 
   /**
    * Fill the vector of distances with the distances between the point specified
@@ -402,10 +402,10 @@ class CoverTree
    * @param distances Vector to store calculated distances in.
    * @param pointSetSize Number of points in arrays to calculate distances for.
    */
-  void ComputeDistances(const long pointIndex,
-                        const arma::Col<long>& indices,
+  void ComputeDistances(const size_t pointIndex,
+                        const arma::Col<size_t>& indices,
                         arma::vec& distances,
-                        const long pointSetSize);
+                        const size_t pointSetSize);
   /**
    * Split the given indices and distances into a near and a far set, returning
    * the number of points in the near set.  The distances must already be
@@ -420,10 +420,10 @@ class CoverTree
    * @param pointSetSize Size of point set (because we may be sorting a smaller
    *      list than the indices vector will hold).
    */
-  long SplitNearFar(arma::Col<long>& indices,
+  size_t SplitNearFar(arma::Col<size_t>& indices,
                       arma::vec& distances,
                       const double bound,
-                      const long pointSetSize);
+                      const size_t pointSetSize);
 
   /**
    * Assuming that the list of indices and distances is sorted as
@@ -431,7 +431,7 @@ class CoverTree
    * resort the sets so the organization is
    * [ childFarSet | farSet | childUsedSet | usedSet ].
    *
-   * The long parameters specify the sizes of each set in the array.  Only the
+   * The size_t parameters specify the sizes of each set in the array.  Only the
    * ordering of the indices and distances arrays will be modified (not their
    * actual contents).
    *
@@ -444,25 +444,25 @@ class CoverTree
    * @param childUsedSetSize Number of points in child used set (childUsedSet).
    * @param farSetSize Number of points in far set (farSet).
    */
-  long SortPointSet(arma::Col<long>& indices,
+  size_t SortPointSet(arma::Col<size_t>& indices,
                       arma::vec& distances,
-                      const long childFarSetSize,
-                      const long childUsedSetSize,
-                      const long farSetSize);
+                      const size_t childFarSetSize,
+                      const size_t childUsedSetSize,
+                      const size_t farSetSize);
 
-  void MoveToUsedSet(arma::Col<long>& indices,
+  void MoveToUsedSet(arma::Col<size_t>& indices,
                      arma::vec& distances,
-                     long& nearSetSize,
-                     long& farSetSize,
-                     long& usedSetSize,
-                     arma::Col<long>& childIndices,
-                     const long childFarSetSize,
-                     const long childUsedSetSize);
-  long PruneFarSet(arma::Col<long>& indices,
+                     size_t& nearSetSize,
+                     size_t& farSetSize,
+                     size_t& usedSetSize,
+                     arma::Col<size_t>& childIndices,
+                     const size_t childFarSetSize,
+                     const size_t childUsedSetSize);
+  size_t PruneFarSet(arma::Col<size_t>& indices,
                      arma::vec& distances,
                      const double bound,
-                     const long nearSetSize,
-                     const long pointSetSize);
+                     const size_t nearSetSize,
+                     const size_t pointSetSize);
 
   /**
    * Take a look at the last child (the most recently created one) and remove
@@ -476,11 +476,11 @@ class CoverTree
    */
   std::string ToString() const;
 
-  long DistanceComps() const { return distanceComps; }
-  long& DistanceComps() { return distanceComps; }
+  size_t DistanceComps() const { return distanceComps; }
+  size_t& DistanceComps() { return distanceComps; }
 
  private:
-  long distanceComps;
+  size_t distanceComps;
 };
 
 }; // namespace tree

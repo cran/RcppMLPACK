@@ -6,7 +6,7 @@
  * K-Means clustering".  This class is meant to provide better initial points
  * for the k-means algorithm.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -52,7 +52,7 @@ class RefinedStart
    * number of samplings to perform and the percentage of the dataset to use in
    * each sampling.
    */
-  RefinedStart(const long samplings = 100,
+  RefinedStart(const size_t samplings = 100,
                const double percentage = 0.02) :
       samplings(samplings), percentage(percentage) { }
 
@@ -68,13 +68,13 @@ class RefinedStart
    */
   template<typename MatType>
   void Cluster(const MatType& data,
-               const long clusters,
-               arma::Col<long>& assignments) const;
+               const size_t clusters,
+               arma::Col<size_t>& assignments) const;
 
   //! Get the number of samplings that will be performed.
-  long Samplings() const { return samplings; }
+  size_t Samplings() const { return samplings; }
   //! Modify the number of samplings that will be performed.
-  long& Samplings() { return samplings; }
+  size_t& Samplings() { return samplings; }
 
   //! Get the percentage of the data used by each subsampling.
   double Percentage() const { return percentage; }
@@ -83,7 +83,7 @@ class RefinedStart
 
  private:
   //! The number of samplings to perform.
-  long samplings;
+  size_t samplings;
   //! The percentage of the data to use for each subsampling.
   double percentage;
 };

@@ -4,7 +4,7 @@
  *
  * Tree traverser rules for the DualTreeBoruvka algorithm.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -30,8 +30,8 @@ DTBRules<MetricType, TreeType>::
 DTBRules(const arma::mat& dataSet,
          UnionFind& connections,
          arma::vec& neighborsDistances,
-         arma::Col<long>& neighborsInComponent,
-         arma::Col<long>& neighborsOutComponent,
+         arma::Col<size_t>& neighborsInComponent,
+         arma::Col<size_t>& neighborsOutComponent,
          MetricType& metric)
 :
   dataSet(dataSet),
@@ -48,8 +48,8 @@ DTBRules(const arma::mat& dataSet,
 
 template<typename MetricType, typename TreeType>
 inline force_inline
-double DTBRules<MetricType, TreeType>::BaseCase(const long queryIndex,
-                                                const long referenceIndex)
+double DTBRules<MetricType, TreeType>::BaseCase(const size_t queryIndex,
+                                                const size_t referenceIndex)
 {
   // Check if the points are in the same component at this iteration.
   // If not, return the distance between them.  Also, store a better result as
@@ -57,9 +57,9 @@ double DTBRules<MetricType, TreeType>::BaseCase(const long queryIndex,
   double newUpperBound = -1.0;
 
   // Find the index of the component the query is in.
-  long queryComponentIndex = connections.Find(queryIndex);
+  size_t queryComponentIndex = connections.Find(queryIndex);
 
-  long referenceComponentIndex = connections.Find(referenceIndex);
+  size_t referenceComponentIndex = connections.Find(referenceIndex);
 
   if (queryComponentIndex != referenceComponentIndex)
   {
@@ -69,7 +69,7 @@ double DTBRules<MetricType, TreeType>::BaseCase(const long queryIndex,
 
     if (distance < neighborsDistances[queryComponentIndex])
     {
-
+      //Log::Assert(queryIndex != referenceIndex);
 
       neighborsDistances[queryComponentIndex] = distance;
       neighborsInComponent[queryComponentIndex] = queryIndex;
@@ -80,22 +80,22 @@ double DTBRules<MetricType, TreeType>::BaseCase(const long queryIndex,
   if (newUpperBound < neighborsDistances[queryComponentIndex])
     newUpperBound = neighborsDistances[queryComponentIndex];
 
-
+  //Log::Assert(newUpperBound >= 0.0);
 
   return newUpperBound;
 }
 
 template<typename MetricType, typename TreeType>
-double DTBRules<MetricType, TreeType>::Score(const long queryIndex,
+double DTBRules<MetricType, TreeType>::Score(const size_t queryIndex,
                                              TreeType& referenceNode)
 {
-  long queryComponentIndex = connections.Find(queryIndex);
+  size_t queryComponentIndex = connections.Find(queryIndex);
 
   // If the query belongs to the same component as all of the references,
   // then prune.  The cast is to stop a warning about comparing unsigned to
   // signed values.
   if (queryComponentIndex ==
-      (long) referenceNode.Stat().ComponentMembership())
+      (size_t) referenceNode.Stat().ComponentMembership())
     return DBL_MAX;
 
   const arma::vec queryPoint = dataSet.unsafe_col(queryIndex);
@@ -108,14 +108,14 @@ double DTBRules<MetricType, TreeType>::Score(const long queryIndex,
 }
 
 template<typename MetricType, typename TreeType>
-double DTBRules<MetricType, TreeType>::Score(const long queryIndex,
+double DTBRules<MetricType, TreeType>::Score(const size_t queryIndex,
                                              TreeType& referenceNode,
                                              const double baseCaseResult)
 {
   // I don't really understand the last argument here
   // It just gets passed in the distance call, otherwise this function
   // is the same as the one above.
-  long queryComponentIndex = connections.Find(queryIndex);
+  size_t queryComponentIndex = connections.Find(queryIndex);
 
   // If the query belongs to the same component as all of the references,
   // then prune.
@@ -133,7 +133,7 @@ double DTBRules<MetricType, TreeType>::Score(const long queryIndex,
 }
 
 template<typename MetricType, typename TreeType>
-double DTBRules<MetricType, TreeType>::Rescore(const long queryIndex,
+double DTBRules<MetricType, TreeType>::Rescore(const size_t queryIndex,
                                                TreeType& referenceNode,
                                                const double oldScore)
 {
@@ -206,9 +206,9 @@ inline double DTBRules<MetricType, TreeType>::CalculateBound(
   double bestChildBound = DBL_MAX;
 
   // Now, find the best and worst point bounds.
-  for (long i = 0; i < queryNode.NumPoints(); ++i)
+  for (size_t i = 0; i < queryNode.NumPoints(); ++i)
   {
-    const long pointComponent = connections.Find(queryNode.Point(i));
+    const size_t pointComponent = connections.Find(queryNode.Point(i));
     const double bound = neighborsDistances[pointComponent];
 
     if (bound > worstPointBound)
@@ -218,7 +218,7 @@ inline double DTBRules<MetricType, TreeType>::CalculateBound(
   }
 
   // Find the best and worst child bounds.
-  for (long i = 0; i < queryNode.NumChildren(); ++i)
+  for (size_t i = 0; i < queryNode.NumChildren(); ++i)
   {
     const double maxBound = queryNode.Child(i).Stat().MaxNeighborDistance();
     if (maxBound > worstChildBound)

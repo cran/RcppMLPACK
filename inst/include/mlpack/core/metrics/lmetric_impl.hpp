@@ -4,7 +4,7 @@
  *
  * Implementation of template specializations of LMetric class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -35,7 +35,7 @@ double LMetric<Power, TakeRoot>::Evaluate(const VecType1& a,
                                              const VecType2& b)
 {
   double sum = 0;
-  for (long i = 0; i < a.n_elem; i++)
+  for (size_t i = 0; i < a.n_elem; i++)
     sum += pow(fabs(a[i] - b[i]), Power);
 
   if (!TakeRoot) // The compiler should optimize this correctly at compile-time.
@@ -91,7 +91,7 @@ template<typename VecType1, typename VecType2>
 double LMetric<3, true>::Evaluate(const VecType1& a, const VecType2& b)
 {
   double sum = 0;
-  for (long i = 0; i < a.n_elem; i++)
+  for (size_t i = 0; i < a.n_elem; i++)
     sum += pow(fabs(a[i] - b[i]), 3.0);
 
   return pow(accu(pow(abs(a - b), 3.0)), 1.0 / 3.0);

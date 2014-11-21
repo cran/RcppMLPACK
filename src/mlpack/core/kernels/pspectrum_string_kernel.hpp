@@ -8,7 +8,7 @@
  * strings; then, the actual strings are given to the PSpectrumStringKernel at
  * construction time, and the kernel knows to map the indices to actual strings.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -82,7 +82,7 @@ class PSpectrumStringKernel
    * @param p The length of substrings to search.
    */
   PSpectrumStringKernel(const std::vector<std::vector<std::string> >& datasets,
-                        const long p);
+                        const size_t p);
 
   /**
    * Evaluate the kernel for the string indices given.  As mentioned in the
@@ -106,9 +106,9 @@ class PSpectrumStringKernel
   { return counts; }
 
   //! Access the value of p.
-  long P() const { return p; }
+  size_t P() const { return p; }
   //! Modify the value of p.
-  long& P() { return p; }
+  size_t& P() { return p; }
 
    /*
    * Returns a string representation of this object.
@@ -119,7 +119,7 @@ class PSpectrumStringKernel
     convert << "  p used: " << p << std::endl;
     convert << "  Dataset:" << datasets.size() << std::endl;
     std::ostringstream convertb;
-    for (long ind=0; ind < datasets.size(); ind++)
+    for (size_t ind=0; ind < datasets.size(); ind++)
       convertb << datasets[ind].size();
     convert << mlpack::util::Indent(convertb.str(),2);
     return convert.str();
@@ -133,7 +133,7 @@ class PSpectrumStringKernel
   std::vector<std::vector<std::map<std::string, int> > > counts;
 
   //! The value of p to use in calculation.
-  long p;
+  size_t p;
 };
 
 }; // namespace kernel

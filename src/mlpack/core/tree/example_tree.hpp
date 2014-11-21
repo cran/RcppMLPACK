@@ -6,7 +6,7 @@
  * implement (although the actual implementations here don't make any sense
  * because this is just an example).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -90,18 +90,18 @@ class ExampleTree
               MetricType& metric);
 
   //! Return the number of children of this node.
-  long NumChildren() const;
+  size_t NumChildren() const;
 
   //! Return a particular child of this node.
-  const ExampleTree& Child(const long i) const;
+  const ExampleTree& Child(const size_t i) const;
   //! Modify a particular child of this node.
-  ExampleTree& Child(const long i);
+  ExampleTree& Child(const size_t i);
 
   //! Return the parent node (NULL if this is the root of the tree).
   ExampleTree* Parent() const;
 
   //! Return the number of points held in this node.
-  long NumPoints() const;
+  size_t NumPoints() const;
 
   /**
    * Return the index of a particular point of this node.  mlpack trees do not,
@@ -113,7 +113,7 @@ class ExampleTree
    * arma::vec thirdPoint = dataset.col(treeNode.Point(2));
    * @endcode
    */
-  long Point(const long i) const;
+  size_t Point(const size_t i) const;
 
   /**
    * Get the number of descendant points.  This is the number of unique points
@@ -122,7 +122,7 @@ class ExampleTree
    * at run-time.  This may be harder to calculate for trees that may hold
    * points in multiple nodes (like cover trees and spill trees, for instance).
    */
-  long NumDescendants() const;
+  size_t NumDescendants() const;
 
   /**
    * Get the index of a particular descendant point.  The ordering of the
@@ -130,7 +130,7 @@ class ExampleTree
    * Descendant(NumDescendants() - 1) will return the indices of every
    * unique descendant point of the node.
    */
-  long Descendant(const long i) const;
+  size_t Descendant(const size_t i) const;
 
   //! Get the statistic for this node.
   const StatisticType& Stat() const;

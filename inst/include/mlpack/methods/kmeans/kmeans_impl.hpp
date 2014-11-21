@@ -5,7 +5,7 @@
  *
  * Implementation for the K-means method for getting an initial point.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -41,7 +41,7 @@ KMeans<
     MetricType,
     InitialPartitionPolicy,
     EmptyClusterPolicy>::
-KMeans(const long maxIterations,
+KMeans(const size_t maxIterations,
        const double overclusteringFactor,
        const MetricType metric,
        const InitialPartitionPolicy partitioner,
@@ -79,8 +79,8 @@ inline void KMeans<
     InitialPartitionPolicy,
     EmptyClusterPolicy>::
 Cluster(const MatType& data,
-        const long clusters,
-        arma::Col<long>& assignments,
+        const size_t clusters,
+        arma::Col<size_t>& assignments,
         const bool initialGuess) const
 {
   MatType centroids(data.n_rows, clusters);
@@ -100,8 +100,8 @@ void KMeans<
     InitialPartitionPolicy,
     EmptyClusterPolicy>::
 Cluster(const MatType& data,
-        const long clusters,
-        arma::Col<long>& assignments,
+        const size_t clusters,
+        arma::Col<size_t>& assignments,
         MatType& centroids,
         const bool initialAssignmentGuess,
         const bool initialCentroidGuess) const
@@ -112,7 +112,7 @@ Cluster(const MatType& data,
         << std::endl;
 
   // Make sure our overclustering factor is valid.
-  long actualClusters = long(overclusteringFactor * clusters);
+  size_t actualClusters = size_t(overclusteringFactor * clusters);
   if (actualClusters > data.n_cols && overclusteringFactor != 1.0)
   {
     Rcpp::Rcout << "KMeans::Cluster(): overclustering factor is too large.  No "
@@ -124,32 +124,32 @@ Cluster(const MatType& data,
   if (initialAssignmentGuess)
   {
     if (assignments.n_elem != data.n_cols)
-      Rcpp::Rcout << "KMeans::Cluster(): initial cluster assignments (length "
+      Rcpp::Rcerr << "KMeans::Cluster(): initial cluster assignments (length "
           << assignments.n_elem << ") not the same size as the dataset (size "
           << data.n_cols << ")!" << std::endl;
   }
   else if (initialCentroidGuess)
   {
     if (centroids.n_cols != clusters)
-      Rcpp::Rcout << "KMeans::Cluster(): wrong number of initial cluster "
+      Rcpp::Rcerr << "KMeans::Cluster(): wrong number of initial cluster "
         << "centroids (" << centroids.n_cols << ", should be " << clusters
         << ")!" << std::endl;
 
     if (centroids.n_rows != data.n_rows)
-      Rcpp::Rcout << "KMeans::Cluster(): initial cluster centroids have wrong "
+      Rcpp::Rcerr << "KMeans::Cluster(): initial cluster centroids have wrong "
         << " dimensionality (" << centroids.n_rows << ", should be "
         << data.n_rows << ")!" << std::endl;
 
     // If there were no problems, construct the initial assignments from the
     // given centroids.
     assignments.set_size(data.n_cols);
-    for (long i = 0; i < data.n_cols; ++i)
+    for (size_t i = 0; i < data.n_cols; ++i)
     {
       // Find the closest centroid to this point.
       double minDistance = std::numeric_limits<double>::infinity();
-      long closestCluster = clusters; // Invalid value.
+      size_t closestCluster = clusters; // Invalid value.
 
-      for (long j = 0; j < clusters; j++)
+      for (size_t j = 0; j < clusters; j++)
       {
         double distance = metric.Evaluate(data.col(i), centroids.col(j));
 
@@ -171,41 +171,41 @@ Cluster(const MatType& data,
   }
 
   // Counts of points in each cluster.
-  arma::Col<long> counts(actualClusters);
+  arma::Col<size_t> counts(actualClusters);
   counts.zeros();
 
   // Resize to correct size.
   centroids.set_size(data.n_rows, actualClusters);
 
   // Set counts correctly.
-  for (long i = 0; i < assignments.n_elem; i++)
+  for (size_t i = 0; i < assignments.n_elem; i++)
     counts[assignments[i]]++;
 
-  long changedAssignments = 0;
-  long iteration = 0;
+  size_t changedAssignments = 0;
+  size_t iteration = 0;
   do
   {
     // Update step.
     // Calculate centroids based on given assignments.
     centroids.zeros();
 
-    for (long i = 0; i < data.n_cols; i++)
+    for (size_t i = 0; i < data.n_cols; i++)
       centroids.col(assignments[i]) += data.col(i);
 
-    for (long i = 0; i < actualClusters; i++)
+    for (size_t i = 0; i < actualClusters; i++)
       centroids.col(i) /= counts[i];
 
     // Assignment step.
     // Find the closest centroid to each point.  We will keep track of how many
     // assignments change.  When no assignments change, we are done.
     changedAssignments = 0;
-    for (long i = 0; i < data.n_cols; i++)
+    for (size_t i = 0; i < data.n_cols; i++)
     {
       // Find the closest centroid to this point.
       double minDistance = std::numeric_limits<double>::infinity();
-      long closestCluster = actualClusters; // Invalid value.
+      size_t closestCluster = actualClusters; // Invalid value.
 
-      for (long j = 0; j < actualClusters; j++)
+      for (size_t j = 0; j < actualClusters; j++)
       {
         double distance = metric.Evaluate(data.col(i), centroids.col(j));
 
@@ -230,7 +230,7 @@ Cluster(const MatType& data,
 
     // If we are not allowing empty clusters, then check that all of our
     // clusters have points.
-    for (long i = 0; i < actualClusters; i++)
+    for (size_t i = 0; i < actualClusters; i++)
       if (counts[i] == 0)
         changedAssignments += emptyClusterAction.EmptyCluster(data, i,
             centroids, counts, assignments);
@@ -252,10 +252,10 @@ Cluster(const MatType& data,
     // Recalculate final clusters.
     centroids.zeros();
 
-    for (long i = 0; i < data.n_cols; i++)
+    for (size_t i = 0; i < data.n_cols; i++)
       centroids.col(assignments[i]) += data.col(i);
 
-    for (long i = 0; i < actualClusters; i++)
+    for (size_t i = 0; i < actualClusters; i++)
       centroids.col(i) /= counts[i];
   }
 
@@ -264,20 +264,20 @@ Cluster(const MatType& data,
   {
     // Generate a list of all the clusters' distances from each other.  This
     // list will become mangled and unused as the number of clusters decreases.
-    long numDistances = ((actualClusters - 1) * actualClusters) / 2;
-    long clustersLeft = actualClusters;
+    size_t numDistances = ((actualClusters - 1) * actualClusters) / 2;
+    size_t clustersLeft = actualClusters;
     arma::vec distances(numDistances);
-    arma::Col<long> firstCluster(numDistances);
-    arma::Col<long> secondCluster(numDistances);
+    arma::Col<size_t> firstCluster(numDistances);
+    arma::Col<size_t> secondCluster(numDistances);
 
     // Keep the mappings of clusters that we are changing.
-    arma::Col<long> mappings = arma::linspace<arma::Col<long> >(0,
+    arma::Col<size_t> mappings = arma::linspace<arma::Col<size_t> >(0,
         actualClusters - 1, actualClusters);
 
-    long i = 0;
-    for (long first = 0; first < actualClusters; first++)
+    size_t i = 0;
+    for (size_t first = 0; first < actualClusters; first++)
     {
-      for (long second = first + 1; second < actualClusters; second++)
+      for (size_t second = first + 1; second < actualClusters; second++)
       {
         distances(i) = metric.Evaluate(centroids.col(first),
                                        centroids.col(second));
@@ -293,9 +293,9 @@ Cluster(const MatType& data,
       distances.min(minIndex);
 
       // Now we merge the clusters which that distance belongs to.
-      long first = firstCluster(minIndex);
-      long second = secondCluster(minIndex);
-      for (long j = 0; j < assignments.n_elem; j++)
+      size_t first = firstCluster(minIndex);
+      size_t second = secondCluster(minIndex);
+      for (size_t j = 0; j < assignments.n_elem; j++)
         if (assignments(j) == second)
           assignments(j) = first;
 
@@ -310,11 +310,11 @@ Cluster(const MatType& data,
 
       // Now update all the relevant distances.
       // First the distances where either cluster is the second cluster.
-      for (long cluster = 0; cluster < second; cluster++)
+      for (size_t cluster = 0; cluster < second; cluster++)
       {
         // The offset is sum^n i - sum^(n - m) i, where n is actualClusters and
         // m is the cluster we are trying to offset to.
-        long offset = (long) (((actualClusters - 1) * cluster)
+        size_t offset = (size_t) (((actualClusters - 1) * cluster)
             + (cluster - pow(cluster, 2.0)) / 2) - 1;
 
         // See if we need to update the distance from this cluster to the first
@@ -331,9 +331,9 @@ Cluster(const MatType& data,
       }
 
       // Now the distances where the first cluster is the first cluster.
-      long offset = (long) (((actualClusters - 1) * first)
+      size_t offset = (size_t) (((actualClusters - 1) * first)
           + (first - pow(first, 2.0)) / 2) - 1;
-      for (long cluster = first + 1; cluster < actualClusters; cluster++)
+      for (size_t cluster = first + 1; cluster < actualClusters; cluster++)
       {
         // Make sure it isn't already DBL_MAX.
         if (distances(offset + (cluster - first)) != DBL_MAX)
@@ -348,9 +348,9 @@ Cluster(const MatType& data,
 
       // Now max the distances for the second cluster (which no longer has
       // anything in it).
-      offset = (long) (((actualClusters - 1) * second)
+      offset = (size_t) (((actualClusters - 1) * second)
           + (second - pow(second, 2.0)) / 2) - 1;
-      for (long cluster = second + 1; cluster < actualClusters; cluster++)
+      for (size_t cluster = second + 1; cluster < actualClusters; cluster++)
         distances(offset + (cluster - second)) = DBL_MAX;
 
       clustersLeft--;
@@ -358,17 +358,17 @@ Cluster(const MatType& data,
       // Update the cluster mappings.
       mappings(second) = first;
       // Also update any mappings that were pointed at the previous cluster.
-      for (long cluster = 0; cluster < actualClusters; cluster++)
+      for (size_t cluster = 0; cluster < actualClusters; cluster++)
         if (mappings(cluster) == second)
           mappings(cluster) = first;
     }
 
     // Now remap the mappings down to the smallest possible numbers.
     // Could this process be sped up?
-    arma::Col<long> remappings(actualClusters);
+    arma::Col<size_t> remappings(actualClusters);
     remappings.fill(actualClusters);
-    long remap = 0; // Counter variable.
-    for (long cluster = 0; cluster < actualClusters; cluster++)
+    size_t remap = 0; // Counter variable.
+    for (size_t cluster = 0; cluster < actualClusters; cluster++)
     {
       // If the mapping of the current cluster has not been assigned a value
       // yet, we will assign it a cluster number.
@@ -380,7 +380,7 @@ Cluster(const MatType& data,
     }
 
     // Fix the assignments using the mappings we created.
-    for (long j = 0; j < assignments.n_elem; j++)
+    for (size_t j = 0; j < assignments.n_elem; j++)
       assignments(j) = remappings(mappings(assignments(j)));
   }
 }

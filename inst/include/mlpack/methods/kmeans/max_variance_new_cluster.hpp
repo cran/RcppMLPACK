@@ -6,7 +6,7 @@
  * an empty cluster is detected, the point furthest from the centroid of the
  * cluster with maximum variance is taken to be a new cluster.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -53,11 +53,11 @@ class MaxVarianceNewCluster
    * @return Number of points changed.
    */
   template<typename MatType>
-  static long EmptyCluster(const MatType& data,
-                             const long emptyCluster,
+  static size_t EmptyCluster(const MatType& data,
+                             const size_t emptyCluster,
                              const MatType& centroids,
-                             arma::Col<long>& clusterCounts,
-                             arma::Col<long>& assignments);
+                             arma::Col<size_t>& clusterCounts,
+                             arma::Col<size_t>& assignments);
 };
 
 }; // namespace kmeans

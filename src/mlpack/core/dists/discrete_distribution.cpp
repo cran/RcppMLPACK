@@ -4,7 +4,7 @@
  *
  * Implementation of DiscreteDistribution probability distribution.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -35,7 +35,7 @@ arma::vec DiscreteDistribution::Random() const
   arma::vec result(1);
 
   double sumProb = 0;
-  for (long obs = 0; obs < probabilities.n_elem; obs++)
+  for (size_t obs = 0; obs < probabilities.n_elem; obs++)
   {
     if ((sumProb += probabilities[obs]) >= randObs)
     {
@@ -58,11 +58,11 @@ void DiscreteDistribution::Estimate(const arma::mat& observations)
   probabilities.zeros();
 
   // Add the probability of each observation.  The addition of 0.5 to the
-  // observation is to turn the default flooring operation of the long cast
+  // observation is to turn the default flooring operation of the size_t cast
   // into a rounding operation.
-  for (long i = 0; i < observations.n_cols; i++)
+  for (size_t i = 0; i < observations.n_cols; i++)
   {
-    const long obs = long(observations(0, i) + 0.5);
+    const size_t obs = size_t(observations(0, i) + 0.5);
 
     // Ensure that the observation is within the bounds.
     if (obs >= probabilities.n_elem)
@@ -94,11 +94,11 @@ void DiscreteDistribution::Estimate(const arma::mat& observations,
   probabilities.zeros();
 
   // Add the probability of each observation.  The addition of 0.5 to the
-  // observation is to turn the default flooring operation of the long cast
+  // observation is to turn the default flooring operation of the size_t cast
   // into a rounding observation.
-  for (long i = 0; i < observations.n_cols; i++)
+  for (size_t i = 0; i < observations.n_cols; i++)
   {
-    const long obs = long(observations(0, i) + 0.5);
+    const size_t obs = size_t(observations(0, i) + 0.5);
 
     // Ensure that the observation is within the bounds.
     if (obs >= probabilities.n_elem)

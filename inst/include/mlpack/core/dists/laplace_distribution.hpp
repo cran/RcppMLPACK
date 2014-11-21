@@ -4,7 +4,7 @@
  *
  * Laplace (double exponential) distribution used in SA.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -72,7 +72,7 @@ class LaplaceDistribution
    * @param dimensionality Dimensionality of distribution.
    * @param scale Scale of distribution.
    */
-  LaplaceDistribution(const long dimensionality, const double scale) :
+  LaplaceDistribution(const size_t dimensionality, const double scale) :
       mean(arma::zeros<arma::vec>(dimensionality)), scale(scale) { }
 
   /**
@@ -85,7 +85,7 @@ class LaplaceDistribution
       mean(mean), scale(scale) { }
 
   //! Return the dimensionality of this distribution.
-  long Dimensionality() const { return mean.n_elem; }
+  size_t Dimensionality() const { return mean.n_elem; }
 
   /**
    * Return the probability of the given observation.
@@ -106,7 +106,7 @@ class LaplaceDistribution
     // Convert from uniform distribution to Laplace distribution.
     // arma::sign() does not exist in Armadillo < 3.920 so we have to do this
     // elementwise.
-    for (long i = 0; i < result.n_elem; ++i)
+    for (size_t i = 0; i < result.n_elem; ++i)
     {
       if (result[i] < 0)
         result[i] = mean[i] + scale * result[i] * std::log(1 + 2.0 * (result[i]

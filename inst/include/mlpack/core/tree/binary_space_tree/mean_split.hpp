@@ -6,7 +6,7 @@
  * Definition of MeanSplit, a class that splits a binary space partitioning tree
  * node into two parts using the mean of the values in a certain dimension.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -54,10 +54,10 @@ class MeanSplit
    */
   static bool SplitNode(const BoundType& bound,
                         MatType& data,
-                        const long begin,
-                        const long count,
-                        long& splitDimension,
-                        long& splitCol);
+                        const size_t begin,
+                        const size_t count,
+                        size_t& splitDimension,
+                        size_t& splitCol);
 
   /**
    * Split the node according to the mean value in the dimension with maximum
@@ -77,11 +77,11 @@ class MeanSplit
    */
   static bool SplitNode(const BoundType& bound,
                         MatType& data,
-                        const long begin,
-                        const long count,
-                        long& splitDimension,
-                        long& splitCol,
-                        std::vector<long>& oldFromNew);
+                        const size_t begin,
+                        const size_t count,
+                        size_t& splitDimension,
+                        size_t& splitCol,
+                        std::vector<size_t>& oldFromNew);
 
  private:
   /**
@@ -96,10 +96,10 @@ class MeanSplit
    * @param splitVal The split in dimension splitDimension is based on this
    *    value.
    */
-  static long PerformSplit(MatType& data,
-                             const long begin,
-                             const long count,
-                             const long splitDimension,
+  static size_t PerformSplit(MatType& data,
+                             const size_t begin,
+                             const size_t count,
+                             const size_t splitDimension,
                              const double splitVal);
 
   /**
@@ -116,12 +116,12 @@ class MeanSplit
    * @param oldFromNew Vector which will be filled with the old positions for
    *    each new point.
    */
-  static long PerformSplit(MatType& data,
-                             const long begin,
-                             const long count,
-                             const long splitDimension,
+  static size_t PerformSplit(MatType& data,
+                             const size_t begin,
+                             const size_t count,
+                             const size_t splitDimension,
                              const double splitVal,
-                             std::vector<long>& oldFromNew);
+                             std::vector<size_t>& oldFromNew);
 };
 
 }; // namespace tree

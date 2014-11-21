@@ -4,7 +4,7 @@
  *
  * Implementation of the FastMKS class (fast max-kernel search).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -30,10 +30,8 @@
 #include <mlpack/core/kernels/gaussian_kernel.hpp>
 #include <queue>
 
-namespace mlpack
-{
-namespace fastmks
-{
+namespace mlpack {
+namespace fastmks {
 
 // Single dataset, no instantiated kernel.
 template<typename KernelType, typename TreeType>
@@ -48,15 +46,15 @@ FastMKS<KernelType, TreeType>::FastMKS(const arma::mat& referenceSet,
     single(single),
     naive(naive)
 {
+  //Timer::Start("tree_building");
 
+  if (!naive)
+    referenceTree = new TreeType(referenceSet);
 
-    if (!naive)
-        referenceTree = new TreeType(referenceSet);
+  if (!naive && !single)
+    queryTree = new TreeType(referenceSet);
 
-    if (!naive && !single)
-        queryTree = new TreeType(referenceSet);
-
-
+  //Timer::Stop("tree_building");
 }
 
 // Two datasets, no instantiated kernel.
@@ -73,16 +71,16 @@ FastMKS<KernelType, TreeType>::FastMKS(const arma::mat& referenceSet,
     single(single),
     naive(naive)
 {
+  //Timer::Start("tree_building");
 
+  // If necessary, the trees should be built.
+  if (!naive)
+    referenceTree = new TreeType(referenceSet);
 
-    // If necessary, the trees should be built.
-    if (!naive)
-        referenceTree = new TreeType(referenceSet);
+  if (!naive && !single)
+    queryTree = new TreeType(querySet);
 
-    if (!naive && !single)
-        queryTree = new TreeType(querySet);
-
-
+  //Timer::Stop("tree_building");
 }
 
 // One dataset, instantiated kernel.
@@ -100,16 +98,16 @@ FastMKS<KernelType, TreeType>::FastMKS(const arma::mat& referenceSet,
     naive(naive),
     metric(kernel)
 {
+  //Timer::Start("tree_building");
 
+  // If necessary, the reference tree should be built.  There is no query tree.
+  if (!naive)
+    referenceTree = new TreeType(referenceSet, metric);
 
-    // If necessary, the reference tree should be built.  There is no query tree.
-    if (!naive)
-        referenceTree = new TreeType(referenceSet, metric);
+  if (!naive && !single)
+    queryTree = new TreeType(referenceSet, metric);
 
-    if (!naive && !single)
-        queryTree = new TreeType(referenceSet, metric);
-
-
+  //Timer::Stop("tree_building");
 }
 
 // Two datasets, instantiated kernel.
@@ -128,16 +126,16 @@ FastMKS<KernelType, TreeType>::FastMKS(const arma::mat& referenceSet,
     naive(naive),
     metric(kernel)
 {
+  //Timer::Start("tree_building");
 
+  // If necessary, the trees should be built.
+  if (!naive)
+    referenceTree = new TreeType(referenceSet, metric);
 
-    // If necessary, the trees should be built.
-    if (!naive)
-        referenceTree = new TreeType(referenceSet, metric);
+  if (!naive && !single)
+    queryTree = new TreeType(querySet, metric);
 
-    if (!naive && !single)
-        queryTree = new TreeType(querySet, metric);
-
-
+  //Timer::Stop("tree_building");
 }
 
 // One dataset, pre-built tree.
@@ -155,9 +153,9 @@ FastMKS<KernelType, TreeType>::FastMKS(const arma::mat& referenceSet,
     naive(naive),
     metric(referenceTree->Metric())
 {
-    // The query tree cannot be the same as the reference tree.
-    if (referenceTree)
-        queryTree = new TreeType(*referenceTree);
+  // The query tree cannot be the same as the reference tree.
+  if (referenceTree)
+    queryTree = new TreeType(*referenceTree);
 }
 
 // Two datasets, pre-built trees.
@@ -177,111 +175,111 @@ FastMKS<KernelType, TreeType>::FastMKS(const arma::mat& referenceSet,
     naive(naive),
     metric(referenceTree->Metric())
 {
-    // Nothing to do.
+  // Nothing to do.
 }
 
 template<typename KernelType, typename TreeType>
 FastMKS<KernelType, TreeType>::~FastMKS()
 {
-    // If we created the trees, we must delete them.
-    if (treeOwner)
-    {
-        if (queryTree)
-            delete queryTree;
-        if (referenceTree)
-            delete referenceTree;
-    }
-    else if (&querySet == &referenceSet)
-    {
-        // The user passed in a reference tree which we needed to copy.
-        if (queryTree)
-            delete queryTree;
-    }
+  // If we created the trees, we must delete them.
+  if (treeOwner)
+  {
+    if (queryTree)
+      delete queryTree;
+    if (referenceTree)
+      delete referenceTree;
+  }
+  else if (&querySet == &referenceSet)
+  {
+    // The user passed in a reference tree which we needed to copy.
+    if (queryTree)
+      delete queryTree;
+  }
 }
 
 template<typename KernelType, typename TreeType>
-void FastMKS<KernelType, TreeType>::Search(const long k,
-        arma::Mat<long>& indices,
-        arma::mat& products)
+void FastMKS<KernelType, TreeType>::Search(const size_t k,
+                                           arma::Mat<size_t>& indices,
+                                           arma::mat& products)
 {
-    // No remapping will be necessary because we are using the cover tree.
-    indices.set_size(k, querySet.n_cols);
-    products.set_size(k, querySet.n_cols);
-    products.fill(-DBL_MAX);
+  // No remapping will be necessary because we are using the cover tree.
+  indices.set_size(k, querySet.n_cols);
+  products.set_size(k, querySet.n_cols);
+  products.fill(-DBL_MAX);
 
+  //Timer::Start("computing_products");
 
-
-    // Naive implementation.
-    if (naive)
+  // Naive implementation.
+  if (naive)
+  {
+    // Simple double loop.  Stupid, slow, but a good benchmark.
+    for (size_t q = 0; q < querySet.n_cols; ++q)
     {
-        // Simple double loop.  Stupid, slow, but a good benchmark.
-        for (long q = 0; q < querySet.n_cols; ++q)
-        {
-            for (long r = 0; r < referenceSet.n_cols; ++r)
-            {
-                if ((&querySet == &referenceSet) && (q == r))
-                    continue;
+      for (size_t r = 0; r < referenceSet.n_cols; ++r)
+      {
+        if ((&querySet == &referenceSet) && (q == r))
+          continue;
 
-                const double eval = metric.Kernel().Evaluate(querySet.unsafe_col(q),
-                                    referenceSet.unsafe_col(r));
+        const double eval = metric.Kernel().Evaluate(querySet.unsafe_col(q),
+            referenceSet.unsafe_col(r));
 
-                long insertPosition;
-                for (insertPosition = 0; insertPosition < indices.n_rows;
-                        ++insertPosition)
-                    if (eval > products(insertPosition, q))
-                        break;
+        size_t insertPosition;
+        for (insertPosition = 0; insertPosition < indices.n_rows;
+            ++insertPosition)
+          if (eval > products(insertPosition, q))
+            break;
 
-                if (insertPosition < indices.n_rows)
-                    InsertNeighbor(indices, products, q, insertPosition, r, eval);
-            }
-        }
-
-
-
-        return;
+        if (insertPosition < indices.n_rows)
+          InsertNeighbor(indices, products, q, insertPosition, r, eval);
+      }
     }
 
-    // Single-tree implementation.
-    if (single)
-    {
-        // Create rules object (this will store the results).  This constructor
-        // precalculates each self-kernel value.
-        typedef FastMKSRules<KernelType, TreeType> RuleType;
-        RuleType rules(referenceSet, querySet, indices, products, metric.Kernel());
+    //Timer::Stop("computing_products");
 
-        typename TreeType::template SingleTreeTraverser<RuleType> traverser(rules);
+    return;
+  }
 
-        for (long i = 0; i < querySet.n_cols; ++i)
-            traverser.Traverse(i, *referenceTree);
-
-        // Save the number of pruned nodes.
-        const long numPrunes = traverser.NumPrunes();
-
-        Rcpp::Rcout << "Pruned " << numPrunes << " nodes." << std::endl;
-
-        Rcpp::Rcout << rules.BaseCases() << " base cases." << std::endl;
-        Rcpp::Rcout << rules.Scores() << " scores." << std::endl;
-
-
-        return;
-    }
-
-    // Dual-tree implementation.
+  // Single-tree implementation.
+  if (single)
+  {
+    // Create rules object (this will store the results).  This constructor
+    // precalculates each self-kernel value.
     typedef FastMKSRules<KernelType, TreeType> RuleType;
     RuleType rules(referenceSet, querySet, indices, products, metric.Kernel());
 
-    typename TreeType::template DualTreeTraverser<RuleType> traverser(rules);
+    typename TreeType::template SingleTreeTraverser<RuleType> traverser(rules);
 
-    traverser.Traverse(*queryTree, *referenceTree);
+    for (size_t i = 0; i < querySet.n_cols; ++i)
+      traverser.Traverse(i, *referenceTree);
 
-    const long numPrunes = traverser.NumPrunes();
+    // Save the number of pruned nodes.
+    const size_t numPrunes = traverser.NumPrunes();
 
     Rcpp::Rcout << "Pruned " << numPrunes << " nodes." << std::endl;
+
     Rcpp::Rcout << rules.BaseCases() << " base cases." << std::endl;
     Rcpp::Rcout << rules.Scores() << " scores." << std::endl;
 
-
+    //Timer::Stop("computing_products");
     return;
+  }
+
+  // Dual-tree implementation.
+  typedef FastMKSRules<KernelType, TreeType> RuleType;
+  RuleType rules(referenceSet, querySet, indices, products, metric.Kernel());
+
+  typename TreeType::template DualTreeTraverser<RuleType> traverser(rules);
+
+  traverser.Traverse(*queryTree, *referenceTree);
+
+  const size_t numPrunes = traverser.NumPrunes();
+
+  Rcpp::Rcout << "Pruned " << numPrunes << " nodes." << std::endl;
+  Rcpp::Rcout << rules.BaseCases() << " base cases." << std::endl;
+  Rcpp::Rcout << rules.Scores() << " scores." << std::endl;
+
+  //Timer::Stop("computing_products");
+  return;
 }
 
 /**
@@ -293,52 +291,52 @@ void FastMKS<KernelType, TreeType>::Search(const long k,
  * @param distance Distance from query point to reference point.
  */
 template<typename KernelType, typename TreeType>
-void FastMKS<KernelType, TreeType>::InsertNeighbor(arma::Mat<long>& indices,
-        arma::mat& products,
-        const long queryIndex,
-        const long pos,
-        const long neighbor,
-        const double distance)
+void FastMKS<KernelType, TreeType>::InsertNeighbor(arma::Mat<size_t>& indices,
+                                                   arma::mat& products,
+                                                   const size_t queryIndex,
+                                                   const size_t pos,
+                                                   const size_t neighbor,
+                                                   const double distance)
 {
-    // We only memmove() if there is actually a need to shift something.
-    if (pos < (products.n_rows - 1))
-    {
-        int len = (products.n_rows - 1) - pos;
-        memmove(products.colptr(queryIndex) + (pos + 1),
-                products.colptr(queryIndex) + pos,
-                sizeof(double) * len);
-        memmove(indices.colptr(queryIndex) + (pos + 1),
-                indices.colptr(queryIndex) + pos,
-                sizeof(long) * len);
-    }
+  // We only memmove() if there is actually a need to shift something.
+  if (pos < (products.n_rows - 1))
+  {
+    int len = (products.n_rows - 1) - pos;
+    memmove(products.colptr(queryIndex) + (pos + 1),
+        products.colptr(queryIndex) + pos,
+        sizeof(double) * len);
+    memmove(indices.colptr(queryIndex) + (pos + 1),
+        indices.colptr(queryIndex) + pos,
+        sizeof(size_t) * len);
+  }
 
-    // Now put the new information in the right index.
-    products(pos, queryIndex) = distance;
-    indices(pos, queryIndex) = neighbor;
+  // Now put the new information in the right index.
+  products(pos, queryIndex) = distance;
+  indices(pos, queryIndex) = neighbor;
 }
 
 // Return string of object.
 template<typename KernelType, typename TreeType>
 std::string FastMKS<KernelType, TreeType>::ToString() const
 {
-    std::ostringstream convert;
-    convert << "FastMKS [" << this << "]" << std::endl;
-    convert << "  Naive: " << naive << std::endl;
-    convert << "  Single: " << single << std::endl;
-    convert << "  Metric: " << std::endl;
-    convert << mlpack::util::Indent(metric.ToString(),2);
-    convert << std::endl;
-    return convert.str();
+  std::ostringstream convert;
+  convert << "FastMKS [" << this << "]" << std::endl;
+  convert << "  Naive: " << naive << std::endl;
+  convert << "  Single: " << single << std::endl;
+  convert << "  Metric: " << std::endl;
+  convert << mlpack::util::Indent(metric.ToString(),2);
+  convert << std::endl;
+  return convert.str();
 }
 
 // Specialized implementation for tighter bounds for Gaussian.
 /*
 template<>
-void FastMKS<kernel::GaussianKernel>::Search(const long k,
-                                             arma::Mat<long>& indices,
+void FastMKS<kernel::GaussianKernel>::Search(const size_t k,
+                                             arma::Mat<size_t>& indices,
                                              arma::mat& products)
 {
-  Rcpp::Rcout << "Alternate implementation!" << std::endl;
+  Log::Warn << "Alternate implementation!" << std::endl;
 
   // Terrible copypasta.  Bad bad bad.
   // No remapping will be necessary.
@@ -346,23 +344,23 @@ void FastMKS<kernel::GaussianKernel>::Search(const long k,
   products.set_size(k, querySet.n_cols);
   products.fill(-1.0);
 
+  Timer::Start("computing_products");
 
-
-  long kernelEvaluations = 0;
+  size_t kernelEvaluations = 0;
 
   // Naive implementation.
   if (naive)
   {
     // Simple double loop.  Stupid, slow, but a good benchmark.
-    for (long q = 0; q < querySet.n_cols; ++q)
+    for (size_t q = 0; q < querySet.n_cols; ++q)
     {
-      for (long r = 0; r < referenceSet.n_cols; ++r)
+      for (size_t r = 0; r < referenceSet.n_cols; ++r)
       {
         const double eval = metric.Kernel().Evaluate(querySet.unsafe_col(q),
             referenceSet.unsafe_col(r));
         ++kernelEvaluations;
 
-        long insertPosition;
+        size_t insertPosition;
         for (insertPosition = 0; insertPosition < indices.n_rows;
             ++insertPosition)
           if (eval > products(insertPosition, q))
@@ -373,7 +371,7 @@ void FastMKS<kernel::GaussianKernel>::Search(const long k,
       }
     }
 
-
+    Timer::Stop("computing_products");
 
     Rcpp::Rcout << "Kernel evaluations: " << kernelEvaluations << "." << std::endl;
     return;
@@ -383,17 +381,17 @@ void FastMKS<kernel::GaussianKernel>::Search(const long k,
   if (single)
   {
     // Calculate number of pruned nodes.
-    long numPrunes = 0;
+    size_t numPrunes = 0;
 
     // Precalculate query products ( || q || for all q).
     arma::vec queryProducts(querySet.n_cols);
-    for (long queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
+    for (size_t queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
       queryProducts[queryIndex] = sqrt(metric.Kernel().Evaluate(
           querySet.unsafe_col(queryIndex), querySet.unsafe_col(queryIndex)));
     kernelEvaluations += querySet.n_cols;
 
     // Screw the CoverTreeTraverser, we'll implement it by hand.
-    for (long queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
+    for (size_t queryIndex = 0; queryIndex < querySet.n_cols; ++queryIndex)
     {
       // Use an array of priority queues?
       std::priority_queue<
@@ -410,7 +408,7 @@ void FastMKS<kernel::GaussianKernel>::Search(const long k,
       nextFrame.node = referenceTree;
       nextFrame.eval = metric.Kernel().Evaluate(querySet.unsafe_col(queryIndex),
           referenceSet.unsafe_col(referenceTree->Point()));
-
+      Log::Assert(nextFrame.eval <= 1);
       ++kernelEvaluations;
 
       // The initial evaluation will be the best so far.
@@ -463,7 +461,7 @@ void FastMKS<kernel::GaussianKernel>::Search(const long k,
           else
             ++numPrunes;
 
-          for (long i = 1; i < referenceNode->NumChildren(); ++i)
+          for (size_t i = 1; i < referenceNode->NumChildren(); ++i)
           {
             // Before we evaluate the child, let's see if it can possibly have
             // a better evaluation.
@@ -502,7 +500,7 @@ void FastMKS<kernel::GaussianKernel>::Search(const long k,
                 if (childFrame.eval > products(products.n_rows - 1, queryIndex))
                 {
                   // This is a better result.  Find out where to insert.
-                  long insertPosition = 0;
+                  size_t insertPosition = 0;
                   for ( ; insertPosition < products.n_rows - 1;
                       ++insertPosition)
                     if (childFrame.eval > products(insertPosition, queryIndex))
@@ -537,12 +535,12 @@ void FastMKS<kernel::GaussianKernel>::Search(const long k,
     Rcpp::Rcout << "Distance evaluations: " << distanceEvaluations << "."
         << std::endl;
 
-
+    Timer::Stop("computing_products");
     return;
   }
 
   // Double-tree implementation.
-  Rcpp::Rcout << "Dual-tree search not implemented yet... oops..." << std::endl;
+  Log::Fatal << "Dual-tree search not implemented yet... oops..." << std::endl;
 
 }
 */

@@ -4,7 +4,7 @@
  *
  * Implementation of non-template Epanechnikov kernels.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -31,7 +31,7 @@ using namespace mlpack::kernel;
  *
  * @param dimension Dimension to calculate the normalizer for.
  */
-double EpanechnikovKernel::Normalizer(const long dimension)
+double EpanechnikovKernel::Normalizer(const size_t dimension)
 {
   return 2.0 * pow(bandwidth, (double) dimension) *
       std::pow(M_PI, dimension / 2.0) /

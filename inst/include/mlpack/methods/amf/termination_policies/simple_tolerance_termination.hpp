@@ -2,7 +2,7 @@
  * @file simple_tolerance_termination.hpp
  * @author Sumedh Ghaisas
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -30,8 +30,8 @@ class SimpleToleranceTermination
 {
  public:
   SimpleToleranceTermination(const double tolerance = 1e-5,
-                             const long maxIterations = 10000,
-                             const long reverseStepTolerance = 3)
+                             const size_t maxIterations = 10000,
+                             const size_t reverseStepTolerance = 3)
             : tolerance(tolerance),
               maxIterations(maxIterations),
               reverseStepTolerance(reverseStepTolerance) {}
@@ -59,13 +59,13 @@ class SimpleToleranceTermination
     WH = W * H;
 
     residueOld = residue;
-    long n = V->n_rows;
-    long m = V->n_cols;
+    size_t n = V->n_rows;
+    size_t m = V->n_cols;
     double sum = 0;
-    long count = 0;
-    for(long i = 0;i < n;i++)
+    size_t count = 0;
+    for(size_t i = 0;i < n;i++)
     {
-        for(long j = 0;j < m;j++)
+        for(size_t j = 0;j < m;j++)
         {
             double temp = 0;
             if((temp = (*V)(i,j)) != 0)
@@ -117,22 +117,22 @@ class SimpleToleranceTermination
   }
 
   const double& Index() { return residue; }
-  const long& Iteration() { return iteration; }
-  const long& MaxIterations() { return maxIterations; }
+  const size_t& Iteration() { return iteration; }
+  const size_t& MaxIterations() { return maxIterations; }
 
  private:
   double tolerance;
-  long maxIterations;
+  size_t maxIterations;
 
   const MatType* V;
 
-  long iteration;
+  size_t iteration;
   double residueOld;
   double residue;
   double normOld;
 
-  long reverseStepTolerance;
-  long reverseStepCount;
+  size_t reverseStepTolerance;
+  size_t reverseStepCount;
   
   bool isCopy;
   arma::mat W;

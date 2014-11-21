@@ -8,7 +8,7 @@
  * This method sets each of the columns of W by averaging p randomly chosen
  * columns of V.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -48,25 +48,25 @@ class RandomAcolInitialization
 
   template<typename MatType>
   inline static void Initialize(const MatType& V,
-                                const long r,
+                                const size_t r,
                                 arma::mat& W,
                                 arma::mat& H)
   {
-    const long n = V.n_rows;
-    const long m = V.n_cols;
+    const size_t n = V.n_rows;
+    const size_t m = V.n_cols;
 
     if (p > m)
     {
-      Rcpp::Rcout << "Number of random columns is more than the number of columns"
+      Log::Warn << "Number of random columns is more than the number of columns"
           << "available in the V matrix; weird results may ensue!" << std::endl;
     }
 
     W.zeros(n, r);
 
     // Initialize W matrix with random columns.
-    for (long col = 0; col < r; col++)
+    for (size_t col = 0; col < r; col++)
     {
-      for (long randCol = 0; randCol < p; randCol++)
+      for (size_t randCol = 0; randCol < p; randCol++)
       {
         // .col() does not work in this case, as of Armadillo 3.920.
         W.unsafe_col(col) += V.col(math::RandInt(0, m));

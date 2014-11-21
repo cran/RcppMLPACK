@@ -6,7 +6,7 @@
  *
  * Note: this implementation of MVU does not work.  See #189.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -37,8 +37,8 @@ MVU::MVU(const arma::mat& data) : data(data)
   // Nothing to do.
 }
 
-void MVU::Unfold(const long newDim,
-                 const long numNeighbors,
+void MVU::Unfold(const size_t newDim,
+                 const size_t numNeighbors,
                  arma::mat& outputData)
 {
   // First we have to choose the output point.  We'll take a linear projection
@@ -67,7 +67,7 @@ void MVU::Unfold(const long newDim,
 
   // Now all of the other constraints.  We first have to run AllkNN to get the
   // list of nearest neighbors.
-  arma::Mat<long> neighbors;
+  arma::Mat<size_t> neighbors;
   arma::mat distances;
 
   neighbor::AllkNN allknn(data);
@@ -76,12 +76,12 @@ void MVU::Unfold(const long newDim,
   // Add each of the other constraints.  They are sparse constraints:
   //   Tr(A_ij K) = d_ij;
   //   A_ij = zeros except for 1 at (i, i), (j, j); -1 at (i, j), (j, i).
-  for (long i = 0; i < neighbors.n_cols; ++i)
+  for (size_t i = 0; i < neighbors.n_cols; ++i)
   {
-    for (long j = 0; j < numNeighbors; ++j)
+    for (size_t j = 0; j < numNeighbors; ++j)
     {
       // This is the index of the constraint.
-      const long index = (i * numNeighbors) + j + 1;
+      const size_t index = (i * numNeighbors) + j + 1;
 
       arma::mat& aRef = mvuSolver.A()[index];
 

@@ -6,7 +6,7 @@
  * Implementation of Kernel PCA class to perform Kernel Principal Components
  * Analysis on the specified data set.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -43,7 +43,7 @@ void KernelPCA<KernelType, KernelRule>::Apply(const arma::mat& data,
                                   arma::mat& transformedData,
                                   arma::vec& eigval,
                                   arma::mat& eigvec,
-                                  const long newDimension)
+                                  const size_t newDimension)
 {
   KernelRule::ApplyKernelMatrix(data, transformedData, eigval,
                                 eigvec, newDimension, kernel);
@@ -80,7 +80,7 @@ void KernelPCA<KernelType, KernelRule>::Apply(const arma::mat& data,
 //! Use KPCA for dimensionality reduction.
 template <typename KernelType, typename KernelRule>
 void KernelPCA<KernelType, KernelRule>::Apply(arma::mat& data,
-                                    const long newDimension)
+                                    const size_t newDimension)
 {
   arma::mat coeffs;
   arma::vec eigVal;

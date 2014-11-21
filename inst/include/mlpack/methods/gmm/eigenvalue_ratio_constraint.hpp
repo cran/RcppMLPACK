@@ -4,7 +4,7 @@
  *
  * Constrain a covariance matrix to have a certain ratio of eigenvalues.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -50,7 +50,7 @@ class EigenvalueRatioConstraint
       Rcpp::Rcout << "EigenvalueRatioConstraint::EigenvalueRatioConstraint(): "
           << "first element of ratio vector is not 1.0!" << std::endl;
 
-    for (long i = 1; i < ratios.n_elem; ++i)
+    for (size_t i = 1; i < ratios.n_elem; ++i)
     {
       if (ratios[i] > 1.0)
         Rcpp::Rcout << "EigenvalueRatioConstraint::EigenvalueRatioConstraint(): "

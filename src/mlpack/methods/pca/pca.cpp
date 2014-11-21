@@ -5,7 +5,7 @@
  * Implementation of PCA class to perform Principal Components Analysis on the
  * specified data set.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -46,7 +46,7 @@ void PCA::Apply(const arma::mat& data,
                 arma::vec& eigVal,
                 arma::mat& coeff) const
 {
-
+  //Timer::Start("pca");
 
   // This matrix will store the right singular values; we do not need them.
   arma::mat v;
@@ -62,7 +62,7 @@ void PCA::Apply(const arma::mat& data,
     arma::vec stdDev = arma::stddev(centeredData, 0, 1 /* for each dimension */);
 
     // If there are any zeroes, make them very small.
-    for (long i = 0; i < stdDev.n_elem; ++i)
+    for (size_t i = 0; i < stdDev.n_elem; ++i)
       if (stdDev[i] == 0)
         stdDev[i] = 1e-50;
 
@@ -90,7 +90,7 @@ void PCA::Apply(const arma::mat& data,
   // Project the samples to the principals.
   transformedData = arma::trans(coeff) * centeredData;
 
-
+  //Timer::Stop("pca");
 }
 
 /**
@@ -119,7 +119,7 @@ void PCA::Apply(const arma::mat& data,
  * @param newDimension New dimension of the data.
  * @return Amount of the variance of the data retained (between 0 and 1).
  */
-double PCA::Apply(arma::mat& data, const long newDimension) const
+double PCA::Apply(arma::mat& data, const size_t newDimension) const
 {
   // Parameter validation.
   if (newDimension == 0)
@@ -169,7 +169,7 @@ double PCA::Apply(arma::mat& data, const double varRetained) const
   Apply(data, data, eigVal, coeffs);
 
   // Calculate the dimension we should keep.
-  long newDimension = 0;
+  size_t newDimension = 0;
   double varSum = 0.0;
   eigVal /= arma::sum(eigVal); // Normalize eigenvalues.
   while ((varSum < varRetained) && (newDimension < eigVal.n_elem))

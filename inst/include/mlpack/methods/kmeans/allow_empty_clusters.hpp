@@ -5,7 +5,7 @@
  * This very simple policy is used when K-Means is allowed to return empty
  * clusters.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -52,11 +52,11 @@ class AllowEmptyClusters
    * @return Number of points changed (0).
    */
   template<typename MatType>
-  static long EmptyCluster(const MatType& /* data */,
-                             const long /* emptyCluster */,
+  static size_t EmptyCluster(const MatType& /* data */,
+                             const size_t /* emptyCluster */,
                              const MatType& /* centroids */,
-                             arma::Col<long>& /* clusterCounts */,
-                             arma::Col<long>& /* assignments */)
+                             arma::Col<size_t>& /* clusterCounts */,
+                             arma::Col<size_t>& /* assignments */)
   {
     // Empty clusters are okay!  Do nothing.
     return 0;

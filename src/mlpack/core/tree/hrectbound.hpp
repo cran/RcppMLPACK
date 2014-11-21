@@ -6,7 +6,7 @@
  * This file describes the interface for the HRectBound class, which implements
  * a hyperrectangle bound.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -56,7 +56,7 @@ class HRectBound
    * Initializes to specified dimensionality with each dimension the empty
    * set.
    */
-  HRectBound(const long dimension);
+  HRectBound(const size_t dimension);
 
   //! Copy constructor; necessary to prevent memory leaks.
   HRectBound(const HRectBound& other);
@@ -73,13 +73,13 @@ class HRectBound
   void Clear();
 
   //! Gets the dimensionality.
-  long Dim() const { return dim; }
+  size_t Dim() const { return dim; }
 
   //! Get the range for a particular dimension.  No bounds checking.  Be
   //! careful: this may make MinWidth() invalid.
-  math::Range& operator[](const long i) { return bounds[i]; }
+  math::Range& operator[](const size_t i) { return bounds[i]; }
   //! Modify the range for a particular dimension.  No bounds checking.
-  const math::Range& operator[](const long i) const { return bounds[i]; }
+  const math::Range& operator[](const size_t i) const { return bounds[i]; }
 
   //! Get the minimum width of the bound.
   double MinWidth() const { return minWidth; }
@@ -184,7 +184,7 @@ class HRectBound
 
  private:
   //! The dimensionality of the bound.
-  long dim;
+  size_t dim;
   //! The bounds for each dimension.
   math::Range* bounds;
   //! Cached minimum width of bound.

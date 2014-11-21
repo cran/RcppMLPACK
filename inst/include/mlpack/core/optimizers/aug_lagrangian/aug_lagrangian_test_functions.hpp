@@ -4,7 +4,7 @@
  *
  * Define test functions for the augmented Lagrangian method.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -44,10 +44,10 @@ class AugLagrangianTestFunction
   double Evaluate(const arma::mat& coordinates);
   void Gradient(const arma::mat& coordinates, arma::mat& gradient);
 
-  long NumConstraints() const { return 1; }
+  size_t NumConstraints() const { return 1; }
 
-  double EvaluateConstraint(const long index, const arma::mat& coordinates);
-  void GradientConstraint(const long index,
+  double EvaluateConstraint(const size_t index, const arma::mat& coordinates);
+  void GradientConstraint(const size_t index,
                           const arma::mat& coordinates,
                           arma::mat& gradient);
 
@@ -80,10 +80,10 @@ class GockenbachFunction
   double Evaluate(const arma::mat& coordinates);
   void Gradient(const arma::mat& coordinates, arma::mat& gradient);
 
-  long NumConstraints() const { return 2; };
+  size_t NumConstraints() const { return 2; };
 
-  double EvaluateConstraint(const long index, const arma::mat& coordinates);
-  void GradientConstraint(const long index,
+  double EvaluateConstraint(const size_t index, const arma::mat& coordinates);
+  void GradientConstraint(const size_t index,
                           const arma::mat& coordinates,
                           arma::mat& gradient);
 
@@ -133,10 +133,10 @@ class LovaszThetaSDP
   double Evaluate(const arma::mat& coordinates);
   void Gradient(const arma::mat& coordinates, arma::mat& gradient);
 
-  long NumConstraints() const;
+  size_t NumConstraints() const;
 
-  double EvaluateConstraint(const long index, const arma::mat& coordinates);
-  void GradientConstraint(const long index,
+  double EvaluateConstraint(const size_t index, const arma::mat& coordinates);
+  void GradientConstraint(const size_t index,
                           const arma::mat& coordinates,
                           arma::mat& gradient);
 
@@ -147,7 +147,7 @@ class LovaszThetaSDP
 
  private:
   arma::mat edges;
-  long vertices;
+  size_t vertices;
 
   arma::mat initialPoint;
 };

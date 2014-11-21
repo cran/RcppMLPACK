@@ -4,7 +4,7 @@
  *
  * An implementation of the RegularizedSVDFunction class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -26,7 +26,7 @@ namespace mlpack {
 namespace svd {
 
 RegularizedSVDFunction::RegularizedSVDFunction(const arma::mat& data,
-                                               const long rank,
+                                               const size_t rank,
                                                const double lambda) :
     data(data),
     rank(rank),
@@ -51,11 +51,11 @@ double RegularizedSVDFunction::Evaluate(const arma::mat& parameters) const
 
   double cost = 0.0;
 
-  for(long i = 0; i < data.n_cols; i++)
+  for(size_t i = 0; i < data.n_cols; i++)
   {
     // Indices for accessing the the correct parameter columns.
-    const long user = data(0, i);
-    const long item = data(1, i) + numUsers;
+    const size_t user = data(0, i);
+    const size_t item = data(1, i) + numUsers;
 
     // Calculate the squared error in the prediction.
     const double rating = data(2, i);
@@ -76,11 +76,11 @@ double RegularizedSVDFunction::Evaluate(const arma::mat& parameters) const
 }
 
 double RegularizedSVDFunction::Evaluate(const arma::mat& parameters,
-                                        const long i) const
+                                        const size_t i) const
 {
   // Indices for accessing the the correct parameter columns.
-  const long user = data(0, i);
-  const long item = data(1, i) + numUsers;
+  const size_t user = data(0, i);
+  const size_t item = data(1, i) + numUsers;
   
   // Calculate the squared error in the prediction.
   const double rating = data(2, i);
@@ -111,11 +111,11 @@ void RegularizedSVDFunction::Gradient(const arma::mat& parameters,
 
   gradient.zeros(rank, numUsers + numItems);
 
-  for(long i = 0; i < data.n_cols; i++)
+  for(size_t i = 0; i < data.n_cols; i++)
   {
     // Indices for accessing the the correct parameter columns.
-    const long user = data(0, i);
-    const long item = data(1, i) + numUsers;
+    const size_t user = data(0, i);
+    const size_t item = data(1, i) + numUsers;
 
     // Prediction error for the example.
     const double rating = data(2, i);
@@ -142,20 +142,20 @@ template<>
 double SGD<mlpack::svd::RegularizedSVDFunction>::Optimize(arma::mat& parameters)
 {
   // Find the number of functions to use.
-  const long numFunctions = function.NumFunctions();
+  const size_t numFunctions = function.NumFunctions();
 
   // To keep track of where we are and how things are going.
-  long currentFunction = 0;
+  size_t currentFunction = 0;
   double overallObjective = 0;
 
   // Calculate the first objective function.
-  for(long i = 0; i < numFunctions; i++)
+  for(size_t i = 0; i < numFunctions; i++)
     overallObjective += function.Evaluate(parameters, i);
     
   const arma::mat data = function.Dataset();
 
   // Now iterate!
-  for(long i = 1; i != maxIterations; i++, currentFunction++)
+  for(size_t i = 1; i != maxIterations; i++, currentFunction++)
   {
     // Is this iteration the start of a sequence?
     if((currentFunction % numFunctions) == 0)
@@ -165,11 +165,11 @@ double SGD<mlpack::svd::RegularizedSVDFunction>::Optimize(arma::mat& parameters)
       currentFunction = 0;
     }
 
-    const long numUsers = function.NumUsers();
+    const size_t numUsers = function.NumUsers();
 
     // Indices for accessing the the correct parameter columns.
-    const long user = data(0, currentFunction);
-    const long item = data(1, currentFunction) + numUsers;
+    const size_t user = data(0, currentFunction);
+    const size_t item = data(1, currentFunction) + numUsers;
 
     // Prediction error for the example.
     const double rating = data(2, currentFunction);

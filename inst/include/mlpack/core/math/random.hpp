@@ -3,7 +3,7 @@
  *
  * Miscellaneous math random-related routines.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -56,11 +56,11 @@ namespace math /** Miscellaneous math routines. */ {
 /**
  * Set the random seed used by the random functions (Random() and RandInt()).
  * The seed is casted to a 32-bit integer before being given to the random
- * number generator, but a long is taken as a parameter for API consistency.
+ * number generator, but a size_t is taken as a parameter for API consistency.
  *
  * @param seed Seed for the random number generator.
  */
-inline void RandomSeed(const long seed)
+inline void RandomSeed(const size_t seed)
 {
   randGen.seed((uint32_t) seed);
   srand((unsigned int) seed);

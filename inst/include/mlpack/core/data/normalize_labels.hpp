@@ -6,7 +6,7 @@
  * {-1, 1} or otherwise.  The purpose of this function is to normalize labels to
  * {0, 1, 2, ...} and provide a mapping back to those labels.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -26,10 +26,8 @@
 
 #include <mlpack/prereqs.hpp>
 
-namespace mlpack
-{
-namespace data
-{
+namespace mlpack {
+namespace data {
 
 /**
  * Given a set of labels of a particular datatype, convert them to unsigned
@@ -43,7 +41,7 @@ namespace data
  */
 template<typename eT>
 void NormalizeLabels(const arma::Col<eT>& labelsIn,
-                     arma::Col<long>& labels,
+                     arma::Col<size_t>& labels,
                      arma::Col<eT>& mapping);
 
 /**
@@ -55,7 +53,7 @@ void NormalizeLabels(const arma::Col<eT>& labelsIn,
  * @param labelsOut Vector to store new labels in.
  */
 template<typename eT>
-void RevertLabels(const arma::Col<long>& labels,
+void RevertLabels(const arma::Col<size_t>& labels,
                   const arma::Col<eT>& mapping,
                   arma::Col<eT>& labelsOut);
 

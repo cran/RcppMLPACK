@@ -5,7 +5,7 @@
  * Defines a Gaussian Mixture model and
  * estimates the parameters of the model
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -90,9 +90,9 @@ class GMM
 {
  private:
   //! The number of Gaussians in the model.
-  long gaussians;
+  size_t gaussians;
   //! The dimensionality of the model.
-  long dimensionality;
+  size_t dimensionality;
   //! Vector of means; one for each Gaussian.
   std::vector<arma::vec> means;
   //! Vector of covariances; one for each Gaussian.
@@ -124,7 +124,7 @@ class GMM
    * @param gaussians Number of Gaussians in this GMM.
    * @param dimensionality Dimensionality of each Gaussian.
    */
-  GMM(const long gaussians, const long dimensionality);
+  GMM(const size_t gaussians, const size_t dimensionality);
 
   /**
    * Create a GMM with the given number of Gaussians, each of which have the
@@ -136,8 +136,8 @@ class GMM
    * @param dimensionality Dimensionality of each Gaussian.
    * @param fitter Initialized fitting mechanism.
    */
-  GMM(const long gaussians,
-      const long dimensionality,
+  GMM(const size_t gaussians,
+      const size_t dimensionality,
       FittingType& fitter);
 
   /**
@@ -208,26 +208,26 @@ class GMM
    *
    * @param filename Name of XML file containing model to be loaded.
    */
-  void Load(const std::string& filename);
+  //void Load(const std::string& filename);
 
   /**
    * Save a GMM to an XML file.
    *
    * @param filename Name of XML file to write to.
    */
-  void Save(const std::string& filename) const;
+  //void Save(const std::string& filename) const;
 
   //! Return the number of gaussians in the model.
-  long Gaussians() const { return gaussians; }
+  size_t Gaussians() const { return gaussians; }
   //! Modify the number of gaussians in the model.  Careful!  You will have to
   //! resize the means, covariances, and weights yourself.
-  long& Gaussians() { return gaussians; }
+  size_t& Gaussians() { return gaussians; }
 
   //! Return the dimensionality of the model.
-  long Dimensionality() const { return dimensionality; }
+  size_t Dimensionality() const { return dimensionality; }
   //! Modify the dimensionality of the model.  Careful!  You will have to update
   //! each mean and covariance matrix yourself.
-  long& Dimensionality() { return dimensionality; }
+  size_t& Dimensionality() { return dimensionality; }
 
   //! Return a const reference to the vector of means (mu).
   const std::vector<arma::vec>& Means() const { return means; }
@@ -265,7 +265,7 @@ class GMM
    * @param component Index of the component of the GMM to be considered.
    */
   double Probability(const arma::vec& observation,
-                     const long component) const;
+                     const size_t component) const;
 
   /**
    * Return a randomly generated observation according to the probability
@@ -298,7 +298,7 @@ class GMM
    * @return The log-likelihood of the best fit.
    */
   double Estimate(const arma::mat& observations,
-                  const long trials = 1,
+                  const size_t trials = 1,
                   const bool useExistingModel = false);
 
   /**
@@ -327,7 +327,7 @@ class GMM
    */
   double Estimate(const arma::mat& observations,
                   const arma::vec& probabilities,
-                  const long trials = 1,
+                  const size_t trials = 1,
                   const bool useExistingModel = false);
 
   /**
@@ -347,7 +347,7 @@ class GMM
    * @param labels Object which will be filled with labels.
    */
   void Classify(const arma::mat& observations,
-                arma::Col<long>& labels) const;
+                arma::Col<size_t>& labels) const;
 
   /**
    * Returns a string representation of this object.

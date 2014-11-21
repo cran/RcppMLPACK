@@ -5,7 +5,7 @@
  * Implementation of AugLagrangian class (Augmented Lagrangian optimization
  * method).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -56,7 +56,7 @@ template<typename LagrangianFunction>
 bool AugLagrangian<LagrangianFunction>::Optimize(arma::mat& coordinates,
                                                  const arma::vec& initLambda,
                                                  const double initSigma,
-                                                 const long maxIterations)
+                                                 const size_t maxIterations)
 {
   augfunc.Lambda() = initLambda;
   augfunc.Sigma() = initSigma;
@@ -79,7 +79,7 @@ std::string AugLagrangian<LagrangianFunction>::ToString() const
 
 template<typename LagrangianFunction>
 bool AugLagrangian<LagrangianFunction>::Optimize(arma::mat& coordinates,
-                                                 const long maxIterations)
+                                                 const size_t maxIterations)
 {
   // Ensure that we update lambda immediately.
   double penaltyThreshold = DBL_MAX;
@@ -89,7 +89,7 @@ bool AugLagrangian<LagrangianFunction>::Optimize(arma::mat& coordinates,
 
   // Then, calculate the current penalty.
   double penalty = 0;
-  for (long i = 0; i < function.NumConstraints(); i++)
+  for (size_t i = 0; i < function.NumConstraints(); i++)
     penalty += std::pow(function.EvaluateConstraint(i, coordinates), 2);
 
   Rcpp::Rcout << "Penalty is " << penalty << " (threshold " << penaltyThreshold
@@ -97,7 +97,7 @@ bool AugLagrangian<LagrangianFunction>::Optimize(arma::mat& coordinates,
 
   // The odd comparison allows user to pass maxIterations = 0 (i.e. no limit on
   // number of iterations).
-  long it;
+  size_t it;
   for (it = 0; it != (maxIterations - 1); it++)
   {
     Rcpp::Rcout << "AugLagrangian on iteration " << it
@@ -125,7 +125,7 @@ bool AugLagrangian<LagrangianFunction>::Optimize(arma::mat& coordinates,
 
     // First, calculate the current penalty.
     double penalty = 0;
-    for (long i = 0; i < function.NumConstraints(); i++)
+    for (size_t i = 0; i < function.NumConstraints(); i++)
     {
       penalty += std::pow(function.EvaluateConstraint(i, coordinates), 2);
 //      Rcpp::Rcout << "Constraint " << i << " is " <<
@@ -135,7 +135,7 @@ bool AugLagrangian<LagrangianFunction>::Optimize(arma::mat& coordinates,
     Rcpp::Rcout << "Penalty is " << penalty << " (threshold "
         << penaltyThreshold << ")." << std::endl;
 
-    for (long i = 0; i < function.NumConstraints(); ++i)
+    for (size_t i = 0; i < function.NumConstraints(); ++i)
     {
 //      arma::mat tmpgrad;
 //      function.GradientConstraint(i, coordinates, tmpgrad);
@@ -147,7 +147,7 @@ bool AugLagrangian<LagrangianFunction>::Optimize(arma::mat& coordinates,
     {
       // We use the update: lambda_{k + 1} = lambda_k - sigma * c(coordinates),
       // but we have to write a loop to do this for each constraint.
-      for (long i = 0; i < function.NumConstraints(); i++)
+      for (size_t i = 0; i < function.NumConstraints(); i++)
         augfunc.Lambda()[i] -= augfunc.Sigma() *
             function.EvaluateConstraint(i, coordinates);
 

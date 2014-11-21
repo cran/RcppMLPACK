@@ -5,7 +5,7 @@
  * This file implements functions to perform different tasks with the Density
  * Tree class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -42,8 +42,8 @@ namespace det {
  */
 void PrintLeafMembership(DTree* dtree,
                          const arma::mat& data,
-                         const arma::Mat<long>& labels,
-                         const long numClasses,
+                         const arma::Mat<size_t>& labels,
+                         const size_t numClasses,
                          const std::string leafClassMembershipFile = "");
 
 /**
@@ -70,10 +70,10 @@ void PrintVariableImportance(const DTree* dtree,
  * @param unprunedTreeOutput Filename to print unpruned tree to (optional).
  */
 DTree* Trainer(arma::mat& dataset,
-               const long folds,
+               const size_t folds,
                const bool useVolumeReg = false,
-               const long maxLeafSize = 10,
-               const long minLeafSize = 5,
+               const size_t maxLeafSize = 10,
+               const size_t minLeafSize = 5,
                const std::string unprunedTreeOutput = "");
 
 }; // namespace det

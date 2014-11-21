@@ -5,7 +5,7 @@
  * This is an example kernel.  If you are making your own kernel, follow the
  * outline specified in this file.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -157,7 +157,7 @@ class ExampleKernel
   static double Normalizer() { return 0; }
 
   // Modified to remove unused variable "dimension"
-  //static double Normalizer(long dimension=1) { return 0; }
+  //static double Normalizer(size_t dimension=1) { return 0; }
 
 };
 

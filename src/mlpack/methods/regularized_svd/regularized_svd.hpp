@@ -4,7 +4,7 @@
  *
  * An implementation of Regularized SVD.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -54,8 +54,8 @@ class RegularizedSVD
   RegularizedSVD(const arma::mat& data,
                  arma::mat& u,
                  arma::mat& v,
-                 const long rank,
-                 const long iterations = 10,
+                 const size_t rank,
+                 const size_t iterations = 10,
                  const double alpha = 0.01,
                  const double lambda = 0.02);
                  
@@ -63,9 +63,9 @@ class RegularizedSVD
   //! Rating data.
   const arma::mat& data;
   //! Rank used for matrix factorization.
-  long rank;
+  size_t rank;
   //! Number of optimization iterations.
-  long iterations;
+  size_t iterations;
   //! Learning rate for the SGD optimizer.
   double alpha;
   //! Regularization parameter for the optimization.

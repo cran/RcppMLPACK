@@ -4,7 +4,7 @@
  *
  * Linear algebra utilities.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -88,7 +88,7 @@ void Orthogonalize(arma::mat& x);
  * @param output Matrix to copy non-removed rows into.
  */
 void RemoveRows(const arma::mat& input,
-                const std::vector<long>& rowsToRemove,
+                const std::vector<size_t>& rowsToRemove,
                 arma::mat& output);
 
 }; // namespace math

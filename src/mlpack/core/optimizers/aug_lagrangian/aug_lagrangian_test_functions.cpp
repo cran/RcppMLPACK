@@ -4,7 +4,7 @@
  *
  * Implementation of AugLagrangianTestFunction class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -60,7 +60,7 @@ void AugLagrangianTestFunction::Gradient(const arma::mat& coordinates,
   gradient[1] = 4 * coordinates[0] + 6 * coordinates[1];
 }
 
-double AugLagrangianTestFunction::EvaluateConstraint(const long index,
+double AugLagrangianTestFunction::EvaluateConstraint(const size_t index,
     const arma::mat& coordinates)
 {
   // We return 0 if the index is wrong (not 0).
@@ -71,7 +71,7 @@ double AugLagrangianTestFunction::EvaluateConstraint(const long index,
   return (coordinates[0] + coordinates[1] - 5);
 }
 
-void AugLagrangianTestFunction::GradientConstraint(const long index,
+void AugLagrangianTestFunction::GradientConstraint(const size_t index,
     const arma::mat& /* coordinates */,
     arma::mat& gradient)
 {
@@ -124,7 +124,7 @@ void GockenbachFunction::Gradient(const arma::mat& coordinates,
   gradient[2] = 6 * (coordinates[2] + 3);
 }
 
-double GockenbachFunction::EvaluateConstraint(const long index,
+double GockenbachFunction::EvaluateConstraint(const size_t index,
                                               const arma::mat& coordinates)
 {
   double constraint = 0;
@@ -147,7 +147,7 @@ double GockenbachFunction::EvaluateConstraint(const long index,
   return constraint;
 }
 
-void GockenbachFunction::GradientConstraint(const long index,
+void GockenbachFunction::GradientConstraint(const size_t index,
                                             const arma::mat& coordinates,
                                             arma::mat& gradient)
 {
@@ -185,15 +185,16 @@ LovaszThetaSDP::LovaszThetaSDP(const arma::mat& edges) : edges(edges),
 {
   // Calculate V by finding the maximum index in the edges matrix.
   vertices = max(max(edges)) + 1;
-
+//  Rcpp::Rcout << vertices << " vertices in graph." << std::endl;
 }
 
 double LovaszThetaSDP::Evaluate(const arma::mat& coordinates)
 {
   // The objective is equal to -Tr(ones * X) = -Tr(ones * (R^T * R)).
   // This can be simplified into the negative sum of (R^T * R).
+//  Rcpp::Rcout << "Evaluting objective function with coordinates:" << std::endl;
 //  std::cout << coordinates << std::endl;
-
+//  Rcpp::Rcout << "trans(coord) * coord:" << std::endl;
 //  std::cout << (trans(coordinates) * coordinates) << std::endl;
 
 
@@ -201,9 +202,10 @@ double LovaszThetaSDP::Evaluate(const arma::mat& coordinates)
   double obj = -accu(x);
 
 //  double obj = 0;
-//  for (long i = 0; i < coordinates.n_cols; i++)
+//  for (size_t i = 0; i < coordinates.n_cols; i++)
 //    obj -= dot(coordinates.col(i), coordinates.col(i));
 
+//  Rcpp::Rcout << "Objective function is " << obj << "." << std::endl;
 
   return obj;
 }
@@ -219,12 +221,12 @@ void LovaszThetaSDP::Gradient(const arma::mat& coordinates,
  //    << std::endl;
 
   // Initialize S' piece by piece.  It is of size n x n.
-  const long n = coordinates.n_cols;
+  const size_t n = coordinates.n_cols;
   arma::mat s(n, n);
   s.ones();
   s *= -1; // C = -ones().
 
-  for (long i = 0; i < NumConstraints(); ++i)
+  for (size_t i = 0; i < NumConstraints(); ++i)
   {
     // Calculate [ y_i - sigma (Tr(A_i * (R^T R)) - b_i) ] * A_i.
     // Result will be a matrix; inner result is a scalar.
@@ -283,27 +285,27 @@ void LovaszThetaSDP::Gradient(const arma::mat& coordinates,
 //  std::cout << gradient;
 }
 
-long LovaszThetaSDP::NumConstraints() const
+size_t LovaszThetaSDP::NumConstraints() const
 {
   // Each edge is a constraint, and we have the constraint Tr(X) = 1.
   return edges.n_cols + 1;
 }
 
-double LovaszThetaSDP::EvaluateConstraint(const long index,
+double LovaszThetaSDP::EvaluateConstraint(const size_t index,
                                           const arma::mat& coordinates)
 {
   if (index == 0) // This is the constraint Tr(X) = 1.
   {
     double sum = -1; // Tr(X) - 1 = 0, so we prefix the subtraction.
-    for (long i = 0; i < coordinates.n_cols; i++)
+    for (size_t i = 0; i < coordinates.n_cols; i++)
       sum += std::abs(dot(coordinates.col(i), coordinates.col(i)));
 
 //    Rcpp::Rcout << "Constraint " << index << " evaluates to " << sum << std::endl;
     return sum;
   }
 
-  long i = edges(0, index - 1);
-  long j = edges(1, index - 1);
+  size_t i = edges(0, index - 1);
+  size_t j = edges(1, index - 1);
 
 //  Rcpp::Rcout << "Constraint " << index << " evaluates to " <<
 //    dot(coordinates.col(i), coordinates.col(j)) << "." << std::endl;
@@ -312,7 +314,7 @@ double LovaszThetaSDP::EvaluateConstraint(const long index,
   return std::abs(dot(coordinates.col(i), coordinates.col(j)));
 }
 
-void LovaszThetaSDP::GradientConstraint(const long index,
+void LovaszThetaSDP::GradientConstraint(const size_t index,
                                         const arma::mat& coordinates,
                                         arma::mat& gradient)
 {
@@ -325,8 +327,8 @@ void LovaszThetaSDP::GradientConstraint(const long index,
   }
 
 //  Rcpp::Rcout << "Evaluating gradient of constraint " << index << " with ";
-  long i = edges(0, index - 1);
-  long j = edges(1, index - 1);
+  size_t i = edges(0, index - 1);
+  size_t j = edges(1, index - 1);
 //  Rcpp::Rcout << "i = " << i << " and j = " << j << "." << std::endl;
 
   // Since the constraint is (R^T R)_ij, the gradient for (x, y) will be (I
@@ -378,9 +380,9 @@ const arma::mat& LovaszThetaSDP::GetInitialPoint()
 
   // Now we set the entries of the initial matrix according to the formula given
   // in Section 4 of Monteiro and Burer.
-  for (long i = 0; i < r; i++)
+  for (size_t i = 0; i < r; i++)
   {
-    for (long j = 0; j < (long) vertices; j++)
+    for (size_t j = 0; j < (size_t) vertices; j++)
     {
       if (i == j)
         initialPoint(i, j) = sqrt(1.0 / r) + sqrt(1.0 / (vertices * m));

@@ -4,7 +4,7 @@
  *
  * Implementation of the RangeSearch class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -34,7 +34,7 @@ namespace range {
 template<typename TreeType>
 TreeType* BuildTree(
     typename TreeType::Mat& dataset,
-    std::vector<long>& oldFromNew,
+    std::vector<size_t>& oldFromNew,
     typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == true, TreeType*
     >::type = 0)
@@ -46,7 +46,7 @@ TreeType* BuildTree(
 template<typename TreeType>
 TreeType* BuildTree(
     const typename TreeType::Mat& dataset,
-    const std::vector<long>& /* oldFromNew */,
+    const std::vector<size_t>& /* oldFromNew */,
     const typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == false, TreeType*
     >::type = 0)
@@ -73,6 +73,7 @@ RangeSearch<MetricType, TreeType>::RangeSearch(
     numPrunes(0)
 {
   // Build the trees.
+  //Timer::Start("range_search/tree_building");
 
   // Copy the datasets, if they will be modified during tree building.
   if (tree::TreeTraits<TreeType>::RearrangesDataset)
@@ -96,6 +97,7 @@ RangeSearch<MetricType, TreeType>::RangeSearch(
           const_cast<typename TreeType::Mat&>(querySet), oldFromNewQueries);
   }
 
+  //Timer::Stop("range_search/tree_building");
 }
 
 template<typename MetricType, typename TreeType>
@@ -117,6 +119,7 @@ RangeSearch<MetricType, TreeType>::RangeSearch(
     numPrunes(0)
 {
   // Build the trees.
+  //Timer::Start("range_search/tree_building");
 
   // Copy the dataset, if it will be modified during tree building.
   if (tree::TreeTraits<TreeType>::RearrangesDataset)
@@ -135,6 +138,7 @@ RangeSearch<MetricType, TreeType>::RangeSearch(
     if (!singleMode)
       queryTree = new TreeType(*referenceTree);
   }
+  //Timer::Stop("range_search/tree_building");
 }
 
 template<typename MetricType, typename TreeType>
@@ -200,9 +204,10 @@ RangeSearch<MetricType, TreeType>::~RangeSearch()
 template<typename MetricType, typename TreeType>
 void RangeSearch<MetricType, TreeType>::Search(
     const math::Range& range,
-    std::vector<std::vector<long> >& neighbors,
+    std::vector<std::vector<size_t> >& neighbors,
     std::vector<std::vector<double> >& distances)
 {
+  //Timer::Start("range_search/computing_neighbors");
 
   // Set size of prunes to 0.
   numPrunes = 0;
@@ -211,7 +216,7 @@ void RangeSearch<MetricType, TreeType>::Search(
   // indices back to their original indices when this computation is finished.
   // To avoid extra copies, we will store the unmapped neighbors and distances
   // in a separate object.
-  std::vector<std::vector<long> >* neighborPtr = &neighbors;
+  std::vector<std::vector<size_t> >* neighborPtr = &neighbors;
   std::vector<std::vector<double> >* distancePtr = &distances;
 
   // Mapping is only necessary if the tree rearranges points.
@@ -221,7 +226,7 @@ void RangeSearch<MetricType, TreeType>::Search(
       distancePtr = new std::vector<std::vector<double> >; // Query indices need to be mapped.
 
     if (treeOwner)
-      neighborPtr = new std::vector<std::vector<long> >; // All indices need mapping.
+      neighborPtr = new std::vector<std::vector<size_t> >; // All indices need mapping.
   }
 
   // Resize each vector.
@@ -238,8 +243,8 @@ void RangeSearch<MetricType, TreeType>::Search(
   if (naive)
   {
     // The naive brute-force solution.
-    for (long i = 0; i < querySet.n_cols; ++i)
-      for (long j = 0; j < referenceSet.n_cols; ++j)
+    for (size_t i = 0; i < querySet.n_cols; ++i)
+      for (size_t j = 0; j < referenceSet.n_cols; ++j)
         rules.BaseCase(i, j);
   }
   else if (singleMode)
@@ -248,7 +253,7 @@ void RangeSearch<MetricType, TreeType>::Search(
     typename TreeType::template SingleTreeTraverser<RuleType> traverser(rules);
 
     // Now have it traverse for each point.
-    for (long i = 0; i < querySet.n_cols; ++i)
+    for (size_t i = 0; i < querySet.n_cols; ++i)
       traverser.Traverse(i, *referenceTree);
 
     numPrunes = traverser.NumPrunes();
@@ -262,6 +267,8 @@ void RangeSearch<MetricType, TreeType>::Search(
 
     numPrunes = traverser.NumPrunes();
   }
+
+  //Timer::Stop("range_search/computing_neighbors");
 
   // Output number of prunes.
   Rcpp::Rcout << "Number of pruned nodes during computation: " << numPrunes
@@ -281,15 +288,15 @@ void RangeSearch<MetricType, TreeType>::Search(
     distances.clear();
     distances.resize(querySet.n_cols);
 
-    for (long i = 0; i < distances.size(); i++)
+    for (size_t i = 0; i < distances.size(); i++)
     {
       // Map distances (copy a column).
-      long queryMapping = oldFromNewQueries[i];
+      size_t queryMapping = oldFromNewQueries[i];
       distances[queryMapping] = (*distancePtr)[i];
 
       // Copy each neighbor individually, because we need to map it.
       neighbors[queryMapping].resize(distances[queryMapping].size());
-      for (long j = 0; j < distances[queryMapping].size(); j++)
+      for (size_t j = 0; j < distances[queryMapping].size(); j++)
       {
         neighbors[queryMapping][j] = oldFromNewReferences[(*neighborPtr)[i][j]];
       }
@@ -306,15 +313,15 @@ void RangeSearch<MetricType, TreeType>::Search(
     distances.clear();
     distances.resize(querySet.n_cols);
 
-    for (long i = 0; i < distances.size(); i++)
+    for (size_t i = 0; i < distances.size(); i++)
     {
       // Map distances (copy a column).
-      long refMapping = oldFromNewReferences[i];
+      size_t refMapping = oldFromNewReferences[i];
       distances[refMapping] = (*distancePtr)[i];
 
       // Copy each neighbor individually, because we need to map it.
       neighbors[refMapping].resize(distances[refMapping].size());
-      for (long j = 0; j < distances[refMapping].size(); j++)
+      for (size_t j = 0; j < distances[refMapping].size(); j++)
       {
         neighbors[refMapping][j] = oldFromNewReferences[(*neighborPtr)[i][j]];
       }
@@ -330,10 +337,10 @@ void RangeSearch<MetricType, TreeType>::Search(
     neighbors.resize(querySet.n_cols);
 
     // Map indices of neighbors.
-    for (long i = 0; i < neighbors.size(); i++)
+    for (size_t i = 0; i < neighbors.size(); i++)
     {
       neighbors[i].resize((*neighborPtr)[i].size());
-      for (long j = 0; j < neighbors[i].size(); j++)
+      for (size_t j = 0; j < neighbors[i].size(); j++)
       {
         neighbors[i][j] = oldFromNewReferences[(*neighborPtr)[i][j]];
       }
@@ -358,7 +365,7 @@ std::string RangeSearch<MetricType, TreeType>::ToString() const
   return convert.str();
 }
 
-} // namespace range
-} // namespace mlpack
+}; // namespace range
+}; // namespace mlpack
 
 #endif

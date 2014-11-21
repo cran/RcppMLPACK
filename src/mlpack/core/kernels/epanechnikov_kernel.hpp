@@ -4,7 +4,7 @@
  *
  * Definition of the Epanechnikov kernel.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -82,7 +82,7 @@ class EpanechnikovKernel
    *
    * @param dimension Dimension to calculate the normalizer for.
    */
-  double Normalizer(const long dimension);
+  double Normalizer(const size_t dimension);
   
   // Returns String of O bject
   std::string ToString() const;

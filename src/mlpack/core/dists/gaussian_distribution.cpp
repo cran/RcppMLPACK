@@ -4,7 +4,7 @@
  *
  * Implementation of Gaussian distribution class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -50,14 +50,14 @@ void GaussianDistribution::Estimate(const arma::mat& observations)
   }
 
   // Calculate the mean.
-  for (long i = 0; i < observations.n_cols; i++)
+  for (size_t i = 0; i < observations.n_cols; i++)
     mean += observations.col(i);
 
   // Normalize the mean.
   mean /= observations.n_cols;
 
   // Now calculate the covariance.
-  for (long i = 0; i < observations.n_cols; i++)
+  for (size_t i = 0; i < observations.n_cols; i++)
   {
     arma::vec obsNoMean = observations.col(i) - mean;
     covariance += obsNoMean * trans(obsNoMean);
@@ -106,7 +106,7 @@ void GaussianDistribution::Estimate(const arma::mat& observations,
 
   // First calculate the mean, and save the sum of all the probabilities for
   // later normalization.
-  for (long i = 0; i < observations.n_cols; i++)
+  for (size_t i = 0; i < observations.n_cols; i++)
   {
     mean += probabilities[i] * observations.col(i);
     sumProb += probabilities[i];
@@ -124,7 +124,7 @@ void GaussianDistribution::Estimate(const arma::mat& observations,
   mean /= sumProb;
 
   // Now find the covariance.
-  for (long i = 0; i < observations.n_cols; i++)
+  for (size_t i = 0; i < observations.n_cols; i++)
   {
     arma::vec obsNoMean = observations.col(i) - mean;
     covariance += probabilities[i] * (obsNoMean * trans(obsNoMean));

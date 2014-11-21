@@ -6,7 +6,7 @@
  * single-tree breadth-first recursion with a pruning rule and a base case (two
  * point) rule.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -48,19 +48,19 @@ class CoverTree<MetricType, RootPointPolicy, StatisticType>::SingleTreeTraverser
    *      the query point.
    * @param referenceNode The tree node to be traversed.
    */
-  void Traverse(const long queryIndex, CoverTree& referenceNode);
+  void Traverse(const size_t queryIndex, CoverTree& referenceNode);
 
   //! Get the number of prunes so far.
-  long NumPrunes() const { return numPrunes; }
+  size_t NumPrunes() const { return numPrunes; }
   //! Set the number of prunes (good for a reset to 0).
-  long& NumPrunes() { return numPrunes; }
+  size_t& NumPrunes() { return numPrunes; }
 
  private:
   //! Reference to the rules with which the tree will be traversed.
   RuleType& rule;
 
   //! The number of nodes which have been pruned during traversal.
-  long numPrunes;
+  size_t numPrunes;
 };
 
 }; // namespace tree

@@ -4,7 +4,7 @@
  *
  * A dual-tree traverser for the cover tree.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -47,22 +47,22 @@ class CoverTree<MetricType, RootPointPolicy, StatisticType>::DualTreeTraverser
   void Traverse(CoverTree& queryNode, CoverTree& referenceNode);
 
   //! Get the number of pruned nodes.
-  long NumPrunes() const { return numPrunes; }
+  size_t NumPrunes() const { return numPrunes; }
   //! Modify the number of pruned nodes.
-  long& NumPrunes() { return numPrunes; }
+  size_t& NumPrunes() { return numPrunes; }
 
   ///// These are all fake because this is a patch for kd-trees only and I still
   ///// want it to compile!
-  long NumVisited() const { return 0; }
-  long NumScores() const { return 0; }
-  long NumBaseCases() const { return 0; }
+  size_t NumVisited() const { return 0; }
+  size_t NumScores() const { return 0; }
+  size_t NumBaseCases() const { return 0; }
 
  private:
   //! The instantiated rule set for pruning branches.
   RuleType& rule;
 
   //! The number of pruned nodes.
-  long numPrunes;
+  size_t numPrunes;
 
   //! Struct used for traversal.
   struct DualCoverTreeMapEntry

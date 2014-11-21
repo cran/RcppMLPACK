@@ -5,7 +5,7 @@
  * An implementation of Monteiro and Burer's formulation of low-rank
  * semidefinite programs (LR-SDP).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -48,7 +48,7 @@ class LRSDP
    * @param rank Rank of the solution (<= rows).
    * @param rows Number of rows in the solution.
    */
-  LRSDP(const long numConstraints,
+  LRSDP(const size_t numConstraints,
         const arma::mat& initialPoint);
 
   /**
@@ -60,7 +60,7 @@ class LRSDP
    * @param initialPoint Initial point of the optimization.
    * @param auglag Pre-initialized AugLagrangian<LRSDP> object.
    */
-  LRSDP(const long numConstraints,
+  LRSDP(const size_t numConstraints,
         const arma::mat& initialPoint,
         AugLagrangian<LRSDPFunction>& augLagrangian);
 

@@ -4,7 +4,7 @@
  *
  * Definition of the statistic for multi-resolution kd-trees.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -55,11 +55,11 @@ MRKDStatistic::MRKDStatistic(const TreeType& node) :
     parentStat(NULL)
 {
   centerOfMass = dataset.col(begin);
-  for (long i = begin + 1; i < begin + count; ++i)
+  for (size_t i = begin + 1; i < begin + count; ++i)
     centerOfMass += dataset.col(i);
 
   sumOfSquaredNorms = 0.0;
-  for (long i = begin; i < begin + count; ++i)
+  for (size_t i = begin; i < begin + count; ++i)
     sumOfSquaredNorms += arma::norm(dataset.col(i), 2);
 }
 
@@ -75,8 +75,8 @@ MRKDStatistic::MRKDStatistic(const TreeType& node) :
  *
 template<typename MatType>
 MRKDStatistic::MRKDStatistic(const MatType& dataset,
-                             const long begin,
-                             const long count,
+                             const size_t begin,
+                             const size_t count,
                              MRKDStatistic& leftStat,
                              MRKDStatistic& rightStat) :
     dataset(&dataset),

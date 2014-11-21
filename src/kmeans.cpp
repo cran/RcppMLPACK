@@ -6,7 +6,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List kmeans(const arma::mat& data, const int& clusters) {
     
-    arma::Col<long> assignments;
+    arma::Col<size_t> assignments;
 
 	// Initialize with the default arguments.
 	KMeans<> k;

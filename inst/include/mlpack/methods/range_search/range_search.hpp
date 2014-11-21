@@ -5,7 +5,7 @@
  * Defines the RangeSearch class, which performs a generalized range search on
  * points.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -193,7 +193,7 @@ class RangeSearch
    *      point which fell into the given range, for each query point.
    */
   void Search(const math::Range& range,
-              std::vector<std::vector<long> >& neighbors,
+              std::vector<std::vector<size_t> >& neighbors,
               std::vector<std::vector<double> >& distances);
 
   // Returns a string representation of this object. 
@@ -216,9 +216,9 @@ class RangeSearch
   TreeType* queryTree;
 
   //! Mappings to old reference indices (used when this object builds trees).
-  std::vector<long> oldFromNewReferences;
+  std::vector<size_t> oldFromNewReferences;
   //! Mappings to old query indices (used when this object builds trees).
-  std::vector<long> oldFromNewQueries;
+  std::vector<size_t> oldFromNewQueries;
 
   //! If true, this object is responsible for deleting the trees.
   bool treeOwner;
@@ -235,11 +235,11 @@ class RangeSearch
   MetricType metric;
 
   //! The number of pruned nodes during computation.
-  long numPrunes;
+  size_t numPrunes;
 };
 
-} // namespace range
-} // namespace mlpack
+}; // namespace range
+}; // namespace mlpack
 
 // Include implementation.
 #include "range_search_impl.hpp"

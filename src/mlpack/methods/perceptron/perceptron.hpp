@@ -4,7 +4,7 @@
  *
  * Definition of Perceptron class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -56,7 +56,7 @@ class Perceptron
    * @param iterations Maximum number of iterations for the perceptron learning
    *     algorithm.
    */
-  Perceptron(const MatType& data, const arma::Row<long>& labels, int iterations);
+  Perceptron(const MatType& data, const arma::Row<size_t>& labels, int iterations);
 
   /**
    * Classification function. After training, use the weightVectors matrix to
@@ -66,7 +66,7 @@ class Perceptron
    * @param predictedLabels Vector to store the predicted classes after
    *     classifying test.
    */
-  void Classify(const MatType& test, arma::Row<long>& predictedLabels);
+  void Classify(const MatType& test, arma::Row<size_t>& predictedLabels);
 
   /**
    *  Alternate constructor which copies parameters from an already initiated 
@@ -78,14 +78,14 @@ class Perceptron
    *  @param D Weight vector to use while training. For boosting purposes.
    *  @param labels The labels of data.
    */
-  Perceptron(const Perceptron<>& other, MatType& data, const arma::rowvec& D, const arma::Row<long>& labels);
+  Perceptron(const Perceptron<>& other, MatType& data, const arma::rowvec& D, const arma::Row<size_t>& labels);
 
 private:
   //! To store the number of iterations
-  long iter;
+  size_t iter;
 
   //! Stores the class labels for the input data.
-  arma::Row<long> classLabels;
+  arma::Row<size_t> classLabels;
 
   //! Stores the weight vectors for each of the input class labels.
   arma::mat weightVectors;

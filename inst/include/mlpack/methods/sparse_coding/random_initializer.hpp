@@ -5,7 +5,7 @@
  * A very simple random dictionary initializer for SparseCoding; it is probably
  * not a very good choice.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -45,19 +45,19 @@ class RandomInitializer
    * @param dictionary Dictionary to initialize.
    */
   static void Initialize(const arma::mat& data,
-                         const long atoms,
+                         const size_t atoms,
                          arma::mat& dictionary)
   {
     // Create random dictionary.
     dictionary.randn(data.n_rows, atoms);
 
     // Normalize each atom.
-    for (long j = 0; j < atoms; ++j)
+    for (size_t j = 0; j < atoms; ++j)
       dictionary.col(j) /= norm(dictionary.col(j), 2);
   }
 };
 
-} // namespace sparse_coding
-} // namespace mlpack
+}; // namespace sparse_coding
+}; // namespace mlpack
 
 #endif

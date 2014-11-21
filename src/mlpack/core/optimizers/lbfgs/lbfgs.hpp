@@ -5,7 +5,7 @@
  *
  * The generic L-BFGS optimizer.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -65,12 +65,12 @@ class L_BFGS
    * @param maxStep The maximum step of the line search.
    */
   L_BFGS(FunctionType& function,
-         const long numBasis = 5, /* entirely arbitrary */
-         const long maxIterations = 0, /* run forever */
+         const size_t numBasis = 5, /* entirely arbitrary */
+         const size_t maxIterations = 0, /* run forever */
          const double armijoConstant = 1e-4,
          const double wolfe = 0.9,
          const double minGradientNorm = 1e-10,
-         const long maxLineSearchTrials = 50,
+         const size_t maxLineSearchTrials = 50,
          const double minStep = 1e-20,
          const double maxStep = 1e20);
 
@@ -107,7 +107,7 @@ class L_BFGS
    * @param maxIterations Maximum number of iterations (0 specifies no limit).
    * @return Objective value of the final point.
    */
-  double Optimize(arma::mat& iterate, const long maxIterations);
+  double Optimize(arma::mat& iterate, const size_t maxIterations);
 
   //! Return the function that is being optimized.
   const FunctionType& Function() const { return function; }
@@ -115,14 +115,14 @@ class L_BFGS
   FunctionType& Function() { return function; }
 
   //! Get the memory size.
-  long NumBasis() const { return numBasis; }
+  size_t NumBasis() const { return numBasis; }
   //! Modify the memory size.
-  long& NumBasis() { return numBasis; }
+  size_t& NumBasis() { return numBasis; }
 
   //! Get the maximum number of iterations.
-  long MaxIterations() const { return maxIterations; }
+  size_t MaxIterations() const { return maxIterations; }
   //! Modify the maximum number of iterations.
-  long& MaxIterations() { return maxIterations; }
+  size_t& MaxIterations() { return maxIterations; }
 
   //! Get the Armijo condition constant.
   double ArmijoConstant() const { return armijoConstant; }
@@ -140,9 +140,9 @@ class L_BFGS
   double& MinGradientNorm() { return minGradientNorm; }
 
   //! Get the maximum number of line search trials.
-  long MaxLineSearchTrials() const { return maxLineSearchTrials; }
+  size_t MaxLineSearchTrials() const { return maxLineSearchTrials; }
   //! Modify the maximum number of line search trials.
-  long& MaxLineSearchTrials() { return maxLineSearchTrials; }
+  size_t& MaxLineSearchTrials() { return maxLineSearchTrials; }
 
   //! Return the minimum line search step size.
   double MinStep() const { return minStep; }
@@ -169,9 +169,9 @@ class L_BFGS
   arma::cube y;
 
   //! Size of memory for this L-BFGS optimizer.
-  long numBasis;
+  size_t numBasis;
   //! Maximum number of iterations.
-  long maxIterations;
+  size_t maxIterations;
   //! Parameter for determining the Armijo condition.
   double armijoConstant;
   //! Parameter for detecting the Wolfe condition.
@@ -179,7 +179,7 @@ class L_BFGS
   //! Minimum gradient norm required to continue the optimization.
   double minGradientNorm;
   //! Maximum number of trials for the line search.
-  long maxLineSearchTrials;
+  size_t maxLineSearchTrials;
   //! Minimum step of the line search.
   double minStep;
   //! Maximum step of the line search.
@@ -203,7 +203,7 @@ class L_BFGS
    *
    * @return The calculated scaling factor.
    */
-  double ChooseScalingFactor(const long iterationNum,
+  double ChooseScalingFactor(const size_t iterationNum,
                              const arma::mat& gradient);
 
   /**
@@ -241,7 +241,7 @@ class L_BFGS
    * @param search_direction Vector to store search direction in
    */
   void SearchDirection(const arma::mat& gradient,
-                       const long iterationNum,
+                       const size_t iterationNum,
                        const double scalingFactor,
                        arma::mat& searchDirection);
 
@@ -256,7 +256,7 @@ class L_BFGS
    * @param gradient Gradient at current point (iterate)
    * @param oldGradient Gradient at last iteration point (oldIterate)
    */
-  void UpdateBasisSet(const long iterationNum,
+  void UpdateBasisSet(const size_t iterationNum,
                       const arma::mat& iterate,
                       const arma::mat& oldIterate,
                       const arma::mat& gradient,

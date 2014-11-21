@@ -8,7 +8,7 @@
  * specified data set.
  *
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -32,8 +32,8 @@ namespace cf {
  */
 template<typename FactorizerType>
 CF<FactorizerType>::CF(arma::mat& data,
-                       const long numUsersForSimilarity,
-                       const long rank) :
+                       const size_t numUsersForSimilarity,
+                       const size_t rank) :
     data(data),
     numUsersForSimilarity(numUsersForSimilarity),
     rank(rank),
@@ -52,14 +52,14 @@ CF<FactorizerType>::CF(arma::mat& data,
 }
 
 template<typename FactorizerType>
-void CF<FactorizerType>::GetRecommendations(const long numRecs,
-                                            arma::Mat<long>& recommendations)
+void CF<FactorizerType>::GetRecommendations(const size_t numRecs,
+                                            arma::Mat<size_t>& recommendations)
 {
   // Generate list of users.  Maybe it would be more efficient to pass an empty
   // users list, and then have the other overload of GetRecommendations() assume
   // that if users is empty, then recommendations should be generated for all
   // users?
-  arma::Col<long> users = arma::linspace<arma::Col<long> >(0,
+  arma::Col<size_t> users = arma::linspace<arma::Col<size_t> >(0,
       cleanedData.n_cols - 1, cleanedData.n_cols);
 
   // Call the main overload for recommendations.
@@ -67,9 +67,9 @@ void CF<FactorizerType>::GetRecommendations(const long numRecs,
 }
 
 template<typename FactorizerType>
-void CF<FactorizerType>::GetRecommendations(const long numRecs,
-                                            arma::Mat<long>& recommendations,
-                                            arma::Col<long>& users)
+void CF<FactorizerType>::GetRecommendations(const size_t numRecs,
+                                            arma::Mat<size_t>& recommendations,
+                                            arma::Col<size_t>& users)
 {
   // Base function for calculating recommendations.
 
@@ -79,7 +79,7 @@ void CF<FactorizerType>::GetRecommendations(const long numRecs,
     // This is a simple heuristic that picks a rank based on the density of the
     // dataset between 5 and 105.
     const double density = (cleanedData.n_nonzero * 100.0) / cleanedData.n_elem;
-    const long rankEstimate = long(density) + 5;
+    const size_t rankEstimate = size_t(density) + 5;
 
     // Set to heuristic value.
     Rcpp::Rcout << "No rank given for decomposition; using rank of "
@@ -102,11 +102,11 @@ void CF<FactorizerType>::GetRecommendations(const long numRecs,
   arma::mat query(rating.n_rows, users.n_elem);
 
   // Select feature vectors of queried users.
-  for (long i = 0; i < users.n_elem; i++)
+  for (size_t i = 0; i < users.n_elem; i++)
     query.col(i) = rating.col(users(i));
 
   // Temporary storage for neighborhood of the queried users.
-  arma::Mat<long> neighborhood;
+  arma::Mat<size_t> neighborhood;
 
   // Calculate the neighborhood of the queried users.
   // This should be a templatized option.
@@ -119,10 +119,10 @@ void CF<FactorizerType>::GetRecommendations(const long numRecs,
   arma::mat averages = arma::zeros<arma::mat>(rating.n_rows, query.n_cols);
 
   // Iterate over each query user.
-  for (long i = 0; i < neighborhood.n_cols; ++i)
+  for (size_t i = 0; i < neighborhood.n_cols; ++i)
   {
     // Iterate over each neighbor of the query user.
-    for (long j = 0; j < neighborhood.n_rows; ++j)
+    for (size_t j = 0; j < neighborhood.n_rows; ++j)
       averages.col(i) += rating.col(neighborhood(j, i));
     // Normalize average.
     averages.col(i) /= neighborhood.n_rows;
@@ -134,10 +134,10 @@ void CF<FactorizerType>::GetRecommendations(const long numRecs,
   recommendations.fill(cleanedData.n_rows); // Invalid item number.
   arma::mat values(numRecs, users.n_elem);
   values.fill(-DBL_MAX); // The smallest possible value.
-  for (long i = 0; i < users.n_elem; i++)
+  for (size_t i = 0; i < users.n_elem; i++)
   {
     // Look through the averages column corresponding to the current user.
-    for (long j = 0; j < averages.n_rows; ++j)
+    for (size_t j = 0; j < averages.n_rows; ++j)
     {
       // Ensure that the user hasn't already rated the item.
       if (cleanedData(j, users(i)) != 0.0)
@@ -148,7 +148,7 @@ void CF<FactorizerType>::GetRecommendations(const long numRecs,
       if (value > values(values.n_rows - 1, i))
       {
         // It should be inserted.  Which position?
-        long insertPosition = values.n_rows - 1;
+        size_t insertPosition = values.n_rows - 1;
         while (insertPosition > 0)
         {
           if (value <= values(insertPosition - 1, i))
@@ -177,7 +177,7 @@ void CF<FactorizerType>::CleanData()
   // matrices.
   arma::umat locations(2, data.n_cols);
   arma::vec values(data.n_cols);
-  for (long i = 0; i < data.n_cols; ++i)
+  for (size_t i = 0; i < data.n_cols; ++i)
   {
     // We have to transpose it because items are rows, and users are columns.
     locations(1, i) = ((arma::uword) data(0, i));
@@ -186,8 +186,8 @@ void CF<FactorizerType>::CleanData()
   }
 
   // Find maximum user and item IDs.
-  const long maxItemID = (long) max(locations.row(0)) + 1;
-  const long maxUserID = (long) max(locations.row(1)) + 1;
+  const size_t maxItemID = (size_t) max(locations.row(0)) + 1;
+  const size_t maxUserID = (size_t) max(locations.row(1)) + 1;
 
   // Fill sparse matrix.
   cleanedData = arma::sp_mat(locations, values, maxItemID, maxUserID);
@@ -202,11 +202,11 @@ void CF<FactorizerType>::CleanData()
  * @param value Value of recommendation.
  */
 template<typename FactorizerType>
-void CF<FactorizerType>::InsertNeighbor(const long queryIndex,
-                                        const long pos,
-                                        const long neighbor,
+void CF<FactorizerType>::InsertNeighbor(const size_t queryIndex,
+                                        const size_t pos,
+                                        const size_t neighbor,
                                         const double value,
-                                        arma::Mat<long>& recommendations,
+                                        arma::Mat<size_t>& recommendations,
                                         arma::mat& values) const
 {
   // We only memmove() if there is actually a need to shift something.
@@ -218,7 +218,7 @@ void CF<FactorizerType>::InsertNeighbor(const long queryIndex,
         sizeof(double) * len);
     memmove(recommendations.colptr(queryIndex) + (pos + 1),
         recommendations.colptr(queryIndex) + pos,
-        sizeof(long) * len);
+        sizeof(size_t) * len);
   }
 
   // Now put the new information in the right index.

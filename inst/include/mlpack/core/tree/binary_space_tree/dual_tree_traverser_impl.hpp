@@ -6,7 +6,7 @@
  * to perform a dual-tree traversal of two trees.  The trees must be the same
  * type.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -65,7 +65,7 @@ DualTreeTraverser<RuleType>::Traverse(
   if (queryNode.IsLeaf() && referenceNode.IsLeaf())
   {
     // Loop through each of the points in each node.
-    for (long query = queryNode.Begin(); query < queryNode.End(); ++query)
+    for (size_t query = queryNode.Begin(); query < queryNode.End(); ++query)
     {
       // See if we need to investigate this point (this function should be
       // implemented for the single-tree recursion too).  Restore the traversal
@@ -76,7 +76,7 @@ DualTreeTraverser<RuleType>::Traverse(
       if (childScore == DBL_MAX)
         continue; // We can't improve this particular point.
 
-      for (long ref = referenceNode.Begin(); ref < referenceNode.End(); ++ref)
+      for (size_t ref = referenceNode.Begin(); ref < referenceNode.End(); ++ref)
         rule.BaseCase(query, ref);
 
       numBaseCases += referenceNode.Count();

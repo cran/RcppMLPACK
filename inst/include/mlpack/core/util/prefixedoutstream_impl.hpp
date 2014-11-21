@@ -5,7 +5,7 @@
  *
  * Implementation of templated PrefixedOutStream member functions.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -116,8 +116,8 @@ void PrefixedOutStream::BaseLogic(const T& val)
     // Now, we need to check for newlines in this line.  If we find one, output
     // up until the newline, then output the newline and the prefix and continue
     // looking.
-    long nl;
-    long pos = 0;
+    size_t nl;
+    size_t pos = 0;
     while ((nl = line.find('\n', pos)) != std::string::npos)
     {
       PrefixIfNeeded();

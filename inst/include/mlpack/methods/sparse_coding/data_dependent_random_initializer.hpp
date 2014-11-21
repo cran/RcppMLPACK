@@ -4,7 +4,7 @@
  *
  * A sensible heuristic for initializing dictionaries for sparse coding.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -45,14 +45,14 @@ class DataDependentRandomInitializer
    * @param dictionary Dictionary to initialize.
    */
   static void Initialize(const arma::mat& data,
-                         const long atoms,
+                         const size_t atoms,
                          arma::mat& dictionary)
   {
     // Set the size of the dictionary.
     dictionary.set_size(data.n_rows, atoms);
 
     // Create each atom.
-    for (long i = 0; i < atoms; ++i)
+    for (size_t i = 0; i < atoms; ++i)
     {
       // Add three atoms together.
       dictionary.col(i) = (data.col(math::RandInt(data.n_cols)) +
@@ -65,7 +65,7 @@ class DataDependentRandomInitializer
   }
 };
 
-} // namespace sparse_coding
-} // namespace mlpack
+}; // namespace sparse_coding
+}; // namespace mlpack
 
 #endif

@@ -4,7 +4,7 @@
  *
  * Implementation of simple linear regression.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -38,7 +38,7 @@ LinearRegression::LinearRegression(const arma::mat& predictors,
   // We store the number of rows and columns of the predictors.
   // Reminder: Armadillo stores the data transposed from how we think of it,
   //           that is, columns are actually rows (see: column major order).
-  const long nCols = predictors.n_cols;
+  const size_t nCols = predictors.n_cols;
 
   // Here we add the row of ones to the predictors.
   arma::mat p;
@@ -85,11 +85,11 @@ LinearRegression::LinearRegression(const arma::mat& predictors,
   }
 }
 
-LinearRegression::LinearRegression(const std::string& filename) :
+/*LinearRegression::LinearRegression(const std::string& filename) :
     lambda(0.0)
 {
   data::Load(filename, parameters, true);
-}
+}*/
 
 LinearRegression::LinearRegression(const LinearRegression& linearRegression) :
     parameters(linearRegression.parameters),
@@ -100,7 +100,7 @@ void LinearRegression::Predict(const arma::mat& points, arma::vec& predictions)
     const
 {
   // We want to be sure we have the correct number of dimensions in the dataset.
-
+  //Log::Assert(points.n_rows == parameters.n_rows - 1);
 
   // Get the predictions, but this ignores the intercept value (parameters[0]).
   predictions = arma::trans(arma::trans(
@@ -115,8 +115,8 @@ double LinearRegression::ComputeError(const arma::mat& predictors,
                                       const arma::vec& responses) const
 {
   // Get the number of columns and rows of the dataset.
-  const long nCols = predictors.n_cols;
-  const long nRows = predictors.n_rows;
+  const size_t nCols = predictors.n_cols;
+  const size_t nRows = predictors.n_rows;
 
   // Ensure that we have the correct number of dimensions in the dataset.
   if (nRows != parameters.n_rows - 1)

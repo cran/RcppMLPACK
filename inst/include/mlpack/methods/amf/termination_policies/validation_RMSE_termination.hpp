@@ -4,7 +4,7 @@
  *
  * Termination policy that checks validation RMSE.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -33,25 +33,25 @@ class ValidationRMSETermination
 {
  public:
   ValidationRMSETermination(MatType& V,
-                            long num_test_points,
+                            size_t num_test_points,
                             double tolerance = 1e-5,
-                            long maxIterations = 10000,
-                            long reverseStepTolerance = 3)
+                            size_t maxIterations = 10000,
+                            size_t reverseStepTolerance = 3)
         : tolerance(tolerance),
           maxIterations(maxIterations),
           num_test_points(num_test_points),
           reverseStepTolerance(reverseStepTolerance)
   {
-    long n = V.n_rows;
-    long m = V.n_cols;
+    size_t n = V.n_rows;
+    size_t m = V.n_cols;
 
     test_points.zeros(num_test_points, 3);
 
-    for(long i = 0; i < num_test_points; i++)
+    for(size_t i = 0; i < num_test_points; i++)
     {
       double t_val;
-      long t_row;
-      long t_col;
+      size_t t_row;
+      size_t t_col;
       do
       {
         t_row = rand() % n;
@@ -90,10 +90,10 @@ class ValidationRMSETermination
     {
       rmseOld = rmse;
       rmse = 0;
-      for(long i = 0; i < num_test_points; i++)
+      for(size_t i = 0; i < num_test_points; i++)
       {
-        long t_row = test_points(i, 0);
-        long t_col = test_points(i, 1);
+        size_t t_row = test_points(i, 0);
+        size_t t_col = test_points(i, 1);
         double t_val = test_points(i, 2);
         double temp = (t_val - WH(t_row, t_col));
         temp *= temp;
@@ -141,23 +141,23 @@ class ValidationRMSETermination
   
   const double& Index() { return rmse; }
 
-  const long& Iteration() { return iteration; }
+  const size_t& Iteration() { return iteration; }
   
-  const long& MaxIterations() { return maxIterations; }
+  const size_t& MaxIterations() { return maxIterations; }
 
  private:
   double tolerance;
-  long maxIterations;
-  long num_test_points;
-  long iteration;
+  size_t maxIterations;
+  size_t num_test_points;
+  size_t iteration;
 
   arma::Mat<double> test_points;
 
   double rmseOld;
   double rmse;
 
-  long reverseStepTolerance;
-  long reverseStepCount;
+  size_t reverseStepTolerance;
+  size_t reverseStepCount;
   
   bool isCopy;
   arma::mat W;

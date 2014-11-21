@@ -5,7 +5,7 @@
  * Definition of the LocalCoordinateCoding class, which performs the Local
  * Coordinate Coding algorithm.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -99,7 +99,7 @@ class LocalCoordinateCoding
    * @param lambda Regularization parameter for weighted l1-norm penalty.
    */
   LocalCoordinateCoding(const arma::mat& data,
-                        const long atoms,
+                        const size_t atoms,
                         const double lambda);
 
   /**
@@ -110,7 +110,7 @@ class LocalCoordinateCoding
    *     function changes by a value lower than this tolerance, the optimization
    *     terminates.
    */
-  void Encode(const long maxIterations = 0,
+  void Encode(const size_t maxIterations = 0,
               const double objTolerance = 0.01);
 
   /**
@@ -150,7 +150,7 @@ class LocalCoordinateCoding
 
  private:
   //! Number of atoms in dictionary.
-  long atoms;
+  size_t atoms;
 
   //! Data matrix (columns are points).
   const arma::mat& data;

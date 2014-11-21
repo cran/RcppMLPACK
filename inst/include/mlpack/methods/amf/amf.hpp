@@ -8,7 +8,7 @@
  * known techniques such as incremental SVD, NMF, and batch-learning SVD can be
  * derived.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -54,7 +54,7 @@ namespace amf {
  *
  * @code
  * extern arma::mat V; // Matrix that we want to perform LMF on.
- * long r = 10; // Rank of decomposition
+ * size_t r = 10; // Rank of decomposition
  * arma::mat W; // Basis matrix
  * arma::mat H; // Encoding matrix
  *
@@ -107,7 +107,7 @@ class AMF
    */
   template<typename MatType>
   double Apply(const MatType& V,
-               const long r,
+               const size_t r,
                arma::mat& W,
                arma::mat& H);
 

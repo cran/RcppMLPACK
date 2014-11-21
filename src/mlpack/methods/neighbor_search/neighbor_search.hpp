@@ -5,7 +5,7 @@
  * Defines the NeighborSearch class, which performs an abstract
  * nearest-neighbor-like query on two datasets.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -202,8 +202,8 @@ class NeighborSearch
    * @param distances Matrix storing distances of neighbors for each query
    *     point.
    */
-  void Search(const long k,
-              arma::Mat<long>& resultingNeighbors,
+  void Search(const size_t k,
+              arma::Mat<size_t>& resultingNeighbors,
               arma::mat& distances);
 
   // Returns a string representation of this object. 
@@ -240,9 +240,9 @@ class NeighborSearch
   MetricType metric;
 
   //! Permutations of reference points during tree building.
-  std::vector<long> oldFromNewReferences;
+  std::vector<size_t> oldFromNewReferences;
   //! Permutations of query points during tree building.
-  std::vector<long> oldFromNewQueries;
+  std::vector<size_t> oldFromNewQueries;
 }; // class NeighborSearch
 
 }; // namespace neighbor

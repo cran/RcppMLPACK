@@ -5,7 +5,7 @@
  *
  * A class that represents the objective function which LRSDP optimizes.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -40,7 +40,7 @@ class LRSDPFunction
    * constraints.  Set the A, B, and C matrices for each constraint using the
    * A(), B(), and C() functions.
    */
-  LRSDPFunction(const long numConstraints,
+  LRSDPFunction(const size_t numConstraints,
                 const arma::mat& initialPoint);
 
   /**
@@ -58,18 +58,18 @@ class LRSDPFunction
   /**
    * Evaluate a particular constraint of the LRSDP at the given coordinates.
    */
-  double EvaluateConstraint(const long index,
+  double EvaluateConstraint(const size_t index,
                             const arma::mat& coordinates) const;
   /**
    * Evaluate the gradient of a particular constraint of the LRSDP at the given
    * coordinates.
    */
-  void GradientConstraint(const long index,
+  void GradientConstraint(const size_t index,
                           const arma::mat& coordinates,
                           arma::mat& gradient) const;
 
   //! Get the number of constraints in the LRSDP.
-  long NumConstraints() const { return b.n_elem; }
+  size_t NumConstraints() const { return b.n_elem; }
 
   //! Get the initial point of the LRSDP.
   const arma::mat& GetInitialPoint() const { return initialPoint; }

@@ -2,7 +2,7 @@
  * @file simple_residue_termination.hpp
  * @author Sumedh Ghaisas
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -29,7 +29,7 @@ class SimpleResidueTermination
 {
  public:
   SimpleResidueTermination(const double minResidue = 1e-10,
-                           const long maxIterations = 10000)
+                           const size_t maxIterations = 10000)
         : minResidue(minResidue), maxIterations(maxIterations) { }
 
   template<typename MatType>
@@ -39,8 +39,8 @@ class SimpleResidueTermination
     iteration = 1;
     normOld = 0;
 
-    const long n = V.n_rows;
-    const long m = V.n_cols;
+    const size_t n = V.n_rows;
+    const size_t m = V.n_cols;
 
     nm = n * m;
   }
@@ -68,18 +68,18 @@ class SimpleResidueTermination
   }
 
   const double& Index() { return residue; }
-  const long& Iteration() { return iteration; }
-  const long& MaxIterations() { return maxIterations; }
+  const size_t& Iteration() { return iteration; }
+  const size_t& MaxIterations() { return maxIterations; }
 
 public:
   double minResidue;
-  long maxIterations;
+  size_t maxIterations;
 
   double residue;
-  long iteration;
+  size_t iteration;
   double normOld;
 
-  long nm;
+  size_t nm;
 }; // class SimpleResidueTermination
 
 }; // namespace amf

@@ -4,7 +4,7 @@
  *
  * Simple weight update rule for the perceptron.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -54,9 +54,9 @@ class SimpleWeightUpdate
    */
   void UpdateWeights(const arma::mat& trainData,
                      arma::mat& weightVectors,
-                     const long labelIndex,
-                     const long vectorIndex,
-                     const long rowIndex,
+                     const size_t labelIndex,
+                     const size_t vectorIndex,
+                     const size_t rowIndex,
                      const arma::rowvec& D)
   {
     weightVectors.row(rowIndex) = weightVectors.row(rowIndex) - 
@@ -67,7 +67,7 @@ class SimpleWeightUpdate
   }
 };
 
-} // namespace perceptron
-} // namespace mlpack
+}; // namespace perceptron
+}; // namespace mlpack
 
 #endif

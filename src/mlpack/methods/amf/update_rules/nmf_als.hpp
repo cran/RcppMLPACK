@@ -10,7 +10,7 @@
  * \f$ \sqrt{\sum_i \sum_j(V-WH)^2} \f$ by alternately calculating W and H
  * respectively while holding the other matrix constant.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -43,7 +43,7 @@ class NMFALSUpdate
   NMFALSUpdate() { }
 
   template<typename MatType>
-  void Initialize(const MatType& dataset, const long rank)
+  void Initialize(const MatType& dataset, const size_t rank)
   {
       (void)dataset;
       (void)rank;
@@ -71,7 +71,7 @@ class NMFALSUpdate
     W = V * H.t() * pinv(H * H.t());
 
     // Set all negative numbers to machine epsilon
-    for (long i = 0; i < W.n_elem; i++)
+    for (size_t i = 0; i < W.n_elem; i++)
     {
       if (W(i) < 0.0)
       {
@@ -100,7 +100,7 @@ class NMFALSUpdate
     H = pinv(W.t() * W) * W.t() * V;
 
     // Set all negative numbers to 0.
-    for (long i = 0; i < H.n_elem; i++)
+    for (size_t i = 0; i < H.n_elem; i++)
     {
       if (H(i) < 0.0)
       {

@@ -10,7 +10,7 @@
  *  ACM Trans. Math. Softw. 7, 1 (March 1981), 17-41.
  *  http://portal.acm.org/citation.cfm?id=355934.355936
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -133,10 +133,10 @@ class GeneralizedRosenbrockFunction
   double Evaluate(const arma::mat& coordinates) const;
   void Gradient(const arma::mat& coordinates, arma::mat& gradient) const;
 
-  long NumFunctions() const { return n - 1; }
-  double Evaluate(const arma::mat& coordinates, const long i) const;
+  size_t NumFunctions() const { return n - 1; }
+  double Evaluate(const arma::mat& coordinates, const size_t i) const;
   void Gradient(const arma::mat& coordinates,
-                const long i,
+                const size_t i,
                 arma::mat& gradient) const;
 
   const arma::mat& GetInitialPoint() const;

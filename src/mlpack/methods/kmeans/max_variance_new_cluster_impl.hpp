@@ -4,7 +4,7 @@
  *
  * Implementation of MaxVarianceNewCluster class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -32,11 +32,11 @@ namespace kmeans {
  * Take action about an empty cluster.
  */
 template<typename MatType>
-long MaxVarianceNewCluster::EmptyCluster(const MatType& data,
-                                           const long emptyCluster,
+size_t MaxVarianceNewCluster::EmptyCluster(const MatType& data,
+                                           const size_t emptyCluster,
                                            const MatType& centroids,
-                                           arma::Col<long>& clusterCounts,
-                                           arma::Col<long>& assignments)
+                                           arma::Col<size_t>& clusterCounts,
+                                           arma::Col<size_t>& assignments)
 {
   // First, we need to find the cluster with maximum variance (by which I mean
   // the sum of the covariance matrices).
@@ -45,7 +45,7 @@ long MaxVarianceNewCluster::EmptyCluster(const MatType& data,
 
   // Add the variance of each point's distance away from the cluster.  I think
   // this is the sensible thing to do.
-  for (long i = 0; i < data.n_cols; ++i)
+  for (size_t i = 0; i < data.n_cols; ++i)
   {
     variances[assignments[i]] += metric::SquaredEuclideanDistance::Evaluate(
         data.col(i), centroids.col(assignments[i]));
@@ -56,7 +56,7 @@ long MaxVarianceNewCluster::EmptyCluster(const MatType& data,
   // matter because variances.max() won't pick it up.  If the number of points
   // in the cluster is 1, we ensure that cluster is not selected by forcing the
   // variance to 0.
-  for (long i = 0; i < clusterCounts.n_elem; ++i)
+  for (size_t i = 0; i < clusterCounts.n_elem; ++i)
     variances[i] /= (clusterCounts[i] == 1) ? DBL_MAX : clusterCounts[i];
 
   // Now find the cluster with maximum variance.
@@ -64,9 +64,9 @@ long MaxVarianceNewCluster::EmptyCluster(const MatType& data,
   variances.max(maxVarCluster);
 
   // Now, inside this cluster, find the point which is furthest away.
-  long furthestPoint = data.n_cols;
+  size_t furthestPoint = data.n_cols;
   double maxDistance = -DBL_MAX;
-  for (long i = 0; i < data.n_cols; ++i)
+  for (size_t i = 0; i < data.n_cols; ++i)
   {
     if (assignments[i] == maxVarCluster)
     {

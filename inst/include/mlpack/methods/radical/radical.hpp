@@ -5,7 +5,7 @@
  * Declaration of Radical class (RADICAL is Robust, Accurate, Direct ICA
  * aLgorithm).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -67,10 +67,10 @@ class Radical
    * @param m The variable m from Vasicek's m-spacing estimator of entropy.
    */
   Radical(const double noiseStdDev = 0.175,
-          const long replicates = 30,
-          const long angles = 150,
-          const long sweeps = 0,
-          const long m = 0);
+          const size_t replicates = 30,
+          const size_t angles = 150,
+          const size_t sweeps = 0,
+          const size_t m = 0);
 
   /**
    * Run RADICAL.
@@ -107,19 +107,19 @@ class Radical
   double& NoiseStdDev() { return noiseStdDev; }
 
   //! Get the number of Gaussian-perturbed replicates used per point.
-  long Replicates() const { return replicates; }
+  size_t Replicates() const { return replicates; }
   //! Modify the number of Gaussian-perturbed replicates used per point.
-  long& Replicates() { return replicates; }
+  size_t& Replicates() { return replicates; }
 
   //! Get the number of angles considered during brute-force search.
-  long Angles() const { return angles; }
+  size_t Angles() const { return angles; }
   //! Modify the number of angles considered during brute-force search.
-  long& Angles() { return angles; }
+  size_t& Angles() { return angles; }
 
   //! Get the number of sweeps.
-  long Sweeps() const { return sweeps; }
+  size_t Sweeps() const { return sweeps; }
   //! Modify the number of sweeps.
-  long& Sweeps() { return sweeps; }
+  size_t& Sweeps() { return sweeps; }
 
   // Returns a string representation of this object. 
   std::string ToString() const;
@@ -130,17 +130,17 @@ class Radical
   double noiseStdDev;
 
   //! Number of Gaussian-perturbed replicates to use (per point) in Radical2D.
-  long replicates;
+  size_t replicates;
 
   //! Number of angles to consider in brute-force search during Radical2D.
-  long angles;
+  size_t angles;
 
   //! Number of sweeps; each sweep calls Radical2D once for each pair of
   //! dimensions.
-  long sweeps;
+  size_t sweeps;
 
   //! Value of m to use for Vasicek's m-spacing estimator of entropy.
-  long m;
+  size_t m;
 
   //! Internal matrix, held as member variable to prevent memory reallocations.
   arma::mat perturbed;
@@ -152,7 +152,7 @@ void WhitenFeatureMajorMatrix(const arma::mat& matX,
                               arma::mat& matXWhitened,
                               arma::mat& matWhitening);
 
-} // namespace radical
-} // namespace mlpack
+}; // namespace radical
+}; // namespace mlpack
 
 #endif

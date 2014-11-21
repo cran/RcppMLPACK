@@ -6,7 +6,7 @@
  * given set of rules which indicate the branches which can be pruned and the
  * order in which to recurse.  This traverser is a depth-first traverser.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -50,7 +50,7 @@ template<typename BoundType,
 template<typename RuleType>
 void BinarySpaceTree<BoundType, StatisticType, MatType, SplitType>::
 SingleTreeTraverser<RuleType>::Traverse(
-    const long queryIndex,
+    const size_t queryIndex,
     BinarySpaceTree<BoundType, StatisticType, MatType, SplitType>&
         referenceNode)
 {
@@ -64,7 +64,7 @@ SingleTreeTraverser<RuleType>::Traverse(
   // Immediately run the base case if it's not pruned.
   if ((leftScore != DBL_MAX) && (referenceNode.Left()->IsLeaf()))
   {
-    for (long i = referenceNode.Left()->Begin();
+    for (size_t i = referenceNode.Left()->Begin();
          i < referenceNode.Left()->End(); ++i)
       rule.BaseCase(queryIndex, i);
   }
@@ -74,7 +74,7 @@ SingleTreeTraverser<RuleType>::Traverse(
   // Immediately run the base case if it's not pruned.
   if ((rightScore != DBL_MAX) && (referenceNode.Right()->IsLeaf()))
   {
-    for (long i = referenceNode.Right()->Begin();
+    for (size_t i = referenceNode.Right()->Begin();
          i < referenceNode.Right()->End(); ++i)
       rule.BaseCase(queryIndex, i);
   }

@@ -4,7 +4,7 @@
  *
  * Declaration of NCA class (Neighborhood Components Analysis).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -73,7 +73,7 @@ class NCA
    * @param metric Instantiated metric to use.
    */
   NCA(const arma::mat& dataset,
-      const arma::Col<long>& labels,
+      const arma::Col<size_t>& labels,
       MetricType metric = MetricType());
 
   /**
@@ -90,7 +90,7 @@ class NCA
   //! Get the dataset reference.
   const arma::mat& Dataset() const { return dataset; }
   //! Get the labels reference.
-  const arma::Col<long>& Labels() const { return labels; }
+  const arma::Col<size_t>& Labels() const { return labels; }
 
   //! Get the optimizer.
   const OptimizerType<SoftmaxErrorFunction<MetricType> >& Optimizer() const
@@ -105,7 +105,7 @@ class NCA
   //! Dataset reference.
   const arma::mat& dataset;
   //! Labels reference.
-  const arma::Col<long>& labels;
+  const arma::Col<size_t>& labels;
 
   //! Metric to be used.
   MetricType metric;

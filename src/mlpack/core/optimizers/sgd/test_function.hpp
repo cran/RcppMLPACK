@@ -4,7 +4,7 @@
  *
  * Very simple test function for SGD.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -39,17 +39,17 @@ class SGDTestFunction
   SGDTestFunction() { }
 
   //! Return 3 (the number of functions).
-  long NumFunctions() const { return 3; }
+  size_t NumFunctions() const { return 3; }
 
   //! Get the starting point.
   arma::mat GetInitialPoint() const { return arma::mat("6; -45.6; 6.2"); }
 
   //! Evaluate a function.
-  double Evaluate(const arma::mat& coordinates, const long i) const;
+  double Evaluate(const arma::mat& coordinates, const size_t i) const;
 
   //! Evaluate the gradient of a function.
   void Gradient(const arma::mat& coordinates,
-                const long i,
+                const size_t i,
                 arma::mat& gradient) const;
 };
 

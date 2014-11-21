@@ -6,7 +6,7 @@
  * given set of rules which indicate the branches which can be pruned and the
  * order in which to recurse.  This traverser is a depth-first traverser.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -52,19 +52,19 @@ class BinarySpaceTree<BoundType, StatisticType, MatType, SplitType>::
    *     used as the query point.
    * @param referenceNode The tree node to be traversed.
    */
-  void Traverse(const long queryIndex, BinarySpaceTree& referenceNode);
+  void Traverse(const size_t queryIndex, BinarySpaceTree& referenceNode);
 
   //! Get the number of prunes.
-  long NumPrunes() const { return numPrunes; }
+  size_t NumPrunes() const { return numPrunes; }
   //! Modify the number of prunes.
-  long& NumPrunes() { return numPrunes; }
+  size_t& NumPrunes() { return numPrunes; }
 
  private:
   //! Reference to the rules with which the tree will be traversed.
   RuleType& rule;
 
   //! The number of nodes which have been pruned during traversal.
-  long numPrunes;
+  size_t numPrunes;
 };
 
 }; // namespace tree

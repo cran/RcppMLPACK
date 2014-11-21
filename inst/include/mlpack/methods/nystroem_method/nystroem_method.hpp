@@ -7,7 +7,7 @@
  * There are many variations on how to do this, so template parameters allow the
  * selection of many different techniques.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -46,7 +46,7 @@ class NystroemMethod
    * @param kernel Kernel to be used for computation.
    * @param rank Rank to be used for matrix approximation.
    */
-  NystroemMethod(const arma::mat& data, KernelType& kernel, const long rank);
+  NystroemMethod(const arma::mat& data, KernelType& kernel, const size_t rank);
 
   /**
    * Apply the low-rank factorization to obtain an output matrix G such that
@@ -74,7 +74,7 @@ class NystroemMethod
    * @param miniKernel to store the constructed mini-kernel matrix in.
    * @param miniKernel to store the constructed semi-kernel matrix in.
    */
-  void GetKernelMatrix(const arma::Col<long>& selectedPoints, 
+  void GetKernelMatrix(const arma::Col<size_t>& selectedPoints, 
                        arma::mat& miniKernel, 
                        arma::mat& semiKernel);
 
@@ -84,11 +84,11 @@ class NystroemMethod
   //! The locally stored kernel, if it is necessary.
   KernelType& kernel;
   //! Rank used for matrix approximation.
-  const long rank;
+  const size_t rank;
 };
 
-} // namespace kernel
-} // namespace mlpack
+}; // namespace kernel
+}; // namespace mlpack
 
 // Include implementation.
 #include "nystroem_method_impl.hpp"

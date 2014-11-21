@@ -6,7 +6,7 @@
  * Defines the KernelPCA class to perform Kernel Principal Components Analysis
  * on the specified data set.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -75,7 +75,7 @@ class KernelPCA
              arma::mat& transformedData,
              arma::vec& eigval,
              arma::mat& eigvec,
-             const long newDimension);
+             const size_t newDimension);
 
   /**
    * Apply Kernel Principal Components Analysis to the provided data set.
@@ -114,7 +114,7 @@ class KernelPCA
    * @param data Data matrix.
    * @param newDimension New dimension for the dataset.
    */
-  void Apply(arma::mat& data, const long newDimension);
+  void Apply(arma::mat& data, const size_t newDimension);
 
   //! Get the kernel.
   const KernelType& Kernel() const { return kernel; }

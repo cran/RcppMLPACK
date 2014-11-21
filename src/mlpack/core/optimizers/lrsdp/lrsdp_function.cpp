@@ -6,7 +6,7 @@
  * Implementation of the LRSDPFunction class, and also template specializations
  * for faster execution with the AugLagrangian optimizer.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -26,7 +26,7 @@
 using namespace mlpack;
 using namespace mlpack::optimization;
 
-LRSDPFunction::LRSDPFunction(const long numConstraints,
+LRSDPFunction::LRSDPFunction(const size_t numConstraints,
                              const arma::mat& initialPoint):
     a(numConstraints),
     b(numConstraints),
@@ -46,7 +46,7 @@ void LRSDPFunction::Gradient(const arma::mat& /* coordinates */,
       << std::endl;
 }
 
-double LRSDPFunction::EvaluateConstraint(const long index,
+double LRSDPFunction::EvaluateConstraint(const size_t index,
                                  const arma::mat& coordinates) const
 {
   arma::mat rrt = coordinates * trans(coordinates);
@@ -55,14 +55,14 @@ double LRSDPFunction::EvaluateConstraint(const long index,
   else
   {
     double value = -b[index];
-    for (long i = 0; i < a[index].n_cols; ++i)
+    for (size_t i = 0; i < a[index].n_cols; ++i)
       value += a[index](2, i) * rrt(a[index](0, i), a[index](1, i));
 
     return value;
   }
 }
 
-void LRSDPFunction::GradientConstraint(const long /* index */,
+void LRSDPFunction::GradientConstraint(const size_t /* index */,
                                const arma::mat& /* coordinates */,
                                arma::mat& /* gradient */) const
 {
@@ -104,7 +104,7 @@ double AugLagrangianFunction<LRSDPFunction>::Evaluate(
   double objective = trace(function.C() * rrt);
 
   // Now each constraint.
-  for (long i = 0; i < function.B().n_elem; ++i)
+  for (size_t i = 0; i < function.B().n_elem; ++i)
   {
     // Take the trace subtracted by the b_i.
     double constraint = -function.B()[i];
@@ -115,7 +115,7 @@ double AugLagrangianFunction<LRSDPFunction>::Evaluate(
     }
     else
     {
-      for (long j = 0; j < function.A()[i].n_cols; ++j)
+      for (size_t j = 0; j < function.A()[i].n_cols; ++j)
       {
         constraint += function.A()[i](2, j) *
             rrt(function.A()[i](0, j), function.A()[i](1, j));
@@ -143,7 +143,7 @@ void AugLagrangianFunction<LRSDPFunction>::Gradient(
   arma::mat rrt = coordinates * trans(coordinates);
   arma::mat s = function.C();
 
-  for (long i = 0; i < function.B().n_elem; ++i)
+  for (size_t i = 0; i < function.B().n_elem; ++i)
   {
     double constraint = -function.B()[i];
 
@@ -153,7 +153,7 @@ void AugLagrangianFunction<LRSDPFunction>::Gradient(
     }
     else
     {
-      for (long j = 0; j < function.A()[i].n_cols; ++j)
+      for (size_t j = 0; j < function.A()[i].n_cols; ++j)
       {
         constraint += function.A()[i](2, j) *
             rrt(function.A()[i](0, j), function.A()[i](1, j));
@@ -169,7 +169,7 @@ void AugLagrangianFunction<LRSDPFunction>::Gradient(
     else
     {
       // We only need to subtract the entries which could be modified.
-      for (long j = 0; j < function.A()[i].n_cols; ++j)
+      for (size_t j = 0; j < function.A()[i].n_cols; ++j)
       {
         s(function.A()[i](0, j), function.A()[i](1, j)) -= y;
       }

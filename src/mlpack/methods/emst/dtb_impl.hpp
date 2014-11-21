@@ -4,7 +4,7 @@
  *
  * Implementation of DTB.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -31,7 +31,7 @@ namespace emst {
 template<typename TreeType>
 TreeType* BuildTree(
     typename TreeType::Mat& dataset,
-    std::vector<long>& oldFromNew,
+    std::vector<size_t>& oldFromNew,
     typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == true, TreeType*
     >::type = 0)
@@ -43,7 +43,7 @@ TreeType* BuildTree(
 template<typename TreeType>
 TreeType* BuildTree(
     const typename TreeType::Mat& dataset,
-    const std::vector<long>& /* oldFromNew */,
+    const std::vector<size_t>& /* oldFromNew */,
     const typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == false, TreeType*
     >::type = 0)
@@ -67,7 +67,7 @@ DualTreeBoruvka<MetricType, TreeType>::DualTreeBoruvka(
     totalDist(0.0),
     metric(metric)
 {
-
+  //Timer::Start("emst/tree_building");
 
   if (!naive)
   {
@@ -79,7 +79,7 @@ DualTreeBoruvka<MetricType, TreeType>::DualTreeBoruvka(
         oldFromNew);
   }
 
-
+  //Timer::Stop("emst/tree_building");
 
   edges.reserve(data.n_cols - 1); // Set size.
 
@@ -124,7 +124,7 @@ DualTreeBoruvka<MetricType, TreeType>::~DualTreeBoruvka()
 template<typename MetricType, typename TreeType>
 void DualTreeBoruvka<MetricType, TreeType>::ComputeMST(arma::mat& results)
 {
-
+  //Timer::Start("emst/mst_computation");
 
   totalDist = 0; // Reset distance.
 
@@ -136,8 +136,8 @@ void DualTreeBoruvka<MetricType, TreeType>::ComputeMST(arma::mat& results)
     if (naive)
     {
       // Full O(N^2) traversal.
-      for (long i = 0; i < data.n_cols; ++i)
-        for (long j = 0; j < data.n_cols; ++j)
+      for (size_t i = 0; i < data.n_cols; ++i)
+        for (size_t j = 0; j < data.n_cols; ++j)
           rules.BaseCase(i, j);
     }
     else
@@ -159,7 +159,7 @@ void DualTreeBoruvka<MetricType, TreeType>::ComputeMST(arma::mat& results)
     }
   }
 
-
+  //Timer::Stop("emst/mst_computation");
 
   EmitResults(results);
 
@@ -170,11 +170,12 @@ void DualTreeBoruvka<MetricType, TreeType>::ComputeMST(arma::mat& results)
  * Adds a single edge to the edge list
  */
 template<typename MetricType, typename TreeType>
-void DualTreeBoruvka<MetricType, TreeType>::AddEdge(const long e1,
-                                        const long e2,
+void DualTreeBoruvka<MetricType, TreeType>::AddEdge(const size_t e1,
+                                        const size_t e2,
                                         const double distance)
 {
-
+  //Log::Assert((distance >= 0.0),
+  //    "DualTreeBoruvka::AddEdge(): distance cannot be negative.");
 
   if (e1 < e2)
     edges.push_back(EdgePair(e1, e2, distance));
@@ -188,11 +189,11 @@ void DualTreeBoruvka<MetricType, TreeType>::AddEdge(const long e1,
 template<typename MetricType, typename TreeType>
 void DualTreeBoruvka<MetricType, TreeType>::AddAllEdges()
 {
-  for (long i = 0; i < data.n_cols; i++)
+  for (size_t i = 0; i < data.n_cols; i++)
   {
-    long component = connections.Find(i);
-    long inEdge = neighborsInComponent[component];
-    long outEdge = neighborsOutComponent[component];
+    size_t component = connections.Find(i);
+    size_t inEdge = neighborsInComponent[component];
+    size_t outEdge = neighborsOutComponent[component];
     if (connections.Find(inEdge) != connections.Find(outEdge))
     {
       //totalDist = totalDist + dist;
@@ -213,18 +214,18 @@ void DualTreeBoruvka<MetricType, TreeType>::EmitResults(arma::mat& results)
   // Sort the edges.
   std::sort(edges.begin(), edges.end(), SortFun);
 
-
+  //Log::Assert(edges.size() == data.n_cols - 1);
   results.set_size(3, edges.size());
 
   // Need to unpermute the point labels.
   if (!naive && ownTree && tree::TreeTraits<TreeType>::RearrangesDataset)
   {
-    for (long i = 0; i < (data.n_cols - 1); i++)
+    for (size_t i = 0; i < (data.n_cols - 1); i++)
     {
       // Make sure the edge list stores the smaller index first to
       // make checking correctness easier
-      long ind1 = oldFromNew[edges[i].Lesser()];
-      long ind2 = oldFromNew[edges[i].Greater()];
+      size_t ind1 = oldFromNew[edges[i].Lesser()];
+      size_t ind2 = oldFromNew[edges[i].Greater()];
 
       if (ind1 < ind2)
       {
@@ -244,7 +245,7 @@ void DualTreeBoruvka<MetricType, TreeType>::EmitResults(arma::mat& results)
   }
   else
   {
-    for (long i = 0; i < edges.size(); i++)
+    for (size_t i = 0; i < edges.size(); i++)
     {
       results(0, i) = edges[i].Lesser();
       results(1, i) = edges[i].Greater();
@@ -266,7 +267,7 @@ void DualTreeBoruvka<MetricType, TreeType>::CleanupHelper(TreeType* tree)
   tree->Stat().Bound() = DBL_MAX;
 
   // Recurse into all children.
-  for (long i = 0; i < tree->NumChildren(); ++i)
+  for (size_t i = 0; i < tree->NumChildren(); ++i)
     CleanupHelper(&tree->Child(i));
 
   // Get the component of the first child or point.  Then we will check to see
@@ -276,13 +277,13 @@ void DualTreeBoruvka<MetricType, TreeType>::CleanupHelper(TreeType* tree)
       connections.Find(tree->Point(0));
 
   // Check components of children.
-  for (long i = 0; i < tree->NumChildren(); ++i)
+  for (size_t i = 0; i < tree->NumChildren(); ++i)
     if (tree->Child(i).Stat().ComponentMembership() != component)
       return;
 
   // Check components of points.
-  for (long i = 0; i < tree->NumPoints(); ++i)
-    if (connections.Find(tree->Point(i)) != long(component))
+  for (size_t i = 0; i < tree->NumPoints(); ++i)
+    if (connections.Find(tree->Point(i)) != size_t(component))
       return;
 
   // If we made it this far, all components are the same.
@@ -295,7 +296,7 @@ void DualTreeBoruvka<MetricType, TreeType>::CleanupHelper(TreeType* tree)
 template<typename MetricType, typename TreeType>
 void DualTreeBoruvka<MetricType, TreeType>::Cleanup()
 {
-  for (long i = 0; i < data.n_cols; i++)
+  for (size_t i = 0; i < data.n_cols; i++)
     neighborsDistances[i] = DBL_MAX;
 
   if (!naive)

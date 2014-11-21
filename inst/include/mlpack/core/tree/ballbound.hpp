@@ -4,7 +4,7 @@
  * Bounds that are useful for binary space partitioning trees.
  * Interface to a ball bound that works in arbitrary metric spaces.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -75,7 +75,7 @@ class BallBound
    *
    * @param dimension Dimensionality of ball bound.
    */
-  BallBound(const long dimension);
+  BallBound(const size_t dimension);
 
   /**
    * Create the ball bound with the specified radius and center.
@@ -114,7 +114,7 @@ class BallBound
   double MinWidth() const { return radius * 2.0; }
 
   //! Get the range in a certain dimension.
-  math::Range operator[](const long i) const;
+  math::Range operator[](const size_t i) const;
 
   /**
    * Determines if a point is within this bound.

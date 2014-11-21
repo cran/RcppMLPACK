@@ -5,7 +5,7 @@
  * Implementation of the stochastic neighbor assignment probability error
  * function (the "softmax error").
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -63,7 +63,7 @@ class SoftmaxErrorFunction
    * @param kernel Instantiated kernel (optional).
    */
   SoftmaxErrorFunction(const arma::mat& dataset,
-                       const arma::Col<long>& labels,
+                       const arma::Col<size_t>& labels,
                        MetricType metric = MetricType());
 
   /**
@@ -85,7 +85,7 @@ class SoftmaxErrorFunction
    * @param covariance Covariance matrix of Mahalanobis distance.
    * @param i Index of point to use for objective function.
    */
-  double Evaluate(const arma::mat& covariance, const long i);
+  double Evaluate(const arma::mat& covariance, const size_t i);
 
   /**
    * Evaluate the gradient of the softmax function for the given covariance
@@ -109,7 +109,7 @@ class SoftmaxErrorFunction
    * @param gradient Matrix to store the calculated gradient in.
    */
   void Gradient(const arma::mat& covariance,
-                const long i,
+                const size_t i,
                 arma::mat& gradient);
 
   /**
@@ -121,7 +121,7 @@ class SoftmaxErrorFunction
    * Get the number of functions the objective function can be decomposed into.
    * This is just the number of points in the dataset.
    */
-  long NumFunctions() const { return dataset.n_cols; }
+  size_t NumFunctions() const { return dataset.n_cols; }
 
   // convert the obkect into a string
   std::string ToString() const;
@@ -130,7 +130,7 @@ class SoftmaxErrorFunction
   //! The dataset.
   const arma::mat& dataset;
   //! Labels for each point in the dataset.
-  const arma::Col<long>& labels;
+  const arma::Col<size_t>& labels;
 
   //! The instantiated metric.
   MetricType metric;

@@ -5,7 +5,7 @@
  * Implementation of the single tree traverser for cover trees, which implements
  * a breadth-first traversal.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -40,7 +40,7 @@ struct CoverTreeMapEntry
   //! The score of the node.
   double score;
   //! The index of the parent node.
-  long parent;
+  size_t parent;
   //! The base case evaluation.
   double baseCase;
 
@@ -63,7 +63,7 @@ template<typename MetricType, typename RootPointPolicy, typename StatisticType>
 template<typename RuleType>
 void CoverTree<MetricType, RootPointPolicy, StatisticType>::
 SingleTreeTraverser<RuleType>::Traverse(
-    const long queryIndex,
+    const size_t queryIndex,
     CoverTree<MetricType, RootPointPolicy, StatisticType>& referenceNode)
 {
   // This is a non-recursive implementation (which should be faster than a
@@ -95,7 +95,7 @@ SingleTreeTraverser<RuleType>::Traverse(
     double rootBaseCase = rule.BaseCase(queryIndex, referenceNode.Point());
 
     // Don't add the self-leaf.
-    long i = 0;
+    size_t i = 0;
     if (referenceNode.Child(0).NumChildren() == 0)
     {
       ++numPrunes;
@@ -131,15 +131,15 @@ SingleTreeTraverser<RuleType>::Traverse(
     std::sort(scaleVector.begin(), scaleVector.end());
 
     // Now loop over each element.
-    for (long i = 0; i < scaleVector.size(); ++i)
+    for (size_t i = 0; i < scaleVector.size(); ++i)
     {
       // Get a reference to the current element.
       const MapEntryType& frame = scaleVector.at(i);
 
       CoverTree<MetricType, RootPointPolicy, StatisticType>* node = frame.node;
       const double score = frame.score;
-      const long parent = frame.parent;
-      const long point = node->Point();
+      const size_t parent = frame.parent;
+      const size_t point = node->Point();
       double baseCase = frame.baseCase;
 
       // First we recalculate the score of this node to find if we can prune it.
@@ -168,7 +168,7 @@ SingleTreeTraverser<RuleType>::Traverse(
         baseCase = rule.BaseCase(queryIndex, point);
 
       // Don't add the self-leaf.
-      long j = 0;
+      size_t j = 0;
       if (node->Child(0).NumChildren() == 0)
       {
         ++numPrunes;
@@ -192,13 +192,13 @@ SingleTreeTraverser<RuleType>::Traverse(
   }
 
   // Now deal with the leaves.
-  for (long i = 0; i < mapQueue[INT_MIN].size(); ++i)
+  for (size_t i = 0; i < mapQueue[INT_MIN].size(); ++i)
   {
     const MapEntryType& frame = mapQueue[INT_MIN].at(i);
 
     CoverTree<MetricType, RootPointPolicy, StatisticType>* node = frame.node;
     const double score = frame.score;
-    const long point = node->Point();
+    const size_t point = node->Point();
 
     // First, recalculate the score of this node to find if we can prune it.
     double rescore = rule.Rescore(queryIndex, *node, score);

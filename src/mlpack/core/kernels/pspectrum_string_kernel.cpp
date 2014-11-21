@@ -8,7 +8,7 @@
  * strings; then, the actual strings are given to the PSpectrumStringKernel at
  * construction time, and the kernel knows to map the indices to actual strings.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -38,7 +38,7 @@ using namespace mlpack::kernel;
  */
 mlpack::kernel::PSpectrumStringKernel::PSpectrumStringKernel(
     const std::vector<std::vector<std::string> >& datasets,
-    const long p) :
+    const size_t p) :
     datasets(datasets),
     p(p)
 {
@@ -50,7 +50,7 @@ mlpack::kernel::PSpectrumStringKernel::PSpectrumStringKernel(
   // Resize for number of datasets.
   counts.resize(datasets.size());
 
-  for (long dataset = 0; dataset < datasets.size(); ++dataset)
+  for (size_t dataset = 0; dataset < datasets.size(); ++dataset)
   {
     const std::vector<std::string>& set = datasets[dataset];
 
@@ -58,20 +58,20 @@ mlpack::kernel::PSpectrumStringKernel::PSpectrumStringKernel(
     counts[dataset].resize(set.size());
 
     // Inspect each string in the dataset.
-    for (long index = 0; index < set.size(); ++index)
+    for (size_t index = 0; index < set.size(); ++index)
     {
       // Convenience references.
       const std::string& str = set[index];
       std::map<std::string, int>& mapping = counts[dataset][index];
 
-      long start = 0;
+      size_t start = 0;
       while ((start + p) <= str.length())
       {
         string sub = str.substr(start, p);
 
         // Convert all characters to lowercase.
         bool invalid = false;
-        for (long j = 0; j < p; ++j)
+        for (size_t j = 0; j < p; ++j)
         {
           if (!isalnum(sub[j]))
           {

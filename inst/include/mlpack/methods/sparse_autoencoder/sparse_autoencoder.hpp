@@ -4,7 +4,7 @@
  *
  * An implementation of sparse autoencoders.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -45,14 +45,14 @@ namespace nn {
  *
  * @code
  * arma::mat data; // Data matrix.
- * const long vSize = 64; // Size of visible layer, depends on the data.
- * const long hSize = 25; // Size of hidden layer, depends on requirements.
+ * const size_t vSize = 64; // Size of visible layer, depends on the data.
+ * const size_t hSize = 25; // Size of hidden layer, depends on requirements.
  *
  * // Train the model using default options.
  * SparseAutoencoder encoder1(data, vSize, hSize);
  *
- * const long numBasis = 5; // Parameter required for L-BFGS algorithm.
- * const long numIterations = 100; // Maximum number of iterations.
+ * const size_t numBasis = 5; // Parameter required for L-BFGS algorithm.
+ * const size_t numIterations = 100; // Maximum number of iterations.
  *
  * // Use an instantiated optimizer for the training.
  * SparseAutoencoderFunction saf(data, vSize, hSize);
@@ -92,8 +92,8 @@ class SparseAutoencoder
    * @param rho Sparsity parameter.
    */
   SparseAutoencoder(const arma::mat& data,
-                    const long visibleSize,
-                    const long hiddenSize,
+                    const size_t visibleSize,
+                    const size_t hiddenSize,
                     const double lambda = 0.0001,
                     const double beta = 3,
                     const double rho = 0.01);
@@ -131,25 +131,25 @@ class SparseAutoencoder
   }
 
   //! Sets size of the visible layer.
-  void VisibleSize(const long visible)
+  void VisibleSize(const size_t visible)
   {
     this->visibleSize = visible;
   }
 
   //! Gets size of the visible layer.
-  long VisibleSize() const
+  size_t VisibleSize() const
   {
     return visibleSize;
   }
 
   //! Sets size of the hidden layer.
-  void HiddenSize(const long hidden)
+  void HiddenSize(const size_t hidden)
   {
     this->hiddenSize = hidden;
   }
 
   //! Gets the size of the hidden layer.
-  long HiddenSize() const
+  size_t HiddenSize() const
   {
     return hiddenSize;
   }
@@ -194,9 +194,9 @@ class SparseAutoencoder
   //! Parameters after optimization.
   arma::mat parameters;
   //! Size of the visible layer.
-  long visibleSize;
+  size_t visibleSize;
   //! Size of the hidden layer.
-  long hiddenSize;
+  size_t hiddenSize;
   //! L2-regularization parameter.
   double lambda;
   //! KL divergence parameter.

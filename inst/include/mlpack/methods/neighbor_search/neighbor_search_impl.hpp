@@ -5,7 +5,7 @@
  * Implementation of Neighbor-Search class to perform all-nearest-neighbors on
  * two specified data sets.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -34,7 +34,7 @@ namespace neighbor {
 template<typename TreeType>
 TreeType* BuildTree(
     typename TreeType::Mat& dataset,
-    std::vector<long>& oldFromNew,
+    std::vector<size_t>& oldFromNew,
     typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == true, TreeType*
     >::type = 0)
@@ -46,7 +46,7 @@ TreeType* BuildTree(
 template<typename TreeType>
 TreeType* BuildTree(
     const typename TreeType::Mat& dataset,
-    const std::vector<long>& /* oldFromNew */,
+    const std::vector<size_t>& /* oldFromNew */,
     const typename boost::enable_if_c<
         tree::TreeTraits<TreeType>::RearrangesDataset == false, TreeType*
     >::type = 0)
@@ -78,7 +78,7 @@ NeighborSearch(const typename TreeType::Mat& referenceSetIn,
   // copy/paste problem.
 
   // We'll time tree building, but only if we are building trees.
-
+  //Timer::Start("tree_building");
 
   // Copy the datasets, if they will be modified during tree building.
   if (tree::TreeTraits<TreeType>::RearrangesDataset)
@@ -103,7 +103,7 @@ NeighborSearch(const typename TreeType::Mat& referenceSetIn,
   }
 
   // Stop the timer we started above (if we need to).
-
+  //Timer::Stop("tree_building");
 }
 
 // Construct the object.
@@ -126,7 +126,7 @@ NeighborSearch(const typename TreeType::Mat& referenceSetIn,
     metric(metric)
 {
   // We'll time tree building, but only if we are building trees.
-
+  //Timer::Start("tree_building");
 
   // Copy the dataset, if it will be modified during tree building.
   if (tree::TreeTraits<TreeType>::RearrangesDataset)
@@ -147,7 +147,7 @@ NeighborSearch(const typename TreeType::Mat& referenceSetIn,
   }
 
   // Stop the timer we started above.
-
+  //Timer::Stop("tree_building");
 }
 
 // Construct the object.
@@ -189,13 +189,13 @@ NeighborSearch<SortPolicy, MetricType, TreeType>::NeighborSearch(
     singleMode(singleMode),
     metric(metric)
 {
-
+  //Timer::Start("tree_building");
 
   // The query tree cannot be the same as the reference tree.
   if (referenceTree && !singleMode)
     queryTree = new TreeType(*referenceTree);
 
-
+  //Timer::Stop("tree_building");
 }
 
 /**
@@ -225,17 +225,17 @@ NeighborSearch<SortPolicy, MetricType, TreeType>::~NeighborSearch()
  */
 template<typename SortPolicy, typename MetricType, typename TreeType>
 void NeighborSearch<SortPolicy, MetricType, TreeType>::Search(
-    const long k,
-    arma::Mat<long>& resultingNeighbors,
+    const size_t k,
+    arma::Mat<size_t>& resultingNeighbors,
     arma::mat& distances)
 {
-
+  //Timer::Start("computing_neighbors");
 
   // If we have built the trees ourselves, then we will have to map all the
   // indices back to their original indices when this computation is finished.
   // To avoid an extra copy, we will store the neighbors and distances in a
   // separate matrix.
-  arma::Mat<long>* neighborPtr = &resultingNeighbors;
+  arma::Mat<size_t>* neighborPtr = &resultingNeighbors;
   arma::mat* distancePtr = &distances;
 
   // Mapping is only necessary if the tree rearranges points.
@@ -245,12 +245,12 @@ void NeighborSearch<SortPolicy, MetricType, TreeType>::Search(
       distancePtr = new arma::mat; // Query indices need to be mapped.
 
     if (treeOwner)
-      neighborPtr = new arma::Mat<long>; // All indices need mapping.
+      neighborPtr = new arma::Mat<size_t>; // All indices need mapping.
   }
 
   // Set the size of the neighbor and distance matrices.
   neighborPtr->set_size(k, querySet.n_cols);
-  neighborPtr->fill(long() - 1);
+  neighborPtr->fill(size_t() - 1);
   distancePtr->set_size(k, querySet.n_cols);
   distancePtr->fill(SortPolicy::WorstDistance());
 
@@ -261,24 +261,27 @@ void NeighborSearch<SortPolicy, MetricType, TreeType>::Search(
   if (naive)
   {
     // The naive brute-force traversal.
-    for (long i = 0; i < querySet.n_cols; ++i)
-      for (long j = 0; j < referenceSet.n_cols; ++j)
+    for (size_t i = 0; i < querySet.n_cols; ++i)
+      for (size_t j = 0; j < referenceSet.n_cols; ++j)
         rules.BaseCase(i, j);
   }
   else if (singleMode)
   {
-
     // The search doesn't work if the root node is also a leaf node.
     // if this is the case, it is suggested that you use the naive method.
-    
+    assert(!(referenceTree->IsLeaf()));
+
     // Create the traverser.
     typename TreeType::template SingleTreeTraverser<RuleType> traverser(rules);
 
     // Now have it traverse for each point.
-    for (long i = 0; i < querySet.n_cols; ++i)
+    for (size_t i = 0; i < querySet.n_cols; ++i)
       traverser.Traverse(i, *referenceTree);
+
+    Rcpp::Rcout << rules.Scores() << " node combinations were scored.\n";
+    Rcpp::Rcout << rules.BaseCases() << " base cases were calculated.\n";
   }
-  else // Dual-tree recursion.referenceTree
+  else // Dual-tree recursion.
   {
     // Create the traverser.
     typename TreeType::template DualTreeTraverser<RuleType> traverser(rules);
@@ -289,7 +292,7 @@ void NeighborSearch<SortPolicy, MetricType, TreeType>::Search(
     Rcpp::Rcout << rules.BaseCases() << " base cases were calculated.\n";
   }
 
-
+  //Timer::Stop("computing_neighbors");
 
   // Now, do we need to do mapping of indices?
   if (!treeOwner || !tree::TreeTraits<TreeType>::RearrangesDataset)
@@ -303,13 +306,13 @@ void NeighborSearch<SortPolicy, MetricType, TreeType>::Search(
     resultingNeighbors.set_size(k, querySet.n_cols);
     distances.set_size(k, querySet.n_cols);
 
-    for (long i = 0; i < distances.n_cols; i++)
+    for (size_t i = 0; i < distances.n_cols; i++)
     {
       // Map distances (copy a column).
       distances.col(oldFromNewQueries[i]) = distancePtr->col(i);
 
       // Map indices of neighbors.
-      for (long j = 0; j < distances.n_rows; j++)
+      for (size_t j = 0; j < distances.n_rows; j++)
       {
         resultingNeighbors(j, oldFromNewQueries[i]) =
             oldFromNewReferences[(*neighborPtr)(j, i)];
@@ -325,13 +328,13 @@ void NeighborSearch<SortPolicy, MetricType, TreeType>::Search(
     resultingNeighbors.set_size(k, querySet.n_cols);
     distances.set_size(k, querySet.n_cols);
 
-    for (long i = 0; i < distances.n_cols; i++)
+    for (size_t i = 0; i < distances.n_cols; i++)
     {
       // Map distances (copy a column).
       distances.col(oldFromNewReferences[i]) = distancePtr->col(i);
 
       // Map indices of neighbors.
-      for (long j = 0; j < distances.n_rows; j++)
+      for (size_t j = 0; j < distances.n_rows; j++)
       {
         resultingNeighbors(j, oldFromNewReferences[i]) =
             oldFromNewReferences[(*neighborPtr)(j, i)];
@@ -348,9 +351,9 @@ void NeighborSearch<SortPolicy, MetricType, TreeType>::Search(
     resultingNeighbors.set_size(k, querySet.n_cols);
 
     // Map indices of neighbors.
-    for (long i = 0; i < resultingNeighbors.n_cols; i++)
+    for (size_t i = 0; i < resultingNeighbors.n_cols; i++)
     {
-      for (long j = 0; j < resultingNeighbors.n_rows; j++)
+      for (size_t j = 0; j < resultingNeighbors.n_rows; j++)
       {
         resultingNeighbors(j, i) = oldFromNewReferences[(*neighborPtr)(j, i)];
       }

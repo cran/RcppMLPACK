@@ -6,7 +6,7 @@
  *
  * Implementation of AMF class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -53,7 +53,7 @@ template<typename TerminationPolicyType,
 template<typename MatType>
 double AMF<TerminationPolicyType, InitializationRuleType, UpdateRuleType>::
 Apply(const MatType& V,
-      const long r,
+      const size_t r,
       arma::mat& W,
       arma::mat& H)
 {
@@ -73,7 +73,7 @@ Apply(const MatType& V,
   }
 
   const double residue = terminationPolicy.Index();
-  const long iteration = terminationPolicy.Iteration();
+  const size_t iteration = terminationPolicy.Iteration();
 
   Rcpp::Rcout << "AMF converged to residue of " << residue << " in "
       << iteration << " iterations." << std::endl;

@@ -7,7 +7,7 @@
  * Defines the CF class to perform collaborative filtering on the specified data
  * set using alternating least squares (ALS).
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -46,8 +46,8 @@ namespace cf /** Collaborative filtering. */{
  *
  * @code
  * extern arma::mat data; // (user, item, rating) table
- * extern arma::Col<long> users; // users seeking recommendations
- * arma::Mat<long> recommendations; // Recommendations
+ * extern arma::Col<size_t> users; // users seeking recommendations
+ * arma::Mat<size_t> recommendations; // Recommendations
  *
  * CF<> cf(data); // Default options.
  *
@@ -62,12 +62,12 @@ namespace cf /** Collaborative filtering. */{
  * The data matrix is a (user, item, rating) table.  Each column in the matrix
  * should have three rows.  The first represents the user; the second represents
  * the item; and the third represents the rating.  The user and item, while they
- * are in a matrix that holds doubles, should hold integer (or long) values.
+ * are in a matrix that holds doubles, should hold integer (or size_t) values.
  * The user and item indices are assumed to start at 0.
  *
  * @tparam FactorizerType The type of matrix factorization to use to decompose
  *     the rating matrix (a W and H matrix).  This must implement the method
- *     Apply(arma::sp_mat& data, long rank, arma::mat& W, arma::mat& H).
+ *     Apply(arma::sp_mat& data, size_t rank, arma::mat& W, arma::mat& H).
  */
 template<
     typename FactorizerType = amf::AMF<amf::SimpleResidueTermination,
@@ -87,11 +87,11 @@ class CF
    * @param rank Rank parameter for matrix factorization.
    */
   CF(arma::mat& data,
-     const long numUsersForSimilarity = 5,
-     const long rank = 0);
+     const size_t numUsersForSimilarity = 5,
+     const size_t rank = 0);
 
   //! Sets number of users for calculating similarity.
-  void NumUsersForSimilarity(const long num)
+  void NumUsersForSimilarity(const size_t num)
   {
     if (num < 1)
     {
@@ -103,19 +103,19 @@ class CF
   }
 
   //! Gets number of users for calculating similarity.
-  long NumUsersForSimilarity() const
+  size_t NumUsersForSimilarity() const
   {
     return numUsersForSimilarity;
   }
 
   //! Sets rank parameter for matrix factorization.
-  void Rank(const long rankValue)
+  void Rank(const size_t rankValue)
   {
     this->rank = rankValue;
   }
 
   //! Gets rank parameter for matrix factorization.
-  long Rank() const
+  size_t Rank() const
   {
     return rank;
   }
@@ -143,8 +143,8 @@ class CF
    * @param numRecs Number of Recommendations
    * @param recommendations Matrix to save recommendations into.
    */
-  void GetRecommendations(const long numRecs,
-                          arma::Mat<long>& recommendations);
+  void GetRecommendations(const size_t numRecs,
+                          arma::Mat<size_t>& recommendations);
 
   /**
    * Generates the given number of recommendations for the specified users.
@@ -153,9 +153,9 @@ class CF
    * @param recommendations Matrix to save recommendations
    * @param users Users for which recommendations are to be generated
    */
-  void GetRecommendations(const long numRecs,
-                          arma::Mat<long>& recommendations,
-                          arma::Col<long>& users);
+  void GetRecommendations(const size_t numRecs,
+                          arma::Mat<size_t>& recommendations,
+                          arma::Col<size_t>& users);
 
   /**
    * Returns a string representation of this object.
@@ -166,9 +166,9 @@ class CF
   //! Initial data matrix.
   arma::mat data;
   //! Number of users for similarity.
-  long numUsersForSimilarity;
+  size_t numUsersForSimilarity;
   //! Rank used for matrix factorization.
-  long rank;
+  size_t rank;
   //! Instantiated factorizer object.
   FactorizerType factorizer;
   //! User matrix.
@@ -191,11 +191,11 @@ class CF
    * @param neighbor Index of item being inserted as a recommendation.
    * @param value Value of recommendation.
    */
-  void InsertNeighbor(const long queryIndex,
-                      const long pos,
-                      const long neighbor,
+  void InsertNeighbor(const size_t queryIndex,
+                      const size_t pos,
+                      const size_t neighbor,
                       const double value,
-                      arma::Mat<long>& recommendations,
+                      arma::Mat<size_t>& recommendations,
                       arma::mat& values) const;
 
 }; // class CF

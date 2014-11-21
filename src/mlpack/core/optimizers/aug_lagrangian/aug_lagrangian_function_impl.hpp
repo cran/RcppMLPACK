@@ -6,7 +6,7 @@
  * specializations can probably be given in many cases, but this is the most
  * general case.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -67,7 +67,7 @@ double AugLagrangianFunction<LagrangianFunction>::Evaluate(
   double objective = function.Evaluate(coordinates);
 
   // Now loop for each constraint.
-  for (long i = 0; i < function.NumConstraints(); ++i)
+  for (size_t i = 0; i < function.NumConstraints(); ++i)
   {
     double constraint = function.EvaluateConstraint(i, coordinates);
 
@@ -90,7 +90,7 @@ void AugLagrangianFunction<LagrangianFunction>::Gradient(
   function.Gradient(coordinates, gradient);
 
   arma::mat constraintGradient; // Temporary for constraint gradients.
-  for (long i = 0; i < function.NumConstraints(); i++)
+  for (size_t i = 0; i < function.NumConstraints(); i++)
   {
     function.GradientConstraint(i, coordinates, constraintGradient);
 

@@ -5,7 +5,7 @@
  * Utility class to fit a GMM using the EM algorithm.  Used by
  * GMM::Estimate<>().
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -40,8 +40,8 @@ namespace gmm {
  * method:
  *
  *  - void Cluster(const arma::mat& observations,
- *                 const long clusters,
- *                 arma::Col<long>& assignments);
+ *                 const size_t clusters,
+ *                 arma::Col<size_t>& assignments);
  *
  * This method should create 'clusters' clusters, and return the assignment of
  * each point to a cluster.
@@ -68,7 +68,7 @@ class EMFit
    *     matrix at each iteration.
    * @param clusterer Object which will perform the initial clustering.
    */
-  EMFit(const long maxIterations = 300,
+  EMFit(const size_t maxIterations = 300,
         const double tolerance = 1e-10,
         InitialClusteringType clusterer = InitialClusteringType(),
         CovarianceConstraintPolicy constraint = CovarianceConstraintPolicy());
@@ -129,9 +129,9 @@ class EMFit
   CovarianceConstraintPolicy& Constraint() { return constraint; }
 
   //! Get the maximum number of iterations of the EM algorithm.
-  long MaxIterations() const { return maxIterations; }
+  size_t MaxIterations() const { return maxIterations; }
   //! Modify the maximum number of iterations of the EM algorithm.
-  long& MaxIterations() { return maxIterations; }
+  size_t& MaxIterations() { return maxIterations; }
 
   //! Get the tolerance for the convergence of the EM algorithm.
   double Tolerance() const { return tolerance; }
@@ -170,7 +170,7 @@ class EMFit
                        const arma::vec& weights) const;
 
   //! Maximum iterations of EM algorithm.
-  long maxIterations;
+  size_t maxIterations;
   //! Tolerance for convergence of EM.
   double tolerance;
   //! Object which will perform the clustering.

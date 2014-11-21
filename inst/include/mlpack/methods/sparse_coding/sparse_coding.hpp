@@ -5,7 +5,7 @@
  * Definition of the SparseCoding class, which performs L1 (LASSO) or
  * L1+L2 (Elastic Net)-regularized sparse coding with dictionary learning
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -128,7 +128,7 @@ class SparseCoding
    * @param lambda2 Regularization parameter for l2-norm penalty
    */
   SparseCoding(const arma::mat& data,
-               const long atoms,
+               const size_t atoms,
                const double lambda1,
                const double lambda2 = 0);
 
@@ -143,7 +143,7 @@ class SparseCoding
    * @param newtonTolerance Tolerance for the Newton's method dictionary
    *     optimization step.
    */
-  void Encode(const long maxIterations = 0,
+  void Encode(const size_t maxIterations = 0,
               const double objTolerance = 0.01,
               const double newtonTolerance = 1e-6);
 
@@ -193,7 +193,7 @@ class SparseCoding
 
  private:
   //! Number of atoms.
-  long atoms;
+  size_t atoms;
 
   //! Data matrix (columns are points).
   const arma::mat& data;
@@ -211,8 +211,8 @@ class SparseCoding
   double lambda2;
 };
 
-} // namespace sparse_coding
-} // namespace mlpack
+}; // namespace sparse_coding
+}; // namespace mlpack
 
 // Include implementation.
 #include "sparse_coding_impl.hpp"

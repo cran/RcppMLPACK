@@ -4,7 +4,7 @@
  *
  * Implementation of rules for range search with generic trees.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -33,7 +33,7 @@ RangeSearchRules<MetricType, TreeType>::RangeSearchRules(
     const arma::mat& referenceSet,
     const arma::mat& querySet,
     const math::Range& range,
-    std::vector<std::vector<long> >& neighbors,
+    std::vector<std::vector<size_t> >& neighbors,
     std::vector<std::vector<double> >& distances,
     MetricType& metric) :
     referenceSet(referenceSet),
@@ -53,8 +53,8 @@ RangeSearchRules<MetricType, TreeType>::RangeSearchRules(
 template<typename MetricType, typename TreeType>
 inline force_inline
 double RangeSearchRules<MetricType, TreeType>::BaseCase(
-    const long queryIndex,
-    const long referenceIndex)
+    const size_t queryIndex,
+    const size_t referenceIndex)
 {
   // If the datasets are the same, don't return the point as in its own range.
   if ((&referenceSet == &querySet) && (queryIndex == referenceIndex))
@@ -82,7 +82,7 @@ double RangeSearchRules<MetricType, TreeType>::BaseCase(
 
 //! Single-tree scoring function.
 template<typename MetricType, typename TreeType>
-double RangeSearchRules<MetricType, TreeType>::Score(const long queryIndex,
+double RangeSearchRules<MetricType, TreeType>::Score(const size_t queryIndex,
                                                      TreeType& referenceNode)
 {
   // We must get the minimum and maximum distances and store them in this
@@ -142,7 +142,7 @@ double RangeSearchRules<MetricType, TreeType>::Score(const long queryIndex,
 //! Single-tree rescoring function.
 template<typename MetricType, typename TreeType>
 double RangeSearchRules<MetricType, TreeType>::Rescore(
-    const long /* queryIndex */,
+    const size_t /* queryIndex */,
     TreeType& /* referenceNode */,
     const double oldScore) const
 {
@@ -199,7 +199,7 @@ double RangeSearchRules<MetricType, TreeType>::Score(TreeType& queryNode,
   // the results for each point in the query node.
   if ((distances.Lo() >= range.Lo()) && (distances.Hi() <= range.Hi()))
   {
-    for (long i = 0; i < queryNode.NumDescendants(); ++i)
+    for (size_t i = 0; i < queryNode.NumDescendants(); ++i)
       AddResult(queryNode.Descendant(i), referenceNode);
     return DBL_MAX; // We don't need to go any deeper.
   }
@@ -225,13 +225,13 @@ double RangeSearchRules<MetricType, TreeType>::Rescore(
 //! Add all the points in the given node to the results for the given query
 //! point.
 template<typename MetricType, typename TreeType>
-void RangeSearchRules<MetricType, TreeType>::AddResult(const long queryIndex,
+void RangeSearchRules<MetricType, TreeType>::AddResult(const size_t queryIndex,
                                                        TreeType& referenceNode)
 {
   // Some types of trees calculate the base case evaluation before Score() is
   // called, so if the base case has already been calculated, then we must avoid
   // adding that point to the results again.
-  long baseCaseMod = 0;
+  size_t baseCaseMod = 0;
   if (tree::TreeTraits<TreeType>::FirstPointIsCentroid &&
       (queryIndex == lastQueryIndex) &&
       (referenceNode.Point(0) == lastReferenceIndex))
@@ -242,13 +242,13 @@ void RangeSearchRules<MetricType, TreeType>::AddResult(const long queryIndex,
   // Resize distances and neighbors vectors appropriately.  We have to use
   // reserve() and not resize(), because we don't know if we will encounter the
   // case where the datasets and points are the same (and we skip in that case).
-  const long oldSize = neighbors[queryIndex].size();
+  const size_t oldSize = neighbors[queryIndex].size();
   neighbors[queryIndex].reserve(oldSize + referenceNode.NumDescendants() -
       baseCaseMod);
   distances[queryIndex].reserve(oldSize + referenceNode.NumDescendants() -
       baseCaseMod);
 
-  for (long i = baseCaseMod; i < referenceNode.NumDescendants(); ++i)
+  for (size_t i = baseCaseMod; i < referenceNode.NumDescendants(); ++i)
   {
     if ((&referenceSet == &querySet) &&
         (queryIndex == referenceNode.Descendant(i)))
@@ -262,7 +262,7 @@ void RangeSearchRules<MetricType, TreeType>::AddResult(const long queryIndex,
   }
 }
 
-} // namespace range
-} // namespace mlpack
+}; // namespace range
+}; // namespace mlpack
 
 #endif

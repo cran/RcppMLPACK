@@ -4,7 +4,7 @@
  *
  * The implementation of the SA optimizer.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -34,12 +34,12 @@ template<
 SA<FunctionType, CoolingScheduleType>::SA(
     FunctionType& function,
     CoolingScheduleType& coolingSchedule,
-    const long maxIterations,
+    const size_t maxIterations,
     const double initT,
-    const long initMoves,
-    const long moveCtrlSweep,
+    const size_t initMoves,
+    const size_t moveCtrlSweep,
     const double tolerance,
-    const long maxToleranceSweep,
+    const size_t maxToleranceSweep,
     const double maxMoveCoef,
     const double initMoveCoef,
     const double gain) :
@@ -53,8 +53,8 @@ SA<FunctionType, CoolingScheduleType>::SA(
     maxToleranceSweep(maxToleranceSweep),
     gain(gain)
 {
-  const long rows = function.GetInitialPoint().n_rows;
-  const long cols = function.GetInitialPoint().n_cols;
+  const size_t rows = function.GetInitialPoint().n_rows;
+  const size_t cols = function.GetInitialPoint().n_cols;
 
   maxMove.set_size(rows, cols);
   maxMove.fill(maxMoveCoef);
@@ -69,26 +69,26 @@ template<
 >
 double SA<FunctionType, CoolingScheduleType>::Optimize(arma::mat &iterate)
 {
-  const long rows = function.GetInitialPoint().n_rows;
-  const long cols = function.GetInitialPoint().n_cols;
+  const size_t rows = function.GetInitialPoint().n_rows;
+  const size_t cols = function.GetInitialPoint().n_cols;
 
-  long frozenCount = 0;
+  size_t frozenCount = 0;
   double energy = function.Evaluate(iterate);
   double oldEnergy = energy;
   math::RandomSeed(std::time(NULL));
 
-  long idx = 0;
-  long sweepCounter = 0;
+  size_t idx = 0;
+  size_t sweepCounter = 0;
 
   arma::mat accept(rows, cols);
   accept.zeros();
 
   // Initial moves to get rid of dependency of initial states.
-  for (long i = 0; i < initMoves; ++i)
+  for (size_t i = 0; i < initMoves; ++i)
     GenerateMove(iterate, accept, energy, idx, sweepCounter);
 
   // Iterating and cooling.
-  for (long i = 0; i != maxIterations; ++i)
+  for (size_t i = 0; i != maxIterations; ++i)
   {
     oldEnergy = energy;
     GenerateMove(iterate, accept, energy, idx, sweepCounter);
@@ -132,8 +132,8 @@ void SA<FunctionType, CoolingScheduleType>::GenerateMove(
     arma::mat& iterate,
     arma::mat& accept,
     double& energy,
-    long& idx,
-    long& sweepCounter)
+    size_t& idx,
+    size_t& sweepCounter)
 {
   const double prevEnergy = energy;
   const double prevValue = iterate(idx);
@@ -196,7 +196,7 @@ template<
     typename FunctionType,
     typename CoolingScheduleType
 >
-void SA<FunctionType, CoolingScheduleType>::MoveControl(const long nMoves,
+void SA<FunctionType, CoolingScheduleType>::MoveControl(const size_t nMoves,
                                                         arma::mat& accept)
 {
   arma::mat target;
@@ -208,7 +208,7 @@ void SA<FunctionType, CoolingScheduleType>::MoveControl(const long nMoves,
 
   // To avoid the use of element-wise arma::min(), which is only available in
   // Armadillo after v3.930, we use a for loop here instead.
-  for (long i = 0; i < accept.n_elem; ++i)
+  for (size_t i = 0; i < accept.n_elem; ++i)
     moveSize(i) = (moveSize(i) > maxMove(i)) ? maxMove(i) : moveSize(i);
 
   accept.zeros();

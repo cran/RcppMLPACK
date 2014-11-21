@@ -4,7 +4,7 @@
  *
  * Implementation of Radical class
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -29,10 +29,10 @@ using namespace mlpack::radical;
 
 // Set the parameters to RADICAL.
 Radical::Radical(const double noiseStdDev,
-                 const long replicates,
-                 const long angles,
-                 const long sweeps,
-                 const long m) :
+                 const size_t replicates,
+                 const size_t angles,
+                 const size_t sweeps,
+                 const size_t m) :
     noiseStdDev(noiseStdDev),
     replicates(replicates),
     angles(angles),
@@ -44,10 +44,10 @@ Radical::Radical(const double noiseStdDev,
 
 void Radical::CopyAndPerturb(mat& xNew, const mat& x) const
 {
-
+  //Timer::Start("radical_copy_and_perturb");
   xNew = repmat(x, replicates, 1) + noiseStdDev * randn(replicates * x.n_rows,
       x.n_cols);
-
+  //Timer::Stop("radical_copy_and_perturb");
 }
 
 
@@ -82,7 +82,7 @@ double Radical::DoRadical2D(const mat& matX)
 
   vec values(angles);
 
-  for (long i = 0; i < angles; i++)
+  for (size_t i = 0; i < angles; i++)
   {
     const double theta = (i / (double) angles) * M_PI / 2.0;
     const double cosTheta = cos(theta);
@@ -112,23 +112,23 @@ void Radical::DoRadical(const mat& matXT, mat& matY, mat& matW)
   // points, and although this is the transpose of the ICA literature, this
   // choice is for computational efficiency when repeatedly generating
   // two-dimensional coordinate projections for Radical2D).
-
+  //Timer::Start("radical_transpose_data");
   mat matX = trans(matXT);
-
+  //Timer::Stop("radical_transpose_data");
 
   // If m was not specified, initialize m as recommended in
   // (Learned-Miller and Fisher, 2003).
   if (m < 1)
     m = floor(sqrt((double) matX.n_rows));
 
-  const long nDims = matX.n_cols;
-  const long nPoints = matX.n_rows;
+  const size_t nDims = matX.n_cols;
+  const size_t nPoints = matX.n_rows;
 
-
+  //Timer::Start("radical_whiten_data");
   mat matXWhitened;
   mat matWhitening;
   WhitenFeatureMajorMatrix(matX, matY, matWhitening);
-
+  //Timer::Stop("radical_whiten_data");
   // matY is now the whitened form of matX.
 
   // In the RADICAL code, they do not copy and perturb initially, although the
@@ -137,20 +137,20 @@ void Radical::DoRadical(const mat& matXT, mat& matY, mat& matW)
   //GeneratePerturbedX(X, X);
 
   // Initialize the unmixing matrix to the whitening matrix.
-
+  //Timer::Start("radical_do_radical");
   matW = matWhitening;
 
   mat matYSubspace(nPoints, 2);
 
   mat matJ = eye(nDims, nDims);
 
-  for (long sweepNum = 0; sweepNum < sweeps; sweepNum++)
+  for (size_t sweepNum = 0; sweepNum < sweeps; sweepNum++)
   {
     Rcpp::Rcout << "RADICAL: sweep " << sweepNum << "." << std::endl;
 
-    for (long i = 0; i < nDims - 1; i++)
+    for (size_t i = 0; i < nDims - 1; i++)
     {
-      for (long j = i + 1; j < nDims; j++)
+      for (size_t j = i + 1; j < nDims; j++)
       {
         Rcpp::Rcout << "RADICAL 2D on dimensions " << i << " and " << j << "."
             << std::endl;
@@ -179,14 +179,14 @@ void Radical::DoRadical(const mat& matXT, mat& matY, mat& matW)
       }
     }
   }
-
+  //Timer::Stop("radical_do_radical");
 
   // The final transposes provide W and Y in the typical form from the ICA
   // literature.
-
+  //Timer::Start("radical_transpose_data");
   matW = trans(matW);
   matY = trans(matY);
-
+  //Timer::Stop("radical_transpose_data");
 }
 
 void mlpack::radical::WhitenFeatureMajorMatrix(const mat& matX,

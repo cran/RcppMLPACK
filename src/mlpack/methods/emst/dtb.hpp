@@ -17,7 +17,7 @@
  * }
  * @endcode
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -111,11 +111,11 @@ class DualTreeBoruvka
   UnionFind connections;
 
   //! Permutations of points during tree building.
-  std::vector<long> oldFromNew;
+  std::vector<size_t> oldFromNew;
   //! List of edge nodes.
-  arma::Col<long> neighborsInComponent;
+  arma::Col<size_t> neighborsInComponent;
   //! List of edge nodes.
-  arma::Col<long> neighborsOutComponent;
+  arma::Col<size_t> neighborsOutComponent;
   //! List of edge distances.
   arma::vec neighborsDistances;
 
@@ -193,7 +193,7 @@ class DualTreeBoruvka
   /**
    * Adds a single edge to the edge list
    */
-  void AddEdge(const long e1, const long e2, const double distance);
+  void AddEdge(const size_t e1, const size_t e2, const double distance);
 
   /**
    * Adds all the edges found in one iteration to the list of neighbors.

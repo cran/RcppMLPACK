@@ -4,7 +4,7 @@
  *
  * Implementation of ZeroInitialization policy for perceptrons.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -36,8 +36,8 @@ class ZeroInitialization
   ZeroInitialization() { }
 
   inline static void Initialize(arma::mat& W,
-                                const long row,
-                                const long col)
+                                const size_t row,
+                                const size_t col)
   {
     arma::mat tempWeights(row, col);
     tempWeights.fill(0.0);
@@ -46,7 +46,7 @@ class ZeroInitialization
   }
 }; // class ZeroInitialization
 
-} // namespace perceptron
-} // namespace mlpack
+}; // namespace perceptron
+}; // namespace mlpack
 
 #endif

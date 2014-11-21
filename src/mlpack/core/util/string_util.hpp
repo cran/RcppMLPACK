@@ -5,7 +5,7 @@
  *
  * Declares methods that are useful for writing formatting output.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -30,7 +30,7 @@ namespace util {
 
 //! A utility function that replaces all all newlines with a number of spaces
 //! depending on the indentation level.
-std::string Indent(std::string input, const long howManyTabs = 1);
+std::string Indent(std::string input, const size_t howManyTabs = 1);
 
 }; // namespace util
 }; // namespace mlpack

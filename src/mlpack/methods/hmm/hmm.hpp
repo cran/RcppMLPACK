@@ -5,7 +5,7 @@
  *
  * Definition of HMM class.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -72,7 +72,7 @@ namespace hmm /** Hidden Markov Models. */ {
  *
  * @code
  * extern arma::mat observations; // Each column is an observation.
- * extern arma::Col<long> states; // Hidden states for each observation.
+ * extern arma::Col<size_t> states; // Hidden states for each observation.
  * // Create an untrained HMM with 5 hidden states and default (N(0, 1))
  * // Gaussian distributions with the dimensionality of the dataset.
  * HMM<GaussianDistribution> hmm(5, GaussianDistribution(observations.n_rows));
@@ -110,7 +110,7 @@ class HMM
    * @param tolerance Tolerance for convergence of training algorithm
    *      (Baum-Welch).
    */
-  HMM(const long states,
+  HMM(const size_t states,
       const Distribution emissions,
       const double tolerance = 1e-5);
 
@@ -198,7 +198,7 @@ class HMM
    *     observation.
    */
   void Train(const std::vector<arma::mat>& dataSeq,
-             const std::vector<arma::Col<long> >& stateSeq);
+             const std::vector<arma::Col<size_t> >& stateSeq);
 
   /**
    * Estimate the probabilities of each hidden state at each time step for each
@@ -249,10 +249,10 @@ class HMM
    * @param stateSequence Vector to store states in.
    * @param startState Hidden state to start sequence in (default 0).
    */
-  void Generate(const long length,
+  void Generate(const size_t length,
                 arma::mat& dataSequence,
-                arma::Col<long>& stateSequence,
-                const long startState = 0) const;
+                arma::Col<size_t>& stateSequence,
+                const size_t startState = 0) const;
 
   /**
    * Compute the most probable hidden state sequence for the given data
@@ -265,7 +265,7 @@ class HMM
    * @return Log-likelihood of most probable state sequence.
    */
   double Predict(const arma::mat& dataSeq,
-                 arma::Col<long>& stateSeq) const;
+                 arma::Col<size_t>& stateSeq) const;
 
   /**
    * Compute the log-likelihood of the given data sequence.
@@ -291,9 +291,9 @@ class HMM
   std::vector<Distribution>& Emission() { return emission; }
 
   //! Get the dimensionality of observations.
-  long Dimensionality() const { return dimensionality; }
+  size_t Dimensionality() const { return dimensionality; }
   //! Set the dimensionality of observations.
-  long& Dimensionality() { return dimensionality; }
+  size_t& Dimensionality() { return dimensionality; }
 
   //! Get the tolerance of the Baum-Welch algorithm.
   double Tolerance() const { return tolerance; }
@@ -347,7 +347,7 @@ class HMM
   std::vector<Distribution> emission;
 
   //! Dimensionality of observations.
-  long dimensionality;
+  size_t dimensionality;
 
   //! Tolerance of Baum-Welch algorithm.
   double tolerance;

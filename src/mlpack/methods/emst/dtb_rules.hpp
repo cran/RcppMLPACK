@@ -4,7 +4,7 @@
  *
  * Tree traverser rules for the DualTreeBoruvka algorithm.
  *
- * This file is part of MLPACK 1.0.9.
+ * This file is part of MLPACK 1.0.10.
  *
  * MLPACK is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
@@ -36,11 +36,11 @@ class DTBRules
   DTBRules(const arma::mat& dataSet,
            UnionFind& connections,
            arma::vec& neighborsDistances,
-           arma::Col<long>& neighborsInComponent,
-           arma::Col<long>& neighborsOutComponent,
+           arma::Col<size_t>& neighborsInComponent,
+           arma::Col<size_t>& neighborsOutComponent,
            MetricType& metric);
 
-  double BaseCase(const long queryIndex, const long referenceIndex);
+  double BaseCase(const size_t queryIndex, const size_t referenceIndex);
 
   /**
    * Get the score for recursion order.  A low score indicates priority for
@@ -50,7 +50,7 @@ class DTBRules
    * @param queryIndex Index of query point.
    * @param referenceNode Candidate node to be recursed into.
    */
-  double Score(const long queryIndex, TreeType& referenceNode);
+  double Score(const size_t queryIndex, TreeType& referenceNode);
 
   /**
    * Get the score for recursion order, passing the base case result (in the
@@ -62,7 +62,7 @@ class DTBRules
    * @param referenceNode Candidate node to be recursed into.
    * @param baseCaseResult Result of BaseCase(queryIndex, referenceNode).
    */
-  double Score(const long queryIndex,
+  double Score(const size_t queryIndex,
                TreeType& referenceNode,
                const double baseCaseResult);
 
@@ -77,7 +77,7 @@ class DTBRules
    * @param referenceNode Candidate node to be recursed into.
    * @param oldScore Old score produced by Score() (or Rescore()).
    */
-  double Rescore(const long queryIndex,
+  double Rescore(const size_t queryIndex,
                  TreeType& referenceNode,
                  const double oldScore);
 
@@ -126,14 +126,14 @@ class DTBRules
   TraversalInfoType& TraversalInfo() { return traversalInfo; }
 
   //! Get the number of base cases performed.
-  long BaseCases() const { return baseCases; }
+  size_t BaseCases() const { return baseCases; }
   //! Modify the number of base cases performed.
-  long& BaseCases() { return baseCases; }
+  size_t& BaseCases() { return baseCases; }
 
   //! Get the number of node combinations that have been scored.
-  long Scores() const { return scores; }
+  size_t Scores() const { return scores; }
   //! Modify the number of node combinations that have been scored.
-  long& Scores() { return scores; }
+  size_t& Scores() { return scores; }
 
  private:
   //! The data points.
@@ -147,11 +147,11 @@ class DTBRules
 
   //! The index of the point in the component that is an endpoint of the
   //! candidate edge.
-  arma::Col<long>& neighborsInComponent;
+  arma::Col<size_t>& neighborsInComponent;
 
   //! The index of the point outside of the component that is an endpoint
   //! of the candidate edge.
-  arma::Col<long>& neighborsOutComponent;
+  arma::Col<size_t>& neighborsOutComponent;
 
   //! The instantiated metric.
   MetricType& metric;
@@ -164,9 +164,9 @@ class DTBRules
   TraversalInfoType traversalInfo;
 
   //! The number of base cases calculated.
-  long baseCases;
+  size_t baseCases;
   //! The number of node combinations that have been scored.
-  long scores;
+  size_t scores;
 
 }; // class DTBRules
 
