@@ -1,4 +1,4 @@
-bee735f04993c3aa8f149253e59abd0e *DESCRIPTION
+38e73656dcaa9995a835889afbcc3a7d *DESCRIPTION
 7f7fa26b770f62821a28e18b4349c7d2 *NAMESPACE
 4dc03f6f4a5d8cfaccb8e385f20b61aa *R/RcppMLPACK.package.skeleton.R
 caba090c69bc91abbde3253f6b429251 *R/flags.R
@@ -7,7 +7,7 @@ e6ae8db771a0543cb675399383b9814a *R/inline.R
 4a884488f3fbc75d0a2ef0f4b49ef449 *build/vignette.rds
 1b6625ad84abec837f77cbcfc1c0e328 *cleanup
 49192f26625a83e1597a39ce6f3c50ca *inst/doc/RcppMLPACK-intro.Rnw
-913f8769734d2d5e25293ce6fde5cf73 *inst/doc/RcppMLPACK-intro.pdf
+8166498ef5f8f697f82abbc4322d25ec *inst/doc/RcppMLPACK-intro.pdf
 2d2179b891ed9fc6cf57ba08ece430fa *inst/include/RcppMLPACK.h
 453d5937f3e6c4a123b7bc98f32b6bb3 *inst/include/mlpack/core.hpp
 0daf541b040cc692d20517f1cc65b840 *inst/include/mlpack/core/arma_extend/SpMat_extra_bones.hpp
@@ -345,7 +345,7 @@ d0b6605fa2b06cfa172d6a87a3f722a8 *src/mlpack/core/tree/binary_space_tree/single_
 5797a620b1751942b4fb7b5cd592a310 *src/mlpack/core/tree/binary_space_tree/single_tree_traverser_impl.hpp
 92b8ce90ffab4dd1d9c7da8542f42922 *src/mlpack/core/tree/binary_space_tree/traits.hpp
 cd1052f34d890f0138b4baedb3070425 *src/mlpack/core/tree/bounds.hpp
-a7659f8b1edf8556ab188f324acc0551 *src/mlpack/core/tree/cosine_tree/cosine_tree.cpp
+1b312630d98c37d7fda98fbc739b8191 *src/mlpack/core/tree/cosine_tree/cosine_tree.cpp
 ab6c2805c63f1b04dc6ad1d304ee6582 *src/mlpack/core/tree/cosine_tree/cosine_tree.hpp
 ecab86725009c76f880db2b1d73c0b87 *src/mlpack/core/tree/cover_tree.hpp
 0757686573aa4b9e439a694e3a5edb80 *src/mlpack/core/tree/cover_tree/cover_tree.hpp
